@@ -35,8 +35,8 @@
       background: var(--bg);
       color: var(--texto);
       font-family: var(--fonte);
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 18px;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -84,7 +84,24 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
+    }
+
+    .atalhos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .atalhos a {
+      color: var(--ciano);
+    }
+
+    .atalhos a:hover {
+      color: var(--amarelo);
     }
 
     .logo {
@@ -100,7 +117,7 @@
     }
 
     .brand h1 {
-      font-size: 1.35rem;
+      font-size: 1.5rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1.15;
@@ -108,7 +125,7 @@
     }
 
     .brand p {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--texto-suave);
       margin-top: 2px;
     }
@@ -118,7 +135,7 @@
       flex-wrap: wrap;
       gap: 8px 14px;
       align-items: center;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
       margin-bottom: 20px;
     }
@@ -140,9 +157,9 @@
     }
 
     section h2 {
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--amarelo);
       margin-bottom: 12px;
@@ -175,14 +192,14 @@
     }
 
     .stat .label {
-      font-size: 0.72rem;
+      font-size: 0.8rem;
       color: var(--texto-suave);
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
 
     .stat .valor {
-      font-size: 1.45rem;
+      font-size: 1.55rem;
       font-weight: 800;
       line-height: 1.2;
       margin-top: 4px;
@@ -190,7 +207,7 @@
     }
 
     .stat.destaque .valor {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: var(--texto);
       font-weight: 700;
     }
@@ -202,7 +219,7 @@
 
     /* ===== Próximos horários ===== */
     .aviso {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--texto-suave);
       margin-bottom: 12px;
       padding: 10px 12px;
@@ -235,7 +252,7 @@
     }
 
     .slot .hora {
-      font-size: 1.25rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: var(--ciano);
       font-variant-numeric: tabular-nums;
@@ -244,17 +261,17 @@
     .slot.proximo .hora { color: var(--rosa); }
 
     .slot .tipo {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 
     .slot .sub {
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
     }
 
     .slot .countdown {
-      font-size: 0.78rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--amarelo);
       text-align: right;
@@ -267,6 +284,200 @@
     }
 
     .slot.passou .countdown { color: var(--texto-suave); }
+
+    /* ===== Fazer vídeo agora ===== */
+    .card-acao {
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: var(--raio);
+      box-shadow: var(--sombra);
+      padding: 14px;
+    }
+
+    .card-acao .desc {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-bottom: 12px;
+    }
+
+    .botoes-acao {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-acao {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 72px;
+      padding: 12px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--bg-elev);
+      color: var(--texto);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-acao .icone { font-size: 1.35rem; line-height: 1; }
+    .btn-acao .rotulo { font-size: 0.9rem; }
+
+    .btn-acao.screenshots:hover:not(:disabled) {
+      border-color: var(--rosa);
+      color: var(--rosa);
+    }
+
+    .btn-acao.trailer:hover:not(:disabled) {
+      border-color: var(--ciano);
+      color: var(--ciano);
+    }
+
+    .btn-acao:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .btn-acao:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .msg-acao {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .msg-acao.mostrar { display: block; }
+    .msg-acao.ok {
+      background: rgba(61, 214, 140, 0.15);
+      color: #3dd68c;
+      border: 1px solid rgba(61, 214, 140, 0.35);
+    }
+    .msg-acao.erro {
+      background: rgba(255, 60, 150, 0.12);
+      color: #ff8ab8;
+      border: 1px solid rgba(255, 60, 150, 0.35);
+    }
+    .msg-acao.info {
+      background: rgba(255, 222, 40, 0.12);
+      color: var(--amarelo);
+      border: 1px solid rgba(255, 222, 40, 0.35);
+    }
+
+    /* Modal senha (disparo) */
+    .modal-senha {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(8, 4, 16, 0.78);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-senha[hidden] { display: none !important; }
+
+    .modal-senha-card {
+      width: min(100%, 420px);
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 24px;
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (min-width: 640px) {
+      .modal-senha { align-items: center; padding: 24px; }
+      .modal-senha-card { border-radius: 20px; }
+    }
+
+    .modal-senha-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-senha-card .sub {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-bottom: 14px;
+    }
+
+    .modal-senha-card label.campo-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--texto-suave);
+      margin-bottom: 6px;
+    }
+
+    .modal-senha-card input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--bg-elev);
+      color: var(--texto);
+      font: inherit;
+    }
+
+    .modal-senha-card .lembrar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 16px;
+      font-size: 0.95rem;
+      color: var(--texto-suave);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .modal-senha-card .lembrar input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--rosa);
+    }
+
+    .modal-senha-acoes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-senha-acoes .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+
+    .modal-senha-acoes .btn-cancelar {
+      background: var(--bg-elev);
+      color: var(--texto);
+      border: 1px solid var(--borda);
+    }
+
+    .modal-senha-acoes .btn-ok {
+      background: var(--rosa);
+      color: #fff;
+    }
+
+    body.modal-senha-aberto { overflow: hidden; }
 
     /* ===== Lista de vídeos ===== */
     .videos {
@@ -303,9 +514,9 @@
     }
 
     .video .titulo {
-      font-size: 0.88rem;
+      font-size: 1rem;
       font-weight: 650;
-      line-height: 1.3;
+      line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -314,7 +525,7 @@
 
     .video .meta {
       margin-top: 6px;
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
       display: flex;
       flex-wrap: wrap;
@@ -329,7 +540,7 @@
     .video .abrir-yt {
       display: inline-block;
       margin-top: 8px;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--ciano);
     }
@@ -392,7 +603,7 @@
     }
 
     .player-topo .rotulo {
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -443,7 +654,7 @@
     }
 
     .player-titulo {
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 700;
       line-height: 1.3;
       text-align: center;
@@ -455,7 +666,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px 14px;
-      font-size: 0.78rem;
+      font-size: 0.9rem;
       color: var(--texto-suave);
       margin-top: -4px;
     }
@@ -481,7 +692,7 @@
       background: var(--rosa);
       color: #fff !important;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 1rem;
       text-decoration: none !important;
       text-align: center;
     }
@@ -518,12 +729,12 @@
     }
 
     .run .quando {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 600;
     }
 
     .run .detalhe {
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
       margin-top: 2px;
     }
@@ -536,13 +747,13 @@
     }
 
     .run .badge {
-      font-size: 0.78rem;
+      font-size: 0.9rem;
       font-weight: 700;
       white-space: nowrap;
     }
 
     .run a.ver {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--ciano);
       min-height: 28px;
@@ -555,7 +766,7 @@
       padding: 18px 14px;
       text-align: center;
       color: var(--texto-suave);
-      font-size: 0.9rem;
+      font-size: 1rem;
       background: var(--bg-elev);
       border-radius: 12px;
       border: 1px dashed var(--borda);
@@ -586,7 +797,7 @@
 
     footer {
       text-align: center;
-      font-size: 0.72rem;
+      font-size: 0.85rem;
       color: var(--texto-suave);
       margin-top: 8px;
       opacity: 0.8;
@@ -598,7 +809,8 @@
         width: min(100%, 720px);
         padding: 28px 24px 56px;
       }
-      .brand h1 { font-size: 1.55rem; }
+      html, body { font-size: 19px; }
+      .brand h1 { font-size: 1.65rem; }
       .videos {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -622,11 +834,13 @@
         padding: 36px 28px 64px;
       }
 
+      html, body { font-size: 20px; }
+
       header.app-header {
         margin-bottom: 16px;
       }
 
-      .brand h1 { font-size: 1.75rem; }
+      .brand h1 { font-size: 1.85rem; }
 
       .logo {
         width: 64px;
@@ -683,12 +897,12 @@
       }
 
       .video .titulo {
-        font-size: 0.95rem;
+        font-size: 1.05rem;
         -webkit-line-clamp: 3;
       }
 
       .video .abrir-yt {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
       }
 
       .runs {
@@ -714,6 +928,10 @@
         <p>Painel do canal · só leitura</p>
       </div>
     </header>
+
+    <nav class="atalhos" aria-label="Navegação do painel">
+      <a href="/sugestoes.html">Sugestões de vídeo</a>
+    </nav>
 
     <div class="meta-linha">
       <span class="pill" id="atualizacao">
@@ -743,6 +961,27 @@
           <div class="slots" id="slots"></div>
         </section>
 
+        <!-- Fazer vídeo agora (dispara rotina Claude Code) -->
+        <section aria-labelledby="titulo-agora">
+          <h2 id="titulo-agora">Fazer vídeo agora</h2>
+          <div class="card-acao">
+            <p class="desc">
+              Mesma coisa que “Executar agora” na rotina. Gasta uso do plano Claude.
+            </p>
+            <div class="botoes-acao">
+              <button type="button" class="btn-acao screenshots" id="btn-screenshots" data-tipo="screenshots">
+                <span class="icone" aria-hidden="true">📸</span>
+                <span class="rotulo">Screenshots</span>
+              </button>
+              <button type="button" class="btn-acao trailer" id="btn-trailer" data-tipo="trailer">
+                <span class="icone" aria-hidden="true">🎬</span>
+                <span class="rotulo">Trailer</span>
+              </button>
+            </div>
+            <div id="msg-acao" class="msg-acao" role="status" aria-live="polite"></div>
+          </div>
+        </section>
+
         <!-- 4. Status do robô -->
         <section aria-labelledby="titulo-robo">
           <h2 id="titulo-robo">Status do robô</h2>
@@ -766,6 +1005,24 @@
     <footer>
       Atualiza sozinho a cada 2 minutos · Assista no app ou abra no YouTube
     </footer>
+  </div>
+
+  <!-- Pedido de senha antes de disparar rotina -->
+  <div id="modal-senha-rodar" class="modal-senha" hidden role="dialog" aria-modal="true" aria-labelledby="modal-senha-titulo">
+    <div class="modal-senha-card">
+      <h3 id="modal-senha-titulo">Confirmar disparo</h3>
+      <p class="sub" id="modal-senha-sub">Isso gasta uso do seu plano Claude. Fazer um vídeo extra agora?</p>
+      <label class="campo-label" for="campo-senha-rodar">Senha do painel</label>
+      <input id="campo-senha-rodar" type="password" autocomplete="current-password" />
+      <label class="lembrar">
+        <input type="checkbox" id="lembrar-senha-rodar" />
+        Lembrar senha neste celular
+      </label>
+      <div class="modal-senha-acoes">
+        <button type="button" class="btn btn-cancelar" id="btn-senha-cancelar">Cancelar</button>
+        <button type="button" class="btn btn-ok" id="btn-senha-ok">Disparar</button>
+      </div>
+    </div>
   </div>
 
   <!-- Card do player embutido (Short dentro do painel) -->
@@ -1172,6 +1429,195 @@
     setInterval(renderSlots, 30 * 1000);
     carregarTudo();
     setInterval(carregarTudo, INTERVALO_MS);
+
+    // ---------- Fazer vídeo agora (rotinas Claude Code) ----------
+
+    const CHAVE_SENHA = 'vcd_painel_senha';
+    const CHAVE_COOLDOWN = 'vcd_rodar_cooldown'; // { screenshots: ts, trailer: ts }
+    const COOLDOWN_MS_UI = 30 * 60 * 1000;
+
+    function lerCooldownLocal() {
+      try {
+        return JSON.parse(localStorage.getItem(CHAVE_COOLDOWN) || '{}') || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function marcarCooldownLocal(tipo) {
+      try {
+        const map = lerCooldownLocal();
+        map[tipo] = Date.now();
+        localStorage.setItem(CHAVE_COOLDOWN, JSON.stringify(map));
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function cooldownRestante(tipo) {
+      const map = lerCooldownLocal();
+      const ts = Number(map[tipo] || 0);
+      return Math.max(0, COOLDOWN_MS_UI - (Date.now() - ts));
+    }
+
+    function mostrarMsgAcao(texto, classe) {
+      const el = document.getElementById('msg-acao');
+      el.textContent = texto;
+      el.className = 'msg-acao mostrar ' + classe;
+    }
+
+    function atualizarBotoesRodar() {
+      for (const tipo of ['screenshots', 'trailer']) {
+        const btn = document.querySelector(`.btn-acao[data-tipo="${tipo}"]`);
+        if (!btn) continue;
+        const falta = cooldownRestante(tipo);
+        if (falta > 0) {
+          btn.disabled = true;
+          const min = Math.ceil(falta / 60000);
+          btn.querySelector('.rotulo').textContent =
+            tipo === 'trailer' ? `Trailer (${min}m)` : `Screenshots (${min}m)`;
+        } else {
+          btn.disabled = false;
+          btn.querySelector('.rotulo').textContent =
+            tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+        }
+      }
+    }
+
+    function lerSenhaSalva() {
+      try {
+        return localStorage.getItem(CHAVE_SENHA) || '';
+      } catch {
+        return '';
+      }
+    }
+
+    function salvarSenhaLocal(senha, lembrar) {
+      try {
+        if (lembrar && senha) localStorage.setItem(CHAVE_SENHA, senha);
+        else localStorage.removeItem(CHAVE_SENHA);
+      } catch {
+        /* ignore */
+      }
+    }
+
+    /** Pedir senha + confirmação de gasto do plano. */
+    function pedirSenhaDisparo(tipo) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('modal-senha-rodar');
+        const input = document.getElementById('campo-senha-rodar');
+        const lembrar = document.getElementById('lembrar-senha-rodar');
+        const nome = tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+        document.getElementById('modal-senha-sub').textContent =
+          `Isso gasta uso do seu plano Claude. Fazer um vídeo extra de ${nome} agora?`;
+
+        const salva = lerSenhaSalva();
+        input.value = salva;
+        lembrar.checked = Boolean(salva);
+
+        modal.hidden = false;
+        document.body.classList.add('modal-senha-aberto');
+        setTimeout(() => input.focus(), 50);
+
+        function fechar(valor) {
+          modal.hidden = true;
+          document.body.classList.remove('modal-senha-aberto');
+          document.getElementById('btn-senha-ok').onclick = null;
+          document.getElementById('btn-senha-cancelar').onclick = null;
+          resolve(valor);
+        }
+
+        document.getElementById('btn-senha-cancelar').onclick = () => fechar(null);
+        document.getElementById('btn-senha-ok').onclick = () => {
+          const senha = input.value;
+          if (!senha) {
+            input.focus();
+            return;
+          }
+          salvarSenhaLocal(senha, lembrar.checked);
+          fechar(senha);
+        };
+        input.onkeydown = (ev) => {
+          if (ev.key === 'Enter') document.getElementById('btn-senha-ok').click();
+          if (ev.key === 'Escape') fechar(null);
+        };
+      });
+    }
+
+    document.getElementById('modal-senha-rodar').addEventListener('click', (ev) => {
+      if (ev.target.id === 'modal-senha-rodar') {
+        document.getElementById('btn-senha-cancelar').click();
+      }
+    });
+
+    async function dispararAgora(tipo) {
+      const falta = cooldownRestante(tipo);
+      if (falta > 0) {
+        const min = Math.ceil(falta / 60000);
+        mostrarMsgAcao(`Aguarde ${min} min antes de disparar de novo.`, 'info');
+        return;
+      }
+
+      const senha = await pedirSenhaDisparo(tipo);
+      if (!senha) return;
+
+      const botoes = document.querySelectorAll('.btn-acao');
+      botoes.forEach((b) => { b.disabled = true; });
+      mostrarMsgAcao('Disparando rotina…', 'info');
+
+      try {
+        const res = await fetch('/api/rodar', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ senha, tipo }),
+        });
+        const dados = await res.json().catch(() => ({}));
+
+        if (res.status === 401) {
+          salvarSenhaLocal('', false);
+          mostrarMsgAcao('Senha errada', 'erro');
+          atualizarBotoesRodar();
+          return;
+        }
+
+        if (res.status === 429) {
+          // Servidor ainda em cooldown — alinha o navegador
+          marcarCooldownLocal(tipo);
+          mostrarMsgAcao(dados.erro || 'Aguarde antes de disparar de novo.', 'info');
+          atualizarBotoesRodar();
+          return;
+        }
+
+        if (!res.ok || !dados.ok) {
+          mostrarMsgAcao(dados.erro || 'Erro ao disparar a rotina.', 'erro');
+          atualizarBotoesRodar();
+          return;
+        }
+
+        marcarCooldownLocal(tipo);
+        mostrarMsgAcao(
+          dados.mensagem || 'Vídeo em produção! Fica pronto em ~20 min.',
+          'ok'
+        );
+        atualizarBotoesRodar();
+      } catch (err) {
+        mostrarMsgAcao('Erro ao disparar a rotina.', 'erro');
+        atualizarBotoesRodar();
+      }
+    }
+
+    document.getElementById('btn-screenshots').addEventListener('click', () => {
+      dispararAgora('screenshots');
+    });
+    document.getElementById('btn-trailer').addEventListener('click', () => {
+      dispararAgora('trailer');
+    });
+
+    atualizarBotoesRodar();
+    setInterval(atualizarBotoesRodar, 30 * 1000);
   </script>
 </body>
 </html>

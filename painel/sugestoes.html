@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#120a1f" />
+  <meta name="description" content="Sugestões de vídeo do canal Vice City Diário" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="/icon.jpg" />
+  <title>Sugestões de vídeo — Vice City Diário</title>
+  <style>
+    :root {
+      --bg: #120a1f;
+      --bg-elev: #1c1230;
+      --bg-card: #24183a;
+      --rosa: #ff3c96;
+      --ciano: #28e6dc;
+      --amarelo: #ffde28;
+      --verde: #3dd68c;
+      --texto: #f3eef8;
+      --texto-suave: #b9aec9;
+      --borda: rgba(255, 255, 255, 0.08);
+      --raio: 16px;
+      --fonte: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--texto);
+      font-family: var(--fonte);
+      font-size: 18px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(255, 60, 150, 0.18), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(40, 230, 220, 0.12), transparent 50%),
+        var(--bg);
+    }
+
+    a { color: var(--ciano); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 20px 16px 56px;
+    }
+
+    header.app-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow:
+        0 0 0 2px rgba(40, 230, 220, 0.55),
+        0 0 16px rgba(255, 60, 150, 0.35);
+      background: #000;
+    }
+
+    .brand h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--rosa);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .brand p {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-top: 2px;
+    }
+
+    .atalhos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .atalhos a.ativo { color: var(--amarelo); pointer-events: none; }
+
+    section { margin-bottom: 28px; }
+
+    section h2 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amarelo);
+      margin-bottom: 12px;
+    }
+
+    .aviso {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(40, 230, 220, 0.08);
+      border-left: 3px solid var(--ciano);
+      border-radius: 0 10px 10px 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--texto-suave);
+      margin-bottom: 6px;
+    }
+
+    .campo { margin-bottom: 14px; }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--bg-elev);
+      color: var(--texto);
+      font: inherit;
+      resize: vertical;
+    }
+
+    textarea { min-height: 88px; }
+
+    .contador {
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-rosa {
+      background: var(--rosa);
+      color: #fff;
+    }
+
+    .btn-rosa:hover:not(:disabled) { filter: brightness(1.08); }
+
+    .btn-ghost {
+      background: var(--bg-elev);
+      color: var(--texto);
+      border: 1px solid var(--borda);
+      min-height: 44px;
+      width: auto;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+    }
+
+    .btn-ghost:hover { border-color: var(--ciano); color: var(--ciano); }
+
+    .btn-perigoso:hover {
+      border-color: var(--rosa);
+      color: var(--rosa);
+    }
+
+    .toast {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .toast.mostrar { display: block; }
+    .toast.ok {
+      background: rgba(61, 214, 140, 0.15);
+      color: var(--verde);
+      border: 1px solid rgba(61, 214, 140, 0.35);
+    }
+    .toast.erro {
+      background: rgba(255, 60, 150, 0.12);
+      color: #ff8ab8;
+      border: 1px solid rgba(255, 60, 150, 0.35);
+    }
+
+    .lista {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item {
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: var(--raio);
+      padding: 14px;
+    }
+
+    .item-topo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .selo {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .selo.fila {
+      background: rgba(255, 222, 40, 0.15);
+      color: var(--amarelo);
+    }
+
+    .selo.feito {
+      background: rgba(61, 214, 140, 0.15);
+      color: var(--verde);
+    }
+
+    .item .data {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      margin-left: auto;
+    }
+
+    .item .texto {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .item .fonte {
+      font-size: 0.9rem;
+      color: var(--ciano);
+      word-break: break-all;
+      margin-bottom: 10px;
+    }
+
+    .item .fonte.vazia {
+      color: var(--texto-suave);
+      font-style: italic;
+    }
+
+    .item-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .loading, .vazio, .erro-bloco {
+      padding: 18px 14px;
+      text-align: center;
+      color: var(--texto-suave);
+      background: var(--bg-elev);
+      border-radius: 12px;
+      border: 1px dashed var(--borda);
+    }
+
+    .erro-bloco { color: #ff8ab8; border-color: rgba(255, 60, 150, 0.35); }
+
+    /* Modal de senha */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(8, 4, 16, 0.78);
+      backdrop-filter: blur(6px);
+      padding: 0;
+    }
+
+    .modal[hidden] { display: none !important; }
+
+    .modal-card {
+      width: min(100%, 420px);
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 24px;
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (min-width: 640px) {
+      .modal { align-items: center; padding: 24px; }
+      .modal-card { border-radius: 20px; }
+    }
+
+    .modal-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-card .sub {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-bottom: 14px;
+    }
+
+    .lembrar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 16px;
+      font-size: 0.95rem;
+      color: var(--texto-suave);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lembrar input { width: 18px; height: 18px; accent-color: var(--rosa); }
+
+    .modal-acoes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-acoes .btn { flex: 1; }
+
+    body.modal-aberto { overflow: hidden; }
+
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      opacity: 0.8;
+    }
+
+    @media (min-width: 960px) {
+      .wrap { width: min(100%, 720px); padding-top: 32px; }
+      html, body { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <img class="logo" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <div class="brand">
+        <h1>Sugestões de vídeo</h1>
+        <p>Vice City Diário · ideias para Shorts</p>
+      </div>
+    </header>
+
+    <nav class="atalhos" aria-label="Navegação do painel">
+      <a href="/">← Painel</a>
+      <a href="/sugestoes.html" class="ativo">Sugestões</a>
+    </nav>
+
+    <section aria-labelledby="titulo-nova">
+      <h2 id="titulo-nova">Nova sugestão</h2>
+      <p class="aviso">
+        A ideia vai para o arquivo <strong>CONFIG_CANAL.md</strong> no GitHub.
+        As rotinas podem marcar como “feito” sozinhas depois.
+      </p>
+
+      <form id="form-nova" novalidate>
+        <div class="campo">
+          <label for="campo-texto">Sugestão de vídeo *</label>
+          <textarea id="campo-texto" maxlength="300" required
+            placeholder="Ex.: Quem é Boobie Mike em GTA 6?"></textarea>
+          <div class="contador"><span id="cont-texto">0</span>/300</div>
+        </div>
+        <div class="campo">
+          <label for="campo-fonte">Fonte (opcional)</label>
+          <input id="campo-fonte" type="text" maxlength="300"
+            placeholder="Link ou site onde pesquisar" />
+          <div class="contador"><span id="cont-fonte">0</span>/300</div>
+        </div>
+        <button type="submit" class="btn btn-rosa" id="btn-enviar">Enviar sugestão</button>
+      </form>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="titulo-lista">
+      <h2 id="titulo-lista">Lista</h2>
+      <div class="lista" id="lista">
+        <div class="loading">Carregando…</div>
+      </div>
+    </section>
+
+    <footer>Senha pedida só na hora de gravar · nada fica no código</footer>
+  </div>
+
+  <!-- Pedido de senha antes de qualquer gravação -->
+  <div id="modal-senha" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-card">
+      <h3 id="modal-titulo">Confirmar com senha</h3>
+      <p class="sub" id="modal-sub">Digite a senha do painel para salvar.</p>
+      <label for="campo-senha">Senha</label>
+      <input id="campo-senha" type="password" autocomplete="current-password" />
+      <label class="lembrar">
+        <input type="checkbox" id="lembrar-senha" />
+        Lembrar senha neste celular
+      </label>
+      <div class="modal-acoes">
+        <button type="button" class="btn btn-ghost" id="btn-cancelar">Cancelar</button>
+        <button type="button" class="btn btn-rosa" id="btn-confirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Tela Sugestões de vídeo — grava em CONFIG_CANAL.md via /api/config.
+     */
+
+    const CHAVE_SENHA = 'vcd_painel_senha';
+    let sugestoesCache = [];
+    let pendente = null; // { acao, texto, fonte, indice }
+
+    function escapar(t) {
+      return String(t ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function linkificarFonte(fonte) {
+      if (!fonte) return '<span class="fonte vazia">Sem fonte</span>';
+      const safe = escapar(fonte);
+      if (/^https?:\/\//i.test(fonte)) {
+        return `<a class="fonte" href="${safe}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
+      }
+      return `<div class="fonte">${safe}</div>`;
+    }
+
+    function toast(msg, ok) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast mostrar ' + (ok ? 'ok' : 'erro');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => { el.className = 'toast'; }, 4500);
+    }
+
+    function lerSenhaSalva() {
+      try {
+        return localStorage.getItem(CHAVE_SENHA) || '';
+      } catch {
+        return '';
+      }
+    }
+
+    function salvarSenhaLocal(senha, lembrar) {
+      try {
+        if (lembrar && senha) localStorage.setItem(CHAVE_SENHA, senha);
+        else localStorage.removeItem(CHAVE_SENHA);
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function atualizarContadores() {
+      document.getElementById('cont-texto').textContent =
+        document.getElementById('campo-texto').value.length;
+      document.getElementById('cont-fonte').textContent =
+        document.getElementById('campo-fonte').value.length;
+    }
+
+    document.getElementById('campo-texto').addEventListener('input', atualizarContadores);
+    document.getElementById('campo-fonte').addEventListener('input', atualizarContadores);
+
+    function renderLista(lista) {
+      const el = document.getElementById('lista');
+      sugestoesCache = lista || [];
+
+      if (!sugestoesCache.length) {
+        el.innerHTML = '<div class="vazio">Nenhuma sugestão ainda. Envie a primeira!</div>';
+        return;
+      }
+
+      // Já vem mais recentes primeiro do backend
+      el.innerHTML = sugestoesCache
+        .map((s) => {
+          const selo = s.feito
+            ? '<span class="selo feito">feito</span>'
+            : '<span class="selo fila">na fila</span>';
+          return `
+            <article class="item" data-indice="${s.indice}">
+              <div class="item-topo">
+                ${selo}
+                <span class="data">${escapar(s.data || '—')}</span>
+              </div>
+              <div class="texto">${escapar(s.texto)}</div>
+              ${linkificarFonte(s.fonte)}
+              <div class="item-acoes">
+                <button type="button" class="btn btn-ghost" data-acao="editar" data-indice="${s.indice}">Editar</button>
+                <button type="button" class="btn btn-ghost btn-perigoso" data-acao="apagar" data-indice="${s.indice}">Apagar</button>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    async function carregar() {
+      const el = document.getElementById('lista');
+      el.innerHTML = '<div class="loading">Carregando…</div>';
+      try {
+        const res = await fetch('/api/config', { headers: { Accept: 'application/json' } });
+        const dados = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(dados.erro || `Erro ${res.status}`);
+        renderLista(dados.sugestoes || []);
+      } catch (err) {
+        el.innerHTML = `<div class="erro-bloco">${escapar(err.message)}</div>`;
+      }
+    }
+
+    /** Abre o modal de senha; resolve com a senha ou null se cancelar. */
+    function pedirSenha(subtitulo) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('modal-senha');
+        const input = document.getElementById('campo-senha');
+        const lembrar = document.getElementById('lembrar-senha');
+        document.getElementById('modal-sub').textContent =
+          subtitulo || 'Digite a senha do painel para salvar.';
+
+        const salva = lerSenhaSalva();
+        input.value = salva;
+        lembrar.checked = Boolean(salva);
+
+        modal.hidden = false;
+        document.body.classList.add('modal-aberto');
+        setTimeout(() => input.focus(), 50);
+
+        function fechar(valor) {
+          modal.hidden = true;
+          document.body.classList.remove('modal-aberto');
+          document.getElementById('btn-confirmar').onclick = null;
+          document.getElementById('btn-cancelar').onclick = null;
+          resolve(valor);
+        }
+
+        document.getElementById('btn-cancelar').onclick = () => fechar(null);
+        document.getElementById('btn-confirmar').onclick = () => {
+          const senha = input.value;
+          if (!senha) {
+            input.focus();
+            return;
+          }
+          salvarSenhaLocal(senha, lembrar.checked);
+          fechar(senha);
+        };
+
+        input.onkeydown = (ev) => {
+          if (ev.key === 'Enter') document.getElementById('btn-confirmar').click();
+          if (ev.key === 'Escape') fechar(null);
+        };
+      });
+    }
+
+    async function gravar(payload) {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tipo: 'sugestao', ...payload }),
+      });
+      const dados = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        // Senha errada: esquece a salva
+        salvarSenhaLocal('', false);
+        throw new Error('Senha errada');
+      }
+      if (!res.ok) {
+        throw new Error(dados.erro || 'Erro ao salvar');
+      }
+      return dados;
+    }
+
+    document.getElementById('form-nova').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const texto = document.getElementById('campo-texto').value.trim();
+      const fonte = document.getElementById('campo-fonte').value.trim();
+      if (!texto) {
+        toast('Escreva a sugestão de vídeo.', false);
+        return;
+      }
+
+      const senha = await pedirSenha('Digite a senha para enviar a sugestão.');
+      if (!senha) return;
+
+      const btn = document.getElementById('btn-enviar');
+      btn.disabled = true;
+      try {
+        const dados = await gravar({ acao: 'adicionar', senha, texto, fonte });
+        toast(dados.mensagem || 'Sugestão enviada!', true);
+        document.getElementById('campo-texto').value = '';
+        document.getElementById('campo-fonte').value = '';
+        atualizarContadores();
+        renderLista(dados.sugestoes || []);
+      } catch (err) {
+        toast(err.message === 'Senha errada' ? 'Senha errada' : (err.message || 'Erro ao salvar'), false);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('lista').addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('button[data-acao]');
+      if (!btn) return;
+      const acao = btn.getAttribute('data-acao');
+      const indice = Number(btn.getAttribute('data-indice'));
+      const atual = sugestoesCache.find((s) => s.indice === indice);
+      if (!atual) return;
+
+      if (acao === 'apagar') {
+        if (!confirm('Tem certeza que quer apagar?')) return;
+        const senha = await pedirSenha('Digite a senha para apagar esta sugestão.');
+        if (!senha) return;
+        try {
+          const dados = await gravar({ acao: 'apagar', senha, indice });
+          toast(dados.mensagem || 'Sugestão apagada.', true);
+          renderLista(dados.sugestoes || []);
+        } catch (err) {
+          toast(err.message === 'Senha errada' ? 'Senha errada' : 'Erro ao salvar', false);
+        }
+        return;
+      }
+
+      if (acao === 'editar') {
+        const novoTexto = prompt('Editar sugestão:', atual.texto);
+        if (novoTexto == null) return;
+        const texto = novoTexto.trim();
+        if (!texto) {
+          toast('Sugestão não pode ficar vazia.', false);
+          return;
+        }
+        const novaFonteRaw = prompt('Fonte (opcional, deixe em branco para remover):', atual.fonte || '');
+        if (novaFonteRaw == null) return;
+        const fonte = novaFonteRaw.trim();
+
+        const senha = await pedirSenha('Digite a senha para salvar a edição.');
+        if (!senha) return;
+
+        try {
+          const dados = await gravar({
+            acao: 'editar',
+            senha,
+            indice,
+            texto,
+            fonte,
+          });
+          toast(dados.mensagem || 'Sugestão atualizada.', true);
+          renderLista(dados.sugestoes || []);
+        } catch (err) {
+          toast(err.message === 'Senha errada' ? 'Senha errada' : 'Erro ao salvar', false);
+        }
+      }
+    });
+
+    // Clique fora do card fecha o modal
+    document.getElementById('modal-senha').addEventListener('click', (ev) => {
+      if (ev.target.id === 'modal-senha') {
+        document.getElementById('btn-cancelar').click();
+      }
+    });
+
+    atualizarContadores();
+    carregar();
+  </script>
+</body>
+</html>

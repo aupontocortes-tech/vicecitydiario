@@ -1,6 +1,10 @@
 /**
  * Servidor local para testar o painel sem login na Vercel.
  * Uso: node dev-server.mjs
+ *
+ * Variáveis opcionais no ambiente:
+ *   GITHUB_TOKEN, SENHA_PAINEL  (necessárias para /api/config)
+ *   ROTINA_8H_URL, ROTINA_8H_TOKEN, ROTINA_12H_URL, ROTINA_12H_TOKEN (/api/rodar)
  */
 import http from 'http';
 import fs from 'fs';
@@ -8,6 +12,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import videos from './api/videos.js';
 import status from './api/status.js';
+import config from './api/config.js';
+import rodar from './api/rodar.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3000;
@@ -27,6 +33,18 @@ const MIME = {
 /** Adaptador no estilo Vercel (req, res.status().json()). */
 function adaptar(handler) {
   return async (req, res) => {
+    // Lê o body uma vez para POST/PUT (como a Vercel faz)
+    if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+      const chunks = [];
+      for await (const chunk of req) chunks.push(chunk);
+      const raw = Buffer.concat(chunks).toString('utf8');
+      try {
+        req.body = raw ? JSON.parse(raw) : {};
+      } catch {
+        req.body = raw;
+      }
+    }
+
     const fakeRes = {
       statusCode: 200,
       headers: {},
@@ -48,7 +66,6 @@ function adaptar(handler) {
     };
     try {
       await handler(req, fakeRes);
-      // Se o handler não fechou a resposta (raro), evita hang
       if (!res.writableEnded) {
         res.writeHead(fakeRes.statusCode, fakeRes.headers);
         res.end();
@@ -66,6 +83,8 @@ function adaptar(handler) {
 const rotasApi = {
   '/api/videos': adaptar(videos),
   '/api/status': adaptar(status),
+  '/api/config': adaptar(config),
+  '/api/rodar': adaptar(rodar),
 };
 
 const server = http.createServer(async (req, res) => {
@@ -77,7 +96,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   let arquivo = pathname === '/' ? '/index.html' : pathname;
-  // Evita path traversal
   arquivo = path.normalize(arquivo).replace(/^(\.\.[/\\])+/, '');
   const caminho = path.join(__dirname, arquivo);
 
@@ -99,4 +117,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Painel local em http://localhost:${PORT}`);
+  if (!process.env.GITHUB_TOKEN || !process.env.SENHA_PAINEL) {
+    console.log('Aviso: defina GITHUB_TOKEN e SENHA_PAINEL para testar /api/config');
+  }
 });
