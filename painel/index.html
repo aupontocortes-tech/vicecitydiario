@@ -79,14 +79,6 @@
       white-space: nowrap;
     }
 
-    .video .abrir-yt {
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--ciano);
-    }
-
     /* ===== Cabeçalho ===== */
     header.app-header {
       display: flex;
@@ -334,6 +326,179 @@
       font-weight: 700;
     }
 
+    .video .abrir-yt {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ciano);
+    }
+
+    .video {
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .video:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .video:active {
+      transform: scale(0.99);
+    }
+
+    /* ===== Player embutido (card no app) ===== */
+    .player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      background: rgba(8, 4, 16, 0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .player-modal[hidden] {
+      display: none !important;
+    }
+
+    .player-card {
+      width: min(100%, 420px);
+      max-height: min(94vh, 860px);
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+      padding: 12px 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: auto;
+    }
+
+    .player-topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .player-topo .rotulo {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amarelo);
+    }
+
+    .btn-fechar {
+      min-width: 44px;
+      min-height: 44px;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      background: var(--bg-elev);
+      color: var(--texto);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-fechar:hover {
+      border-color: var(--rosa);
+      color: var(--rosa);
+    }
+
+    .btn-fechar:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    /* Área 9:16 para Shorts — boa no celular */
+    .player-frame {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      aspect-ratio: 9 / 16;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 0 0 1px rgba(255, 60, 150, 0.25);
+    }
+
+    .player-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .player-titulo {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .player-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 14px;
+      font-size: 0.78rem;
+      color: var(--texto-suave);
+      margin-top: -4px;
+    }
+
+    .player-meta .views {
+      color: var(--rosa);
+      font-weight: 700;
+    }
+
+    .player-acoes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-yt {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--rosa);
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none !important;
+      text-align: center;
+    }
+
+    .btn-yt:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-yt:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 3px;
+    }
+
+    body.player-aberto {
+      overflow: hidden;
+    }
+
     /* ===== Status do robô ===== */
     .runs {
       display: flex;
@@ -468,6 +633,23 @@
         height: 64px;
       }
 
+      /* No desktop o player vira um card central */
+      .player-modal {
+        align-items: center;
+        padding: 24px;
+      }
+
+      .player-card {
+        width: min(100%, 400px);
+        border-radius: 20px;
+        max-height: 92vh;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+      }
+
+      .player-frame {
+        max-width: 320px;
+      }
+
       .layout {
         display: grid;
         grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.25fr);
@@ -539,7 +721,7 @@
         Carregando…
       </span>
       <span id="fuso">Horário de Brasília</span>
-      <span>Toque num vídeo para abrir no YouTube</span>
+      <span>Toque num vídeo para assistir aqui</span>
     </div>
 
     <div class="layout">
@@ -582,8 +764,28 @@
     </div>
 
     <footer>
-      Atualiza sozinho a cada 2 minutos · Clique abre o Short no YouTube
+      Atualiza sozinho a cada 2 minutos · Assista no app ou abra no YouTube
     </footer>
+  </div>
+
+  <!-- Card do player embutido (Short dentro do painel) -->
+  <div id="player-modal" class="player-modal" hidden role="dialog" aria-modal="true" aria-labelledby="player-titulo">
+    <div class="player-card">
+      <div class="player-topo">
+        <span class="rotulo">Assistir no app</span>
+        <button type="button" class="btn-fechar" id="player-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <div class="player-frame" id="player-frame">
+        <!-- iframe entra via JS -->
+      </div>
+      <h3 class="player-titulo" id="player-titulo"></h3>
+      <div class="player-meta" id="player-meta"></div>
+      <div class="player-acoes">
+        <a class="btn-yt" id="player-yt" href="#" target="_blank" rel="noopener noreferrer">
+          Abrir no YouTube
+        </a>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -796,15 +998,13 @@
         return;
       }
 
+      // Guarda lista para o player embutido
+      window.__videosPainel = videos;
+
       el.innerHTML = videos
-        .map((v) => {
-          // Sempre abre o Short no YouTube (canal próprio)
-          const link = v.id
-            ? `https://www.youtube.com/shorts/${v.id}`
-            : (v.url || '#');
-          return `
-        <a class="video" href="${escapar(link)}" target="_blank" rel="noopener noreferrer"
-           title="Abrir no YouTube">
+        .map((v) => `
+        <button type="button" class="video" data-id="${escapar(v.id)}"
+           title="Assistir neste app">
           <img src="${escapar(v.thumbnail)}" alt="" loading="lazy" width="320" height="180" />
           <div>
             <div class="titulo">${escapar(v.titulo)}</div>
@@ -812,13 +1012,77 @@
               <span>${formatarDataHora(v.publicado)}</span>
               <span class="views">${formatarNumero(v.views)} views</span>
             </div>
-            <span class="abrir-yt">Abrir no YouTube →</span>
+            <span class="abrir-yt">Assistir no app →</span>
           </div>
-        </a>
-      `;
-        })
+        </button>
+      `)
         .join('');
     }
+
+    // ---------- Player embutido ----------
+
+    function abrirPlayer(video) {
+      if (!video || !video.id) return;
+
+      const modal = document.getElementById('player-modal');
+      const frame = document.getElementById('player-frame');
+      const titulo = document.getElementById('player-titulo');
+      const meta = document.getElementById('player-meta');
+      const linkYt = document.getElementById('player-yt');
+
+      const embed =
+        `https://www.youtube.com/embed/${encodeURIComponent(video.id)}` +
+        `?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+
+      frame.innerHTML = `
+        <iframe
+          src="${embed}"
+          title="${escapar(video.titulo)}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      `;
+
+      titulo.textContent = video.titulo || 'Short';
+      meta.innerHTML = `
+        <span>${formatarDataHora(video.publicado)}</span>
+        <span class="views">${formatarNumero(video.views)} views</span>
+      `;
+      linkYt.href = `https://www.youtube.com/shorts/${encodeURIComponent(video.id)}`;
+
+      modal.hidden = false;
+      document.body.classList.add('player-aberto');
+      document.getElementById('player-fechar').focus();
+    }
+
+    function fecharPlayer() {
+      const modal = document.getElementById('player-modal');
+      const frame = document.getElementById('player-frame');
+      modal.hidden = true;
+      frame.innerHTML = ''; // para o vídeo ao fechar
+      document.body.classList.remove('player-aberto');
+    }
+
+    // Clique num card → abre no app
+    document.getElementById('videos').addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.video[data-id]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const video = (window.__videosPainel || []).find((v) => v.id === id);
+      if (video) abrirPlayer(video);
+    });
+
+    document.getElementById('player-fechar').addEventListener('click', fecharPlayer);
+
+    // Fechar ao clicar fora do card
+    document.getElementById('player-modal').addEventListener('click', (ev) => {
+      if (ev.target.id === 'player-modal') fecharPlayer();
+    });
+
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') fecharPlayer();
+    });
 
     // ---------- Status do robô ----------
 
