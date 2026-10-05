@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#120a1f" />
+  <meta name="description" content="Painel visual do canal Vice City Diário — próximos vídeos, últimos Shorts e status do robô." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon.jpg" type="image/jpeg" />
+  <link rel="apple-touch-icon" href="/icon.jpg" />
+  <title>Vice City Diário — Painel</title>
+  <style>
+    /* ===== Tema Vice City / GTA 6 ===== */
+    :root {
+      --bg: #120a1f;
+      --bg-elev: #1c1230;
+      --bg-card: #24183a;
+      --rosa: #ff3c96;
+      --ciano: #28e6dc;
+      --amarelo: #ffde28;
+      --texto: #f3eef8;
+      --texto-suave: #b9aec9;
+      --borda: rgba(255, 255, 255, 0.08);
+      --raio: 16px;
+      --sombra: 0 8px 28px rgba(0, 0, 0, 0.35);
+      --fonte: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--texto);
+      font-family: var(--fonte);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(255, 60, 150, 0.18), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(40, 230, 220, 0.12), transparent 50%),
+        var(--bg);
+    }
+
+    a {
+      color: var(--ciano);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    a:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .wrap {
+      width: min(100%, 520px);
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    /* No celular: uma coluna. No desktop: duas colunas amplas. */
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .nav-topo {
+      margin-left: auto;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ciano);
+      white-space: nowrap;
+    }
+
+    .video .abrir-yt {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ciano);
+    }
+
+    /* ===== Cabeçalho ===== */
+    header.app-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow:
+        0 0 0 2px rgba(40, 230, 220, 0.55),
+        0 0 16px rgba(255, 60, 150, 0.35);
+      background: #000;
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--rosa);
+    }
+
+    .brand p {
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      margin-top: 2px;
+    }
+
+    .meta-linha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--texto-suave);
+      margin-bottom: 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(40, 230, 220, 0.12);
+      color: var(--ciano);
+      font-weight: 600;
+    }
+
+    /* ===== Seções ===== */
+    section {
+      margin-bottom: 28px;
+    }
+
+    section h2 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amarelo);
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: var(--raio);
+      box-shadow: var(--sombra);
+      padding: 14px;
+    }
+
+    /* ===== Resumo ===== */
+    .resumo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .resumo .destaque {
+      grid-column: 1 / -1;
+    }
+
+    .stat {
+      background: var(--bg-elev);
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .stat .label {
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat .valor {
+      font-size: 1.45rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-top: 4px;
+      color: var(--ciano);
+    }
+
+    .stat.destaque .valor {
+      font-size: 1rem;
+      color: var(--texto);
+      font-weight: 700;
+    }
+
+    .stat.destaque .views-top {
+      color: var(--rosa);
+      font-weight: 800;
+    }
+
+    /* ===== Próximos horários ===== */
+    .aviso {
+      font-size: 0.8rem;
+      color: var(--texto-suave);
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: rgba(255, 222, 40, 0.08);
+      border-left: 3px solid var(--amarelo);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .slots {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slot {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .slot.proximo {
+      border-color: var(--rosa);
+      box-shadow: 0 0 0 1px rgba(255, 60, 150, 0.35), 0 0 24px rgba(255, 60, 150, 0.15);
+    }
+
+    .slot .hora {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ciano);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .slot.proximo .hora { color: var(--rosa); }
+
+    .slot .tipo {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .slot .sub {
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+    }
+
+    .slot .countdown {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--amarelo);
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .slot.passou {
+      opacity: 0.55;
+    }
+
+    .slot.passou .countdown { color: var(--texto-suave); }
+
+    /* ===== Lista de vídeos ===== */
+    .videos {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .video {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 10px;
+      background: var(--bg-elev);
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      color: inherit;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .video:hover {
+      border-color: rgba(40, 230, 220, 0.4);
+      background: #2a1d44;
+      text-decoration: none;
+    }
+
+    .video img {
+      width: 96px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #0d0716;
+    }
+
+    .video .titulo {
+      font-size: 0.88rem;
+      font-weight: 650;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video .meta {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+    }
+
+    .video .views {
+      color: var(--rosa);
+      font-weight: 700;
+    }
+
+    /* ===== Status do robô ===== */
+    .runs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .run {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+    }
+
+    .run .quando {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .run .detalhe {
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+      margin-top: 2px;
+    }
+
+    .run .lado {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .run .badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .run a.ver {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ciano);
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* ===== Estados ===== */
+    .loading, .erro, .vazio {
+      padding: 18px 14px;
+      text-align: center;
+      color: var(--texto-suave);
+      font-size: 0.9rem;
+      background: var(--bg-elev);
+      border-radius: 12px;
+      border: 1px dashed var(--borda);
+    }
+
+    .erro { color: #ff8ab8; border-color: rgba(255, 60, 150, 0.35); }
+
+    .pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ciano);
+      animation: pulse 1.2s ease-in-out infinite;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.35; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse { animation: none; }
+      .slot, .video { transition: none; }
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--texto-suave);
+      margin-top: 8px;
+      opacity: 0.8;
+    }
+
+    /* ===== Tablet ===== */
+    @media (min-width: 640px) {
+      .wrap {
+        width: min(100%, 720px);
+        padding: 28px 24px 56px;
+      }
+      .brand h1 { font-size: 1.55rem; }
+      .videos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .video {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .video img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+      }
+    }
+
+    /* ===== Desktop: duas colunas, mais espaço ===== */
+    @media (min-width: 960px) {
+      .wrap {
+        width: min(100%, 1120px);
+        padding: 36px 28px 64px;
+      }
+
+      header.app-header {
+        margin-bottom: 16px;
+      }
+
+      .brand h1 { font-size: 1.75rem; }
+
+      .logo {
+        width: 64px;
+        height: 64px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.25fr);
+        gap: 32px;
+        align-items: start;
+      }
+
+      .col-lateral section:last-child {
+        margin-bottom: 0;
+      }
+
+      .resumo {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .slots {
+        gap: 12px;
+      }
+
+      .slot {
+        padding: 14px 16px;
+      }
+
+      .videos {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .video {
+        padding: 12px;
+      }
+
+      .video .titulo {
+        font-size: 0.95rem;
+        -webkit-line-clamp: 3;
+      }
+
+      .video .abrir-yt {
+        font-size: 0.8rem;
+      }
+
+      .runs {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    /* Telas bem largas: grade de 3 vídeos */
+    @media (min-width: 1280px) {
+      .wrap { width: min(100%, 1280px); }
+      .videos { grid-template-columns: 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <img class="logo" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <div class="brand">
+        <h1>Vice City Diário</h1>
+        <p>Painel do canal · só leitura</p>
+      </div>
+    </header>
+
+    <div class="meta-linha">
+      <span class="pill" id="atualizacao">
+        <span class="pulse" aria-hidden="true"></span>
+        Carregando…
+      </span>
+      <span id="fuso">Horário de Brasília</span>
+      <span>Toque num vídeo para abrir no YouTube</span>
+    </div>
+
+    <div class="layout">
+      <div class="col-lateral">
+        <!-- 1. Resumo -->
+        <section aria-labelledby="titulo-resumo">
+          <h2 id="titulo-resumo">Resumo</h2>
+          <div class="resumo" id="resumo">
+            <div class="loading">Carregando…</div>
+          </div>
+        </section>
+
+        <!-- 2. Próximos vídeos -->
+        <section aria-labelledby="titulo-proximos">
+          <h2 id="titulo-proximos">Próximos vídeos</h2>
+          <p class="aviso">
+            O vídeo costuma ficar pronto uns <strong>20 min</strong> depois do horário.
+          </p>
+          <div class="slots" id="slots"></div>
+        </section>
+
+        <!-- 4. Status do robô -->
+        <section aria-labelledby="titulo-robo">
+          <h2 id="titulo-robo">Status do robô</h2>
+          <div class="runs" id="runs">
+            <div class="loading">Carregando…</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-videos">
+        <!-- 3. Últimos vídeos -->
+        <section aria-labelledby="titulo-videos">
+          <h2 id="titulo-videos">Últimos vídeos</h2>
+          <div class="videos" id="videos">
+            <div class="loading">Carregando…</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      Atualiza sozinho a cada 2 minutos · Clique abre o Short no YouTube
+    </footer>
+  </div>
+
+  <script>
+    /**
+     * Painel Vice City Diário — frontend puro.
+     * Busca /api/videos e /api/status, monta o resumo e a contagem regressiva.
+     */
+
+    const INTERVALO_MS = 2 * 60 * 1000; // 2 minutos
+    const TZ = 'America/Sao_Paulo';
+
+    // Horários fixos de publicação (Brasília)
+    const SLOTS = [
+      { hora: 8, tipo: 'Screenshots', sub: 'Imagens do jogo' },
+      { hora: 12, tipo: 'Trechos de trailer', sub: 'Cortes do trailer' },
+      { hora: 14, tipo: 'Screenshots', sub: 'Imagens do jogo' },
+    ];
+
+    // ---------- Utilitários ----------
+
+    function formatarNumero(n) {
+      return new Intl.NumberFormat('pt-BR').format(n || 0);
+    }
+
+    function formatarDataHora(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return new Intl.DateTimeFormat('pt-BR', {
+        timeZone: TZ,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(d);
+    }
+
+    /** Partes de data/hora em Brasília (para cálculos de schedule). */
+    function agoraBrasilia() {
+      const partes = new Intl.DateTimeFormat('en-US', {
+        timeZone: TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }).formatToParts(new Date());
+
+      const get = (tipo) => Number(partes.find((p) => p.type === tipo).value);
+      // hour12:false às vezes devolve "24" à meia-noite em alguns engines
+      let hora = get('hour');
+      if (hora === 24) hora = 0;
+
+      return {
+        ano: get('year'),
+        mes: get('month'),
+        dia: get('day'),
+        hora,
+        minuto: get('minute'),
+        segundo: get('second'),
+      };
+    }
+
+    /**
+     * Monta um Date UTC correspondente a um horário civil em Brasília.
+     * Usa o offset atual de America/Sao_Paulo (sem DST desde 2019 = UTC-3).
+     */
+    function dataBrasilia(ano, mes, dia, hora, minuto = 0, segundo = 0) {
+      const isoLocal = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}T${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}:${String(segundo).padStart(2, '0')}`;
+      // Descobre o offset atual de Brasília em relação a UTC
+      const probe = new Date();
+      const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: TZ,
+        timeZoneName: 'shortOffset',
+        hour: '2-digit',
+      });
+      const tzName = fmt.formatToParts(probe).find((p) => p.type === 'timeZoneName')?.value || 'GMT-3';
+      const m = tzName.match(/GMT([+-])(\d+)(?::(\d+))?/);
+      let offsetMin = -180; // fallback UTC-3
+      if (m) {
+        const sinal = m[1] === '+' ? 1 : -1;
+        offsetMin = sinal * (Number(m[2]) * 60 + Number(m[3] || 0));
+      }
+      // isoLocal é horário de Brasília; converter para UTC: local - offset
+      const comoUtc = new Date(isoLocal + 'Z');
+      return new Date(comoUtc.getTime() - offsetMin * 60 * 1000);
+    }
+
+    function amanhaBrasilia(base) {
+      // Avança 1 dia civil em Brasília
+      const d = dataBrasilia(base.ano, base.mes, base.dia, 12, 0, 0);
+      d.setUTCDate(d.getUTCDate() + 1);
+      const amanha = new Intl.DateTimeFormat('en-CA', {
+        timeZone: TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(d); // YYYY-MM-DD
+      const [ano, mes, dia] = amanha.split('-').map(Number);
+      return { ano, mes, dia };
+    }
+
+    function formatarCountdown(ms) {
+      if (ms <= 0) return 'já passou';
+      const totalMin = Math.floor(ms / 60000);
+      const h = Math.floor(totalMin / 60);
+      const m = totalMin % 60;
+      if (h <= 0) return `faltam ${m} min`;
+      return `faltam ${h}h ${String(m).padStart(2, '0')}min`;
+    }
+
+    function escapar(texto) {
+      return String(texto ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ---------- Próximos slots ----------
+
+    function calcularSlots() {
+      const agora = agoraBrasilia();
+      const agoraMs = Date.now();
+      const amanha = amanhaBrasilia(agora);
+
+      return SLOTS.map((slot) => {
+        let alvo = dataBrasilia(agora.ano, agora.mes, agora.dia, slot.hora, 0, 0);
+        let diaLabel = 'hoje';
+
+        if (alvo.getTime() <= agoraMs) {
+          // Já passou hoje → próximo é amanhã no mesmo horário
+          alvo = dataBrasilia(amanha.ano, amanha.mes, amanha.dia, slot.hora, 0, 0);
+          diaLabel = 'amanhã';
+        }
+
+        const diff = alvo.getTime() - agoraMs;
+        return {
+          ...slot,
+          alvo,
+          diff,
+          diaLabel,
+          horaLabel: `${String(slot.hora).padStart(2, '0')}h`,
+        };
+      });
+    }
+
+    function renderSlots() {
+      const slots = calcularSlots();
+      // O "próximo" é o de menor diff positivo (todos já são futuros após ajuste)
+      const proximoDiff = Math.min(...slots.map((s) => s.diff));
+
+      const el = document.getElementById('slots');
+      el.innerHTML = slots
+        .map((s) => {
+          const isProximo = s.diff === proximoDiff;
+          const classes = ['slot', isProximo ? 'proximo' : ''].filter(Boolean).join(' ');
+          return `
+            <div class="${classes}" data-hora="${s.hora}">
+              <div class="hora">${s.horaLabel}</div>
+              <div>
+                <div class="tipo">${escapar(s.tipo)}</div>
+                <div class="sub">${escapar(s.sub)} · ${s.diaLabel}</div>
+              </div>
+              <div class="countdown">${formatarCountdown(s.diff)}</div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    // ---------- Resumo + vídeos ----------
+
+    function renderResumo(videos) {
+      const el = document.getElementById('resumo');
+      if (!videos.length) {
+        el.innerHTML = '<div class="vazio">Nenhum vídeo no feed ainda.</div>';
+        return;
+      }
+
+      const total = videos.length;
+      const somaViews = videos.reduce((acc, v) => acc + (v.views || 0), 0);
+      const top = videos.reduce((best, v) => ((v.views || 0) > (best.views || 0) ? v : best), videos[0]);
+
+      el.innerHTML = `
+        <div class="stat">
+          <div class="label">Vídeos no feed</div>
+          <div class="valor">${formatarNumero(total)}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Soma de views</div>
+          <div class="valor">${formatarNumero(somaViews)}</div>
+        </div>
+        <div class="stat destaque">
+          <div class="label">Mais views</div>
+          <div class="valor">
+            <span class="views-top">${formatarNumero(top.views)} views</span>
+            · ${escapar(top.titulo)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderVideos(videos) {
+      const el = document.getElementById('videos');
+      if (!videos.length) {
+        el.innerHTML = '<div class="vazio">Nenhum Short encontrado no feed.</div>';
+        return;
+      }
+
+      el.innerHTML = videos
+        .map((v) => {
+          // Sempre abre o Short no YouTube (canal próprio)
+          const link = v.id
+            ? `https://www.youtube.com/shorts/${v.id}`
+            : (v.url || '#');
+          return `
+        <a class="video" href="${escapar(link)}" target="_blank" rel="noopener noreferrer"
+           title="Abrir no YouTube">
+          <img src="${escapar(v.thumbnail)}" alt="" loading="lazy" width="320" height="180" />
+          <div>
+            <div class="titulo">${escapar(v.titulo)}</div>
+            <div class="meta">
+              <span>${formatarDataHora(v.publicado)}</span>
+              <span class="views">${formatarNumero(v.views)} views</span>
+            </div>
+            <span class="abrir-yt">Abrir no YouTube →</span>
+          </div>
+        </a>
+      `;
+        })
+        .join('');
+    }
+
+    // ---------- Status do robô ----------
+
+    function renderRuns(runs) {
+      const el = document.getElementById('runs');
+      if (!runs.length) {
+        el.innerHTML = '<div class="vazio">Nenhuma execução recente do workflow.</div>';
+        return;
+      }
+
+      el.innerHTML = runs
+        .map(
+          (r) => `
+        <div class="run">
+          <div>
+            <div class="quando">${formatarDataHora(r.criadoEm)}</div>
+            <div class="detalhe">${escapar(r.evento || 'workflow')} · ${escapar(r.branch || 'main')}</div>
+          </div>
+          <div class="lado">
+            <span class="badge">${escapar(r.rotulo)}</span>
+            <a class="ver" href="${escapar(r.url)}" target="_blank" rel="noopener noreferrer">ver</a>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+    }
+
+    // ---------- Carregamento ----------
+
+    async function buscarJson(url) {
+      const res = await fetch(url, { headers: { Accept: 'application/json' } });
+      const dados = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(dados.erro || `Erro ${res.status}`);
+      }
+      return dados;
+    }
+
+    function setAtualizacao(texto, ok = true) {
+      const el = document.getElementById('atualizacao');
+      el.innerHTML = ok
+        ? `<span class="pulse" aria-hidden="true"></span>${escapar(texto)}`
+        : escapar(texto);
+    }
+
+    async function carregarTudo() {
+      setAtualizacao('Atualizando…');
+
+      const [videosResult, statusResult] = await Promise.allSettled([
+        buscarJson('/api/videos'),
+        buscarJson('/api/status'),
+      ]);
+
+      let houveErro = false;
+
+      if (videosResult.status === 'fulfilled') {
+        const videos = videosResult.value.videos || [];
+        renderResumo(videos);
+        renderVideos(videos);
+      } else {
+        houveErro = true;
+        document.getElementById('resumo').innerHTML =
+          `<div class="erro">${escapar(videosResult.reason.message)}</div>`;
+        document.getElementById('videos').innerHTML =
+          `<div class="erro">${escapar(videosResult.reason.message)}</div>`;
+      }
+
+      if (statusResult.status === 'fulfilled') {
+        renderRuns(statusResult.value.runs || []);
+      } else {
+        houveErro = true;
+        document.getElementById('runs').innerHTML =
+          `<div class="erro">${escapar(statusResult.reason.message)}</div>`;
+      }
+
+      const agora = formatarDataHora(new Date().toISOString());
+      if (houveErro) {
+        setAtualizacao(`Parcial · ${agora}`, false);
+      } else {
+        setAtualizacao(`Atualizado · ${agora}`);
+      }
+    }
+
+    // Contagem regressiva a cada 30s (leve); dados a cada 2 min
+    renderSlots();
+    setInterval(renderSlots, 30 * 1000);
+    carregarTudo();
+    setInterval(carregarTudo, INTERVALO_MS);
+  </script>
+</body>
+</html>

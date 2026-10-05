@@ -1,0 +1,10 @@
+{
+  "name": "vice-city-diario-painel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Painel visual somente leitura do canal Vice City Diário",
+  "engines": {
+    "node": ">=18"
+  }
+}
