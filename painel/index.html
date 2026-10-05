@@ -7,6 +7,8 @@
   <meta name="description" content="Painel visual do canal Vice City Diário — próximos vídeos, últimos Shorts e status do robô." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="VCD Painel" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/icon.jpg" type="image/jpeg" />
   <link rel="apple-touch-icon" href="/icon.jpg" />
@@ -103,6 +105,81 @@
     .atalhos a:hover {
       color: var(--amarelo);
     }
+
+    /* ===== Banner instalar app (na frente, no topo) ===== */
+    .banner-instalar {
+      display: none;
+      margin-bottom: 16px;
+      padding: 14px;
+      border-radius: var(--raio);
+      border: 1px solid rgba(255, 60, 150, 0.45);
+      background: linear-gradient(135deg, rgba(255, 60, 150, 0.18), rgba(40, 230, 220, 0.1));
+      box-shadow: var(--sombra);
+    }
+
+    .banner-instalar.mostrar {
+      display: block;
+    }
+
+    .banner-instalar .titulo-instalar {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--amarelo);
+      margin-bottom: 4px;
+    }
+
+    .banner-instalar .texto-instalar {
+      font-size: 0.9rem;
+      color: var(--texto-suave);
+      margin-bottom: 12px;
+    }
+
+    .banner-instalar .acoes-instalar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-instalar {
+      flex: 1;
+      min-width: 140px;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--rosa);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-instalar:hover { filter: brightness(1.08); }
+    .btn-instalar:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .btn-instalar-depois {
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--bg-elev);
+      color: var(--texto-suave);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dica-ios {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--ciano);
+      display: none;
+    }
+
+    .dica-ios.mostrar { display: block; }
 
     .logo {
       width: 52px;
@@ -372,6 +449,81 @@
       color: var(--amarelo);
       border: 1px solid rgba(255, 222, 40, 0.35);
     }
+
+    /* Status da produção após disparo */
+    .status-producao {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--bg-elev);
+      display: none;
+    }
+
+    .status-producao.mostrar { display: block; }
+
+    .status-producao .selo-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .selo-status.producao {
+      background: rgba(255, 222, 40, 0.15);
+      color: var(--amarelo);
+    }
+
+    .selo-status.publicado {
+      background: rgba(61, 214, 140, 0.15);
+      color: #3dd68c;
+    }
+
+    .selo-status.falhou {
+      background: rgba(255, 60, 150, 0.12);
+      color: #ff8ab8;
+    }
+
+    .selo-status.atrasado {
+      background: rgba(40, 230, 220, 0.12);
+      color: var(--ciano);
+    }
+
+    .status-producao .countdown-prod {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--texto);
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-producao .tipo-prod {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      margin-bottom: 8px;
+    }
+
+    .status-producao .dica-prod {
+      font-size: 0.85rem;
+      color: var(--texto-suave);
+      margin-bottom: 10px;
+    }
+
+    .status-producao .link-prod {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font-weight: 700;
+      color: var(--ciano);
+    }
+
+    .status-producao .link-prod[hidden] { display: none !important; }
 
     /* Modal senha (disparo) */
     .modal-senha {
@@ -931,7 +1083,23 @@
 
     <nav class="atalhos" aria-label="Navegação do painel">
       <a href="/sugestoes.html">Sugestões de vídeo</a>
+      <a href="#instalar-app" id="atalho-instalar">Baixar no celular</a>
     </nav>
+
+    <!-- Mensagem na frente: baixar / instalar o app -->
+    <aside id="instalar-app" class="banner-instalar" role="region" aria-label="Instalar aplicativo">
+      <div class="titulo-instalar">Baixar no celular</div>
+      <p class="texto-instalar" id="texto-instalar">
+        Instale o painel na tela inicial e abra como um aplicativo.
+      </p>
+      <div class="acoes-instalar">
+        <button type="button" class="btn-instalar" id="btn-instalar-app">Instalar agora</button>
+        <button type="button" class="btn-instalar-depois" id="btn-instalar-depois">Agora não</button>
+      </div>
+      <p class="dica-ios" id="dica-ios">
+        No iPhone: toque em Compartilhar → <strong>Adicionar à Tela de Início</strong>.
+      </p>
+    </aside>
 
     <div class="meta-linha">
       <span class="pill" id="atualizacao">
@@ -979,6 +1147,16 @@
               </button>
             </div>
             <div id="msg-acao" class="msg-acao" role="status" aria-live="polite"></div>
+            <!-- Acompanhar produção (sem GitHub) -->
+            <div id="status-producao" class="status-producao" aria-live="polite">
+              <div class="selo-status producao" id="selo-status">Em produção</div>
+              <div class="countdown-prod" id="countdown-prod">Faltam ~20 min</div>
+              <div class="tipo-prod" id="tipo-prod"></div>
+              <p class="dica-prod" id="dica-prod">
+                O Short costuma aparecer no canal depois.
+              </p>
+              <a class="link-prod" id="link-prod" href="#" hidden>Assistir o Short →</a>
+            </div>
           </div>
         </section>
 
@@ -1400,6 +1578,7 @@
         const videos = videosResult.value.videos || [];
         renderResumo(videos);
         renderVideos(videos);
+        renderStatusProducao(videos);
       } else {
         houveErro = true;
         document.getElementById('resumo').innerHTML =
@@ -1434,7 +1613,10 @@
 
     const CHAVE_SENHA = 'vcd_painel_senha';
     const CHAVE_COOLDOWN = 'vcd_rodar_cooldown'; // { screenshots: ts, trailer: ts }
+    const CHAVE_PRODUCAO = 'vcd_producao_ativa';
     const COOLDOWN_MS_UI = 30 * 60 * 1000;
+    const ESTIMATIVA_MS = 20 * 60 * 1000; // ~20 min até o Short
+    const LIMITE_ESPERA_MS = 45 * 60 * 1000; // depois disso: demorou demais
 
     function lerCooldownLocal() {
       try {
@@ -1458,6 +1640,155 @@
       const map = lerCooldownLocal();
       const ts = Number(map[tipo] || 0);
       return Math.max(0, COOLDOWN_MS_UI - (Date.now() - ts));
+    }
+
+    function lerProducao() {
+      try {
+        return JSON.parse(localStorage.getItem(CHAVE_PRODUCAO) || 'null');
+      } catch {
+        return null;
+      }
+    }
+
+    function salvarProducao(estado) {
+      try {
+        if (!estado) localStorage.removeItem(CHAVE_PRODUCAO);
+        else localStorage.setItem(CHAVE_PRODUCAO, JSON.stringify(estado));
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function idsDoFeed(videos) {
+      return (videos || []).map((v) => v.id).filter(Boolean);
+    }
+
+    function rotuloTipo(tipo) {
+      return tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+    }
+
+    function formatarFaltaEstimativa(ms) {
+      if (ms <= 0) return 'Passou da estimativa';
+      const totalMin = Math.max(1, Math.ceil(ms / 60000));
+      if (totalMin >= 60) {
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        return m ? `Faltam ~${h}h ${m}min` : `Faltam ~${h}h`;
+      }
+      return `Faltam ~${totalMin} min`;
+    }
+
+    /**
+     * Atualiza o cartão de status: Em produção / Publicado / Falhou / Atrasado.
+     * Publicado = apareceu um Short novo no feed que não existia no disparo.
+     */
+    function renderStatusProducao(videosFeed) {
+      const box = document.getElementById('status-producao');
+      const selo = document.getElementById('selo-status');
+      const countdown = document.getElementById('countdown-prod');
+      const tipoEl = document.getElementById('tipo-prod');
+      const dica = document.getElementById('dica-prod');
+      const link = document.getElementById('link-prod');
+
+      let estado = lerProducao();
+      if (!estado) {
+        box.classList.remove('mostrar');
+        return;
+      }
+
+      const agora = Date.now();
+      const decorrido = agora - Number(estado.iniciadoEm || 0);
+      const idsAntes = new Set(estado.idsAntes || []);
+      const videos = videosFeed || window.__videosPainel || [];
+
+      // Detecta Short novo no feed
+      if (estado.status === 'producao' || estado.status === 'atrasado') {
+        const novo = videos.find((v) => v.id && !idsAntes.has(v.id));
+        if (novo) {
+          estado = {
+            ...estado,
+            status: 'publicado',
+            video: {
+              id: novo.id,
+              titulo: novo.titulo,
+              url: `https://www.youtube.com/shorts/${novo.id}`,
+            },
+          };
+          salvarProducao(estado);
+        } else if (decorrido >= LIMITE_ESPERA_MS) {
+          estado = { ...estado, status: 'falhou' };
+          salvarProducao(estado);
+        } else if (decorrido >= ESTIMATIVA_MS) {
+          estado = { ...estado, status: 'atrasado' };
+          salvarProducao(estado);
+        }
+      }
+
+      box.classList.add('mostrar');
+      tipoEl.textContent = `Tipo: ${rotuloTipo(estado.tipo)}`;
+      link.hidden = true;
+
+      if (estado.status === 'publicado' && estado.video) {
+        selo.className = 'selo-status publicado';
+        selo.textContent = 'Publicado';
+        countdown.textContent = 'Short no ar!';
+        dica.textContent = estado.video.titulo || 'O vídeo já está no canal.';
+        link.hidden = false;
+        link.href = estado.video.url;
+        link.textContent = 'Assistir o Short →';
+        link.onclick = (ev) => {
+          // Abre no player do app se possível
+          const v = (window.__videosPainel || []).find((x) => x.id === estado.video.id);
+          if (v && typeof abrirPlayer === 'function') {
+            ev.preventDefault();
+            abrirPlayer(v);
+          }
+        };
+        return;
+      }
+
+      if (estado.status === 'falhou') {
+        selo.className = 'selo-status falhou';
+        if (estado.motivo === 'disparo') {
+          selo.textContent = 'Falhou';
+          countdown.textContent = 'Não foi possível disparar';
+          dica.textContent = 'Tente de novo em instantes.';
+        } else {
+          selo.textContent = 'Demorou demais';
+          countdown.textContent = 'Sem vídeo novo no feed';
+          dica.textContent =
+            'Passou de ~45 min e o Short ainda não apareceu. Confira a rotina ou tente de novo mais tarde.';
+        }
+        return;
+      }
+
+      if (estado.status === 'atrasado') {
+        selo.className = 'selo-status atrasado';
+        selo.textContent = 'Ainda em produção';
+        countdown.textContent = 'Passou da estimativa de 20 min';
+        dica.textContent =
+          'O Short costuma aparecer no canal depois. Continuamos olhando o feed…';
+        return;
+      }
+
+      // Em produção (dentro dos 20 min)
+      const falta = ESTIMATIVA_MS - decorrido;
+      selo.className = 'selo-status producao';
+      selo.textContent = 'Em produção';
+      countdown.textContent = formatarFaltaEstimativa(falta);
+      dica.textContent = 'O Short costuma aparecer no canal depois.';
+    }
+
+    function iniciarProducao(tipo) {
+      const idsAntes = idsDoFeed(window.__videosPainel || []);
+      salvarProducao({
+        tipo,
+        iniciadoEm: Date.now(),
+        idsAntes,
+        status: 'producao',
+        video: null,
+      });
+      renderStatusProducao(window.__videosPainel || []);
     }
 
     function mostrarMsgAcao(texto, classe) {
@@ -1584,7 +1915,6 @@
         }
 
         if (res.status === 429) {
-          // Servidor ainda em cooldown — alinha o navegador
           marcarCooldownLocal(tipo);
           mostrarMsgAcao(dados.erro || 'Aguarde antes de disparar de novo.', 'info');
           atualizarBotoesRodar();
@@ -1593,11 +1923,30 @@
 
         if (!res.ok || !dados.ok) {
           mostrarMsgAcao(dados.erro || 'Erro ao disparar a rotina.', 'erro');
+          // Marca falha no cartão de status
+          salvarProducao({
+            tipo,
+            iniciadoEm: Date.now(),
+            idsAntes: idsDoFeed(window.__videosPainel || []),
+            status: 'falhou',
+            video: null,
+            motivo: 'disparo',
+          });
+          const selo = document.getElementById('selo-status');
+          document.getElementById('status-producao').classList.add('mostrar');
+          selo.className = 'selo-status falhou';
+          selo.textContent = 'Falhou';
+          document.getElementById('countdown-prod').textContent = 'Não foi possível disparar';
+          document.getElementById('tipo-prod').textContent = `Tipo: ${rotuloTipo(tipo)}`;
+          document.getElementById('dica-prod').textContent =
+            dados.erro || 'Tente de novo em instantes.';
+          document.getElementById('link-prod').hidden = true;
           atualizarBotoesRodar();
           return;
         }
 
         marcarCooldownLocal(tipo);
+        iniciarProducao(tipo);
         mostrarMsgAcao(
           dados.mensagem || 'Vídeo em produção! Fica pronto em ~20 min.',
           'ok'
@@ -1618,6 +1967,123 @@
 
     atualizarBotoesRodar();
     setInterval(atualizarBotoesRodar, 30 * 1000);
+    renderStatusProducao();
+    setInterval(() => renderStatusProducao(window.__videosPainel || []), 30 * 1000);
+
+    // ---------- Instalar app no celular (PWA) ----------
+
+    const CHAVE_INSTALAR = 'vcd_instalar_oculto_ate';
+    let deferredInstall = null;
+
+    function jaEstaInstalado() {
+      return (
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true
+      );
+    }
+
+    function isIos() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    function deveMostrarBanner() {
+      if (jaEstaInstalado()) return false;
+      try {
+        const ate = Number(localStorage.getItem(CHAVE_INSTALAR) || 0);
+        if (ate && Date.now() < ate) return false;
+      } catch {
+        /* ignore */
+      }
+      return true;
+    }
+
+    function mostrarBannerInstalar(forcar) {
+      const banner = document.getElementById('instalar-app');
+      if (!forcar && !deveMostrarBanner()) {
+        banner.classList.remove('mostrar');
+        return;
+      }
+      banner.classList.add('mostrar');
+      if (isIos()) {
+        document.getElementById('dica-ios').classList.add('mostrar');
+        document.getElementById('texto-instalar').textContent =
+          'No iPhone, use o menu do Safari para adicionar à tela inicial.';
+      }
+    }
+
+    function ocultarBannerPorDias(dias) {
+      try {
+        localStorage.setItem(
+          CHAVE_INSTALAR,
+          String(Date.now() + dias * 24 * 60 * 60 * 1000)
+        );
+      } catch {
+        /* ignore */
+      }
+      document.getElementById('instalar-app').classList.remove('mostrar');
+    }
+
+    // Chrome/Android: evento nativo de instalação
+    window.addEventListener('beforeinstallprompt', (ev) => {
+      ev.preventDefault();
+      deferredInstall = ev;
+      mostrarBannerInstalar(false);
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstall = null;
+      ocultarBannerPorDias(365);
+    });
+
+    document.getElementById('btn-instalar-app').addEventListener('click', async () => {
+      if (deferredInstall) {
+        deferredInstall.prompt();
+        const escolha = await deferredInstall.userChoice.catch(() => null);
+        deferredInstall = null;
+        if (escolha && escolha.outcome === 'accepted') {
+          ocultarBannerPorDias(365);
+        }
+        return;
+      }
+      // Sem prompt nativo: mostra dica (iOS ou navegador sem suporte)
+      document.getElementById('dica-ios').classList.add('mostrar');
+      if (isIos()) {
+        document.getElementById('texto-instalar').textContent =
+          'Toque em Compartilhar e depois em Adicionar à Tela de Início.';
+      } else {
+        document.getElementById('texto-instalar').textContent =
+          'No menu do navegador (⋮), escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.';
+        document.getElementById('dica-ios').textContent =
+          'Abra este link no Chrome do celular para instalar com um toque.';
+      }
+      mostrarBannerInstalar(true);
+    });
+
+    document.getElementById('btn-instalar-depois').addEventListener('click', () => {
+      ocultarBannerPorDias(7);
+    });
+
+    document.getElementById('atalho-instalar').addEventListener('click', (ev) => {
+      ev.preventDefault();
+      mostrarBannerInstalar(true);
+      document.getElementById('instalar-app').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // iOS / primeira visita: mostra o card na frente
+    if (deveMostrarBanner()) {
+      mostrarBannerInstalar(false);
+      // Se não veio beforeinstallprompt em 1,5s, mostra mesmo assim (com dica)
+      setTimeout(() => {
+        if (deveMostrarBanner()) mostrarBannerInstalar(false);
+      }, 1500);
+    }
+
+    // Registra o service worker (ajuda o Chrome a liberar “Instalar”)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch((err) => {
+        console.warn('SW não registrado', err);
+      });
+    }
   </script>
 </body>
 </html>
