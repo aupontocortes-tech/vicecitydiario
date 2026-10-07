@@ -88,7 +88,8 @@ def main():
         dur = bounds[i + 1] - bounds[i]; cw = min(iw, int(ih * 9 / 16)); cw -= cw % 2
         x = int((iw - cw) * float(sc.get('focus', 0.5)))
         z = 1.06  # leve zoom-in durante a cena
-        vf = (f"crop={cw}:{ih}:{x}:0,scale={W}:{H},"
+        sl = float(sc.get('slow', 1))
+        vf = (f"setpts={sl}*PTS,fps={FPS},crop={cw}:{ih}:{x}:0,scale={W}:{H},"
               f"zoompan=z='1+({z}-1)*on/({dur}*{FPS})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},setsar=1")
         o = os.path.join(out, f'part{i:02d}.mp4')
         run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', str(sc['start']), '-i', p, '-t', f'{dur:.3f}', '-an', '-vf', vf,
