@@ -328,6 +328,33 @@
       box-shadow: 0 0 0 1px rgba(255, 60, 150, 0.35), 0 0 24px rgba(255, 60, 150, 0.15);
     }
 
+    .slot.pausado {
+      opacity: 0.72;
+      border-color: rgba(185, 174, 201, 0.35);
+    }
+
+    .slot .btn-pausa {
+      grid-column: 1 / -1;
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--borda);
+      background: var(--bg-card);
+      color: var(--amarelo);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .slot.pausado .btn-pausa {
+      color: var(--ciano);
+    }
+
+    .slot .btn-pausa:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
     .slot .hora {
       font-size: 1.4rem;
       font-weight: 800;
@@ -1169,6 +1196,7 @@
             O vídeo costuma ficar pronto uns <strong>20 min</strong> depois do horário.
           </p>
           <div class="slots" id="slots"></div>
+          <div id="msg-pausa" class="msg-acao" role="status" aria-live="polite"></div>
         </section>
 
         <!-- Fazer vídeo agora (dispara rotina Claude Code) -->
@@ -1388,6 +1416,16 @@
         .replace(/"/g, '&quot;');
     }
 
+    // Horários pausados (vêm de CONFIG_CANAL.md via /api/config)
+    let pausasAtivas = new Set();
+
+    function mostrarMsgPausa(texto, classe) {
+      const el = document.getElementById('msg-pausa');
+      if (!el) return;
+      el.textContent = texto;
+      el.className = 'msg-acao mostrar ' + classe;
+    }
+
     // ---------- Próximos slots ----------
 
     function calcularSlots() {
@@ -1424,21 +1462,74 @@
       const el = document.getElementById('slots');
       el.innerHTML = slots
         .map((s) => {
-          const isProximo = s.diff === proximoDiff;
-          const classes = ['slot', isProximo ? 'proximo' : ''].filter(Boolean).join(' ');
+          const pausado = pausasAtivas.has(s.horaLabel);
+          const isProximo = !pausado && s.diff === proximoDiff;
+          const classes = ['slot', isProximo ? 'proximo' : '', pausado ? 'pausado' : '']
+            .filter(Boolean)
+            .join(' ');
+          const extra = pausado ? ' · pausado' : '';
           return `
             <div class="${classes}" data-hora="${s.hora}">
               <div class="hora">${s.horaLabel}</div>
               <div>
                 <div class="tipo">${escapar(s.tipo)}</div>
-                <div class="sub">${escapar(s.sub)} · ${s.diaLabel}</div>
+                <div class="sub">${escapar(s.sub)} · ${s.diaLabel}${extra}</div>
               </div>
-              <div class="countdown">${formatarCountdown(s.diff)}</div>
+              <div class="countdown">${pausado ? 'não publica' : formatarCountdown(s.diff)}</div>
+              <button type="button" class="btn-pausa" data-pausa="${s.horaLabel}">
+                ${pausado ? 'Despausar' : 'Pausar'}
+              </button>
             </div>
           `;
         })
         .join('');
     }
+
+    document.getElementById('slots').addEventListener('click', async (ev) => {
+      const btn = ev.target.closest('[data-pausa]');
+      if (!btn || btn.disabled) return;
+      const horario = btn.getAttribute('data-pausa');
+      const pausado = pausasAtivas.has(horario);
+      const senha = await pedirSenhaDisparo(
+        null,
+        pausado
+          ? `Despausar ${horario}? O Claude volta a publicar esse horário.`
+          : `Pausar ${horario}? O Claude não publica esse horário até você despausar.`
+      );
+      if (!senha) return;
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tipo: 'pausa',
+            acao: pausado ? 'despausar' : 'pausar',
+            horario,
+            senha,
+          }),
+        });
+        const dados = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          salvarSenhaLocal('', false);
+          mostrarMsgPausa('Senha errada', 'erro');
+          return;
+        }
+        if (!res.ok) {
+          mostrarMsgPausa(dados.erro || 'Erro ao salvar', 'erro');
+          return;
+        }
+        pausasAtivas = new Set(dados.pausas || []);
+        renderSlots();
+        mostrarMsgPausa(dados.mensagem || 'Salvo!', 'ok');
+      } catch {
+        mostrarMsgPausa('Erro ao salvar', 'erro');
+      }
+    });
 
     // ---------- Resumo + vídeos ----------
 
@@ -1623,10 +1714,16 @@
     async function carregarTudo() {
       setAtualizacao('Atualizando…');
 
-      const [videosResult, statusResult] = await Promise.allSettled([
+      const [videosResult, statusResult, configResult] = await Promise.allSettled([
         buscarJson('/api/videos'),
         buscarJson('/api/status'),
+        buscarJson('/api/config'),
       ]);
+
+      if (configResult.status === 'fulfilled') {
+        pausasAtivas = new Set(configResult.value.pausas || []);
+        renderSlots();
+      }
 
       let houveErro = false;
 
@@ -1889,14 +1986,18 @@
     }
 
     /** Pedir senha + confirmação de gasto do plano. */
-    function pedirSenhaDisparo(tipo) {
+    function pedirSenhaDisparo(tipo, subtituloCustom) {
       return new Promise((resolve) => {
         const modal = document.getElementById('modal-senha-rodar');
         const input = document.getElementById('campo-senha-rodar');
         const lembrar = document.getElementById('lembrar-senha-rodar');
         const nome = tipo === 'trailer' ? 'Trailer' : 'Screenshots';
-        document.getElementById('modal-senha-sub').textContent =
-          `Isso gasta uso do seu plano Claude. Fazer um vídeo extra de ${nome} agora?`;
+        document.getElementById('modal-senha-titulo').textContent = subtituloCustom
+          ? 'Confirmar'
+          : 'Confirmar disparo';
+        document.getElementById('btn-senha-ok').textContent = subtituloCustom ? 'Confirmar' : 'Disparar';
+        document.getElementById('modal-senha-sub').textContent = subtituloCustom
+          || `Isso gasta uso do seu plano Claude. Fazer um vídeo extra de ${nome} agora?`;
 
         const salva = lerSenhaSalva();
         input.value = salva;

@@ -14,6 +14,8 @@ const CONTENTS_URL =
   `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
 
 const SECAO_SUGESTOES = 'SUGESTÕES DE VÍDEO';
+const SECAO_PAUSAS = 'PAUSAS';
+const HORARIOS_PAUSA = ['08h', '12h', '14h'];
 const LIMITE_ITEM = 300;
 
 /** Markdown inicial se o arquivo ainda não existir no repositório. */
@@ -36,6 +38,8 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## OPINIÕES DO THIAGO
 
 ## ${SECAO_SUGESTOES}
+
+## ${SECAO_PAUSAS}
 `;
 
 function headersGithub(token, extra = {}) {
@@ -296,6 +300,9 @@ function montarRespostaLeitura(texto, sha) {
   const { secoes, ordem } = parseMarkdown(texto);
   const brutos = secoes[SECAO_SUGESTOES] || [];
   const sugestoes = brutos.map((b, i) => parseSugestao(b, i));
+  const pausas = (secoes[SECAO_PAUSAS] || [])
+    .map((item) => String(item).trim().toLowerCase())
+    .filter((item) => HORARIOS_PAUSA.includes(item));
 
   // Seções “normais” (sem o conteúdo bruto das sugestões tipado)
   const secoesLimpas = {};
@@ -310,6 +317,7 @@ function montarRespostaLeitura(texto, sha) {
     secoes: secoesLimpas,
     ordemSecoes: ordem.filter((n) => n !== SECAO_SUGESTOES),
     sugestoes,
+    pausas,
   };
 }
 
@@ -359,6 +367,43 @@ export default async function handler(req, res) {
 
     if (!senhaCorreta(body.senha, senhaEnv)) {
       return responderJson(res, 401, { erro: 'Senha errada' });
+    }
+
+    // ========== Pausar horário (08h, 12h, 14h) ==========
+    if (body.tipo === 'pausa') {
+      const horario = String(body.horario || '').trim().toLowerCase();
+      const acaoPausa = body.acao;
+      if (!HORARIOS_PAUSA.includes(horario)) {
+        return responderJson(res, 400, { erro: 'Horário inválido.' });
+      }
+      if (acaoPausa !== 'pausar' && acaoPausa !== 'despausar') {
+        return responderJson(res, 400, { erro: 'Ação inválida.' });
+      }
+
+      await lerMutarGravar(
+        token,
+        (textoBase) => {
+          const atuais = (itensDaSecao(textoBase, SECAO_PAUSAS) || [])
+            .map((item) => String(item).trim().toLowerCase())
+            .filter((item) => HORARIOS_PAUSA.includes(item));
+          const conjunto = new Set(atuais);
+          if (acaoPausa === 'pausar') conjunto.add(horario);
+          else conjunto.delete(horario);
+          const linhas = HORARIOS_PAUSA.filter((h) => conjunto.has(h)).map((h) => `- ${h}`);
+          return aplicarItensNaSecao(textoBase, SECAO_PAUSAS, linhas);
+        },
+        `Painel: ${acaoPausa} ${horario}`
+      );
+
+      const depois = await lerArquivo(token);
+      const leitura = depois
+        ? montarRespostaLeitura(depois.texto, depois.sha)
+        : montarRespostaLeitura(ARQUIVO_INICIAL, null);
+      return responderJson(res, 200, {
+        ok: true,
+        mensagem: acaoPausa === 'pausar' ? `${horario} pausado.` : `${horario} despausado.`,
+        ...leitura,
+      });
     }
 
     const acao = body.acao;

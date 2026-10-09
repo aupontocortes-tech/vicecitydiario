@@ -7,6 +7,16 @@ PREPARO:
 - A autorização do YouTube está na variável de ambiente YT_TOKEN_JSON (yt.py usa sozinho). Nunca mostre o valor.
 - Histórico de assuntos: liste os últimos 30 vídeos do canal pela API (yt.py ou videos/search com mine=True) e NÃO repita assunto.
 
+PAUSA (faça isto ANTES de pesquisar, gravar ou publicar):
+- Depois do git clone, abra o arquivo CONFIG_CANAL.md na raiz.
+- Leia a seção "## PAUSAS". Uma linha "- 08h", "- 12h" ou "- 14h" significa que aquele horário está pausado.
+- Veja a hora atual em America/Sao_Paulo e descubra qual horário é esta execução:
+  - 07:00–10:59 → 08h (screenshots)
+  - 11:00–13:29 → 12h (trechos de trailer)
+  - 13:30–16:59 → 14h (screenshots)
+- Se a linha desse horário existir em PAUSAS, PARE. Não pesquise, não renderize e não publique. Responda só: "Pausado pelo painel (08h)." (trocando pelo horário certo).
+- Se a linha não existir, siga o fluxo normal.
+
 FLUXO:
 1. Pesquise novidades de GTA 6 (Rockstar primeiro). Separe oficial / confirmado / rumor. Nunca invente, nunca use vazamentos.
 2. Escolha 1 assunto novo. Alterne notícia x curiosidade/personagem/local. Séries: "Quem é...?" (Cal, Boobie, Dre'Quan, Real Dimez, Raul, Brian — textos em https://www.rockstargames.com/VI/only-in-leonida/<nome>) e locais de Leonida.
