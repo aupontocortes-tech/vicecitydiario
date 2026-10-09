@@ -862,11 +862,53 @@
       overflow: hidden;
     }
 
-    /* ===== Status do robô ===== */
+    /* ===== Status do robô (fechado até tocar) ===== */
+    .btn-secao {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      background: var(--bg-card);
+      color: var(--amarelo);
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .btn-secao:hover {
+      border-color: rgba(255, 222, 40, 0.45);
+    }
+
+    .btn-secao:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .btn-secao-acao {
+      letter-spacing: 0.04em;
+      color: var(--ciano);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
     .runs {
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-top: 12px;
+    }
+
+    .runs[hidden] {
+      display: none !important;
     }
 
     .run {
@@ -1160,10 +1202,14 @@
           </div>
         </section>
 
-        <!-- 4. Status do robô -->
+        <!-- 4. Status do robô: fechado no início para não ocupar o celular -->
         <section aria-labelledby="titulo-robo">
-          <h2 id="titulo-robo">Status do robô</h2>
-          <div class="runs" id="runs">
+          <button type="button" class="btn-secao" id="btn-robo"
+            aria-expanded="false" aria-controls="runs">
+            <span id="titulo-robo">Status do robô</span>
+            <span class="btn-secao-acao" id="btn-robo-acao">abrir</span>
+          </button>
+          <div class="runs" id="runs" hidden>
             <div class="loading">Carregando…</div>
           </div>
         </section>
@@ -1517,6 +1563,16 @@
 
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') fecharPlayer();
+    });
+
+    // Abre ou fecha a lista do robô (começa fechada)
+    document.getElementById('btn-robo').addEventListener('click', () => {
+      const lista = document.getElementById('runs');
+      const btn = document.getElementById('btn-robo');
+      const abrir = lista.hidden;
+      lista.hidden = !abrir;
+      btn.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      document.getElementById('btn-robo-acao').textContent = abrir ? 'fechar' : 'abrir';
     });
 
     // ---------- Status do robô ----------

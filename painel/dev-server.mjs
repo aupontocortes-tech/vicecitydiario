@@ -115,7 +115,8 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+// 0.0.0.0 para o celular na mesma Wi-Fi abrir pelo IP do computador
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Painel local em http://localhost:${PORT}`);
   if (!process.env.GITHUB_TOKEN || !process.env.SENHA_PAINEL) {
     console.log('Aviso: defina GITHUB_TOKEN e SENHA_PAINEL para testar /api/config');
