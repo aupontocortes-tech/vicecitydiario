@@ -22,3 +22,4 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 - [x] GTA vai ter conteúdo mais 18 com senas de sexo ? Verifica nas fontes mas não pos algo que vai violar alguma diretrizes (06/10/2026)
 
 ## PAUSAS
+- 12h
