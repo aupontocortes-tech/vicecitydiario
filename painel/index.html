@@ -242,18 +242,14 @@
       width: 52px;
       height: 52px;
       border-radius: 50%;
+      object-fit: cover;
       flex-shrink: 0;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      color: #120a1f;
-      background: #28e6dc;
+      background: #000;
       box-shadow: 0 0 16px rgba(40, 230, 220, 0.55);
     }
 
     body.canal-nv .logo { display: none; }
-    body.canal-nv .logo-sigla { display: flex; }
+    body.canal-nv .logo-sigla { display: block; }
     body.canal-nv .brand h1 { color: #28e6dc; }
     body.canal-nv .btn-canal[aria-pressed="true"] {
       background: #28e6dc;
@@ -1247,7 +1243,7 @@
 
     <header class="app-header">
       <img class="logo" id="logo-canal" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
-      <span class="logo-sigla" id="logo-sigla" aria-hidden="true">NV</span>
+      <img class="logo-sigla" id="logo-sigla" src="/icon-nv.jpg" width="52" height="52" alt="Nunca Visto" />
       <div class="brand">
         <h1 id="titulo-canal">Vice City Diário</h1>
         <p id="subtitulo-canal">Painel do canal · só leitura</p>
