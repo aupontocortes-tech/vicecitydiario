@@ -716,6 +716,34 @@
       font-weight: 700;
     }
 
+    .btn-ver-mais {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid rgba(40, 230, 220, 0.45);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--ciano);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-ver-mais:hover {
+      background: rgba(40, 230, 220, 0.08);
+    }
+
+    .btn-ver-mais:focus-visible {
+      outline: 2px solid var(--ciano);
+      outline-offset: 2px;
+    }
+
+    .btn-ver-mais[hidden] {
+      display: none;
+    }
+
     .video .abrir-yt {
       display: inline-block;
       margin-top: 8px;
@@ -1250,6 +1278,7 @@
           <div class="videos" id="videos">
             <div class="loading">Carregando…</div>
           </div>
+          <button type="button" class="btn-ver-mais" id="btn-ver-mais" hidden>Ver mais</button>
         </section>
       </div>
     </div>
@@ -1567,17 +1596,25 @@
       `;
     }
 
+    // Só 5 Shorts à vista; o restante abre em "Ver mais"
+    const LIMITE_VIDEOS = 5;
+    let videosExpandidos = false;
+
     function renderVideos(videos) {
       const el = document.getElementById('videos');
+      const btnMais = document.getElementById('btn-ver-mais');
       if (!videos.length) {
         el.innerHTML = '<div class="vazio">Nenhum Short encontrado no feed.</div>';
+        if (btnMais) btnMais.hidden = true;
         return;
       }
 
       // Guarda lista para o player embutido
       window.__videosPainel = videos;
 
-      el.innerHTML = videos
+      const visiveis = videosExpandidos ? videos : videos.slice(0, LIMITE_VIDEOS);
+
+      el.innerHTML = visiveis
         .map((v) => `
         <button type="button" class="video" data-id="${escapar(v.id)}"
            title="Assistir neste app">
@@ -1593,7 +1630,19 @@
         </button>
       `)
         .join('');
+
+      if (btnMais) {
+        const temMais = videos.length > LIMITE_VIDEOS;
+        btnMais.hidden = !temMais;
+        btnMais.textContent = videosExpandidos ? 'Ver menos' : 'Ver mais';
+        btnMais.setAttribute('aria-expanded', videosExpandidos ? 'true' : 'false');
+      }
     }
+
+    document.getElementById('btn-ver-mais').addEventListener('click', () => {
+      videosExpandidos = !videosExpandidos;
+      renderVideos(window.__videosPainel || []);
+    });
 
     // ---------- Player embutido ----------
 
