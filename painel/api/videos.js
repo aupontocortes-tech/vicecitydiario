@@ -4,8 +4,7 @@
  * Cache na edge da Vercel para não estourar o YouTube.
  */
 
-const CHANNEL_ID = 'UCF-LmLBkuqN8Qz9Bf0rWolA';
-const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+import { obterCanal } from './canais.js';
 
 /** Extrai o conteúdo de uma tag simples (sem aninhamento). */
 function tag(xml, name) {
@@ -95,7 +94,7 @@ function parseViewsPt(texto) {
  * Views atuais de todos os Shorts do canal.
  * O feed Atom só traz 15 vídeos e as views dele ficam desatualizadas.
  */
-async function buscarViewsAoVivo() {
+async function buscarViewsAoVivo(channelId) {
   const resposta = await fetch('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', {
     method: 'POST',
     headers: {
@@ -112,7 +111,7 @@ async function buscarViewsAoVivo() {
           gl: 'BR',
         },
       },
-      browseId: CHANNEL_ID,
+      browseId: channelId,
       params: 'EgZzaG9ydHPyBgUKA5oBAA%3D%3D',
     }),
     signal: AbortSignal.timeout(8000),
@@ -147,8 +146,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ erro: 'Método não permitido' });
   }
 
+  const canal = obterCanal(req);
+
   try {
-    const resposta = await fetch(FEED_URL, {
+    const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${canal.channelId}`;
+    const resposta = await fetch(feedUrl, {
       headers: {
         'User-Agent': 'ViceCityDiarioPainel/1.0 (+https://vercel.app)',
         Accept: 'application/atom+xml, application/xml, text/xml',
@@ -167,7 +169,7 @@ export default async function handler(req, res) {
     let destaque = null;
 
     try {
-      const aoVivo = await buscarViewsAoVivo();
+      const aoVivo = await buscarViewsAoVivo(canal.channelId);
       if (aoVivo.size) {
         const ids = new Set();
         somaViews = 0;
@@ -196,7 +198,8 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       atualizadoEm: new Date().toISOString(),
-      canalId: CHANNEL_ID,
+      canal: canal.id,
+      canalId: canal.channelId,
       total: videos.length,
       totalShorts,
       somaViews,

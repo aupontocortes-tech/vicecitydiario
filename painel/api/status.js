@@ -4,11 +4,9 @@
  * Usa GITHUB_TOKEN (opcional) se o repositório for privado ou para mais cota.
  */
 
-const OWNER = 'aupontocortes-tech';
-const REPO = 'vicecitydiario';
+import { OWNER, obterCanal } from './canais.js';
+
 const WORKFLOW = 'publicar.yml';
-const RUNS_URL =
-  `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW}/runs?per_page=8`;
 
 /** Traduz conclusion/status da API do GitHub para o painel. */
 function traduzirStatus(run) {
@@ -31,6 +29,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ erro: 'Método não permitido' });
   }
 
+  const canal = obterCanal(req);
+  const runsUrl =
+    `https://api.github.com/repos/${OWNER}/${canal.repo}/actions/workflows/${WORKFLOW}/runs?per_page=8`;
+
   try {
     const headers = {
       Accept: 'application/vnd.github+json',
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const resposta = await fetch(RUNS_URL, { headers });
+    const resposta = await fetch(runsUrl, { headers });
 
     if (!resposta.ok) {
       const detalhe = await resposta.text().catch(() => '');
@@ -73,8 +75,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       atualizadoEm: new Date().toISOString(),
+      canal: canal.id,
       workflow: WORKFLOW,
-      repositorio: `${OWNER}/${REPO}`,
+      repositorio: `${OWNER}/${canal.repo}`,
       runs,
     });
   } catch (err) {
