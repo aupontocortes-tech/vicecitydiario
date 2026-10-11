@@ -1533,24 +1533,28 @@
 
     // ---------- Resumo + vídeos ----------
 
-    function renderResumo(videos) {
+    function renderResumo(videos, extra) {
       const el = document.getElementById('resumo');
       if (!videos.length) {
         el.innerHTML = '<div class="vazio">Nenhum vídeo no feed ainda.</div>';
         return;
       }
 
-      const total = videos.length;
-      const somaViews = videos.reduce((acc, v) => acc + (v.views || 0), 0);
-      const top = videos.reduce((best, v) => ((v.views || 0) > (best.views || 0) ? v : best), videos[0]);
+      const total = extra?.totalShorts || videos.length;
+      const somaViews = Number.isFinite(extra?.somaViews)
+        ? extra.somaViews
+        : videos.reduce((acc, v) => acc + (v.views || 0), 0);
+      const top = extra?.destaque?.titulo
+        ? extra.destaque
+        : videos.reduce((best, v) => ((v.views || 0) > (best.views || 0) ? v : best), videos[0]);
 
       el.innerHTML = `
         <div class="stat">
-          <div class="label">Vídeos no feed</div>
+          <div class="label">Shorts do canal</div>
           <div class="valor">${formatarNumero(total)}</div>
         </div>
         <div class="stat">
-          <div class="label">Soma de views</div>
+          <div class="label">Views do canal</div>
           <div class="valor">${formatarNumero(somaViews)}</div>
         </div>
         <div class="stat destaque">
@@ -1729,7 +1733,7 @@
 
       if (videosResult.status === 'fulfilled') {
         const videos = videosResult.value.videos || [];
-        renderResumo(videos);
+        renderResumo(videos, videosResult.value);
         renderVideos(videos);
         renderStatusProducao(videos);
       } else {

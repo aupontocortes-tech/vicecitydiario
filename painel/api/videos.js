@@ -59,6 +59,87 @@ function parseEntries(xml) {
   }).filter((v) => v.id);
 }
 
+/**
+ * Converte textos do YouTube em pt-BR ("303", "1.634", "1,4 mil") para número.
+ */
+function parseViewsPt(texto) {
+  const m = String(texto).match(/([\d.,]+)\s*(mil|mi)?\s*visualiza/i);
+  if (!m) return null;
+
+  const bruto = m[1];
+  const unidade = (m[2] || '').toLowerCase();
+  let n;
+
+  if (unidade) {
+    n = Number(bruto.replace(/\./g, '').replace(',', '.'));
+    if (unidade === 'mil') n *= 1000;
+    if (unidade === 'mi') n *= 1000000;
+  } else if (bruto.includes('.') && bruto.includes(',')) {
+    n = Number(bruto.replace(/\./g, '').replace(',', '.'));
+  } else if ((bruto.match(/\./g) || []).length >= 1 && !bruto.includes(',')) {
+    const partes = bruto.split('.');
+    n = partes.every((p, i) => i === 0 || p.length === 3)
+      ? Number(bruto.replace(/\./g, ''))
+      : Number(bruto);
+  } else if (bruto.includes(',')) {
+    n = Number(bruto.replace(',', '.'));
+  } else {
+    n = Number(bruto);
+  }
+
+  if (!Number.isFinite(n)) return null;
+  return Math.round(n);
+}
+
+/**
+ * Views atuais de todos os Shorts do canal.
+ * O feed Atom só traz 15 vídeos e as views dele ficam desatualizadas.
+ */
+async function buscarViewsAoVivo() {
+  const resposta = await fetch('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0',
+      'Accept-Language': 'pt-BR,pt;q=0.9',
+    },
+    body: JSON.stringify({
+      context: {
+        client: {
+          clientName: 'WEB',
+          clientVersion: '2.20241001.00.00',
+          hl: 'pt',
+          gl: 'BR',
+        },
+      },
+      browseId: CHANNEL_ID,
+      params: 'EgZzaG9ydHPyBgUKA5oBAA%3D%3D',
+    }),
+    signal: AbortSignal.timeout(8000),
+  });
+
+  if (!resposta.ok) {
+    throw new Error(`YouTube shorts respondeu ${resposta.status}`);
+  }
+
+  const dados = await resposta.text();
+  const mapa = new Map();
+
+  const itens = dados.matchAll(
+    /accessibilityText":"((?:\\.|[^"\\])*)"[\s\S]{0,800}?"videoId":"([A-Za-z0-9_-]{11})"/g
+  );
+
+  for (const item of itens) {
+    const texto = item[1].replace(/\\u0026/g, '&');
+    const views = parseViewsPt(texto);
+    if (views == null || mapa.has(item[2])) continue;
+    const titulo = texto.split(/,\s*[\d.,]+\s*(?:mil|mi)?\s*visualiza/i)[0].trim();
+    mapa.set(item[2], { views, titulo });
+  }
+
+  return mapa;
+}
+
 export default async function handler(req, res) {
   // Só GET
   if (req.method && req.method !== 'GET') {
@@ -81,6 +162,34 @@ export default async function handler(req, res) {
     const xml = await resposta.text();
     const videos = parseEntries(xml);
 
+    let somaViews = videos.reduce((acc, v) => acc + (v.views || 0), 0);
+    let totalShorts = videos.length;
+    let destaque = null;
+
+    try {
+      const aoVivo = await buscarViewsAoVivo();
+      if (aoVivo.size) {
+        const ids = new Set();
+        somaViews = 0;
+        for (const [id, info] of aoVivo) {
+          somaViews += info.views;
+          ids.add(id);
+          if (!destaque || info.views > destaque.views) destaque = info;
+        }
+        for (const video of videos) {
+          const info = aoVivo.get(video.id);
+          if (info) video.views = info.views;
+          else if (!ids.has(video.id)) {
+            somaViews += video.views || 0;
+            ids.add(video.id);
+          }
+        }
+        totalShorts = ids.size;
+      }
+    } catch (err) {
+      console.error('[api/videos] views ao vivo', err);
+    }
+
     // Cache de 2 minutos na CDN da Vercel (+ stale enquanto revalida)
     res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=300');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -89,6 +198,9 @@ export default async function handler(req, res) {
       atualizadoEm: new Date().toISOString(),
       canalId: CHANNEL_ID,
       total: videos.length,
+      totalShorts,
+      somaViews,
+      destaque,
       videos,
     });
   } catch (err) {
