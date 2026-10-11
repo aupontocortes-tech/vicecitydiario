@@ -207,6 +207,70 @@
       margin-top: 2px;
     }
 
+    .seletor-canal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn-canal {
+      min-height: 48px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--borda);
+      background: transparent;
+      color: var(--texto-suave);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-canal[aria-pressed="true"] {
+      background: var(--rosa);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-canal:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .logo-sigla {
+      display: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #120a1f;
+      background: #28e6dc;
+      box-shadow: 0 0 16px rgba(40, 230, 220, 0.55);
+    }
+
+    body.canal-nv .logo { display: none; }
+    body.canal-nv .logo-sigla { display: flex; }
+    body.canal-nv .brand h1 { color: #28e6dc; }
+    body.canal-nv .btn-canal[aria-pressed="true"] {
+      background: #28e6dc;
+      color: #120a1f;
+    }
+    body.canal-nv .slot.proximo {
+      border-color: #28e6dc;
+      box-shadow: 0 0 0 1px rgba(40, 230, 220, 0.35), 0 0 24px rgba(40, 230, 220, 0.15);
+    }
+    body.canal-nv .slot.proximo .hora { color: #28e6dc; }
+    body.canal-nv {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(40, 230, 220, 0.22), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(40, 230, 220, 0.08), transparent 50%),
+        var(--bg);
+    }
+
     .meta-linha {
       display: flex;
       flex-wrap: wrap;
@@ -436,9 +500,14 @@
       color: var(--rosa);
     }
 
-    .btn-acao.trailer:hover:not(:disabled) {
+    .btn-acao.trailer:hover:not(:disabled),
+    .btn-acao.curiosidade:hover:not(:disabled) {
       border-color: var(--ciano);
       color: var(--ciano);
+    }
+
+    .botoes-acao.um {
+      grid-template-columns: 1fr;
     }
 
     .btn-acao:focus-visible {
@@ -1091,7 +1160,8 @@
 
       .brand h1 { font-size: 1.85rem; }
 
-      .logo {
+      .logo,
+      .logo-sigla {
         width: 64px;
         height: 64px;
       }
@@ -1170,16 +1240,22 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal">
+      <button type="button" class="btn-canal" data-canal="vcd" aria-pressed="true">Vice City Diário</button>
+      <button type="button" class="btn-canal" data-canal="nv" aria-pressed="false">Nunca Visto</button>
+    </div>
+
     <header class="app-header">
-      <img class="logo" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <img class="logo" id="logo-canal" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <span class="logo-sigla" id="logo-sigla" aria-hidden="true">NV</span>
       <div class="brand">
-        <h1>Vice City Diário</h1>
-        <p>Painel do canal · só leitura</p>
+        <h1 id="titulo-canal">Vice City Diário</h1>
+        <p id="subtitulo-canal">Painel do canal · só leitura</p>
       </div>
     </header>
 
     <nav class="atalhos" aria-label="Navegação do painel">
-      <a href="/sugestoes.html">Sugestões de vídeo</a>
+      <a href="/sugestoes.html" id="link-sugestoes">Sugestões de vídeo</a>
       <a href="#instalar-app" id="atalho-instalar">Baixar no celular</a>
     </nav>
 
@@ -1234,7 +1310,7 @@
             <p class="desc">
               Mesma coisa que “Executar agora” na rotina. Gasta uso do plano Claude.
             </p>
-            <div class="botoes-acao">
+            <div class="botoes-acao" id="botoes-acao">
               <button type="button" class="btn-acao screenshots" id="btn-screenshots" data-tipo="screenshots">
                 <span class="icone" aria-hidden="true">📸</span>
                 <span class="rotulo">Screenshots</span>
@@ -1334,13 +1410,90 @@
 
     const INTERVALO_MS = 2 * 60 * 1000; // 2 minutos
     const TZ = 'America/Sao_Paulo';
+    const CHAVE_CANAL = 'painel_canal';
 
-    // Horários fixos de publicação (Brasília)
-    const SLOTS = [
-      { hora: 8, tipo: 'Screenshots', sub: 'Imagens do jogo' },
-      { hora: 12, tipo: 'Trechos de trailer', sub: 'Cortes do trailer' },
-      { hora: 14, tipo: 'Screenshots', sub: 'Imagens do jogo' },
-    ];
+    const CANAIS_UI = {
+      vcd: {
+        id: 'vcd',
+        nome: 'Vice City Diário',
+        subtitulo: 'Painel do canal · só leitura',
+        slots: [
+          { hora: 8, tipo: 'Screenshots', sub: 'Imagens do jogo' },
+          { hora: 12, tipo: 'Trechos de trailer', sub: 'Cortes do trailer' },
+          { hora: 14, tipo: 'Screenshots', sub: 'Imagens do jogo' },
+        ],
+        rotinas: [
+          { tipo: 'screenshots', rotulo: 'Screenshots', icone: '📸', classe: 'screenshots' },
+          { tipo: 'trailer', rotulo: 'Trailer', icone: '🎬', classe: 'trailer' },
+        ],
+      },
+      nv: {
+        id: 'nv',
+        nome: 'Nunca Visto',
+        subtitulo: 'Painel do canal · só leitura',
+        slots: [
+          { hora: 18, tipo: 'Curiosidade', sub: 'Short de curiosidade' },
+        ],
+        rotinas: [
+          { tipo: 'curiosidade', rotulo: 'Curiosidade', icone: '✨', classe: 'curiosidade' },
+        ],
+      },
+    };
+
+    function sincronizarCanalDaUrl() {
+      const q = new URLSearchParams(location.search).get('canal');
+      if (q === 'vcd' || q === 'nv') {
+        try { localStorage.setItem(CHAVE_CANAL, q); } catch { /* ignore */ }
+      }
+    }
+
+    function canalAtual() {
+      try {
+        return localStorage.getItem(CHAVE_CANAL) === 'nv' ? 'nv' : 'vcd';
+      } catch {
+        return 'vcd';
+      }
+    }
+
+    function uiCanal() {
+      return CANAIS_UI[canalAtual()];
+    }
+
+    function urlApi(caminho) {
+      const url = new URL(caminho, location.origin);
+      url.searchParams.set('canal', canalAtual());
+      return url.pathname + url.search;
+    }
+
+    function renderBotoesAcao() {
+      const box = document.getElementById('botoes-acao');
+      const rotinas = uiCanal().rotinas;
+      box.classList.toggle('um', rotinas.length < 2);
+      box.innerHTML = rotinas.map((r) => `
+        <button type="button" class="btn-acao ${r.classe}" data-tipo="${escapar(r.tipo)}">
+          <span class="icone" aria-hidden="true">${r.icone}</span>
+          <span class="rotulo">${escapar(r.rotulo)}</span>
+        </button>
+      `).join('');
+    }
+
+    function aplicarCanal() {
+      const ui = uiCanal();
+      document.body.classList.toggle('canal-nv', ui.id === 'nv');
+      document.title = `${ui.nome} — Painel`;
+      document.getElementById('titulo-canal').textContent = ui.nome;
+      document.getElementById('subtitulo-canal').textContent = ui.subtitulo;
+      document.getElementById('logo-canal').alt = ui.nome;
+      document.querySelectorAll('.btn-canal').forEach((btn) => {
+        const ativo = btn.getAttribute('data-canal') === ui.id;
+        btn.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      });
+      const link = document.getElementById('link-sugestoes');
+      if (link) link.href = `/sugestoes.html?canal=${ui.id}`;
+      renderBotoesAcao();
+    }
+
+    sincronizarCanalDaUrl();
 
     // ---------- Utilitários ----------
 
@@ -1462,7 +1615,7 @@
       const agoraMs = Date.now();
       const amanha = amanhaBrasilia(agora);
 
-      return SLOTS.map((slot) => {
+      return uiCanal().slots.map((slot) => {
         let alvo = dataBrasilia(agora.ano, agora.mes, agora.dia, slot.hora, 0, 0);
         let diaLabel = 'hoje';
 
@@ -1529,7 +1682,7 @@
 
       btn.disabled = true;
       try {
-        const res = await fetch('/api/config', {
+        const res = await fetch(urlApi('/api/config'), {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -1764,14 +1917,20 @@
         : escapar(texto);
     }
 
+    let cargaSeq = 0;
+
     async function carregarTudo() {
+      const seq = ++cargaSeq;
+      const canalPedido = canalAtual();
       setAtualizacao('Atualizando…');
 
       const [videosResult, statusResult, configResult] = await Promise.allSettled([
-        buscarJson('/api/videos'),
-        buscarJson('/api/status'),
-        buscarJson('/api/config'),
+        buscarJson(urlApi('/api/videos')),
+        buscarJson(urlApi('/api/status')),
+        buscarJson(urlApi('/api/config')),
       ]);
+
+      if (seq !== cargaSeq || canalPedido !== canalAtual()) return;
 
       if (configResult.status === 'fulfilled') {
         pausasAtivas = new Set(configResult.value.pausas || []);
@@ -1809,7 +1968,34 @@
       }
     }
 
+    function escolherCanal(id) {
+      const novo = id === 'nv' ? 'nv' : 'vcd';
+      if (novo === canalAtual()) return;
+      try { localStorage.setItem(CHAVE_CANAL, novo); } catch { /* ignore */ }
+      const endereco = new URL(location.href);
+      endereco.searchParams.set('canal', novo);
+      history.replaceState(null, '', endereco.pathname + endereco.search);
+      videosExpandidos = false;
+      window.__videosPainel = [];
+      pausasAtivas = new Set();
+      document.getElementById('videos').innerHTML = '<div class="loading">Carregando…</div>';
+      document.getElementById('resumo').innerHTML = '<div class="loading">Carregando…</div>';
+      const btnMais = document.getElementById('btn-ver-mais');
+      if (btnMais) btnMais.hidden = true;
+      aplicarCanal();
+      renderSlots();
+      renderStatusProducao([]);
+      carregarTudo();
+    }
+
+    document.getElementById('seletor-canal').addEventListener('click', (ev) => {
+      const btn = ev.target.closest('[data-canal]');
+      if (!btn) return;
+      escolherCanal(btn.getAttribute('data-canal'));
+    });
+
     // Contagem regressiva a cada 30s (leve); dados a cada 2 min
+    aplicarCanal();
     renderSlots();
     setInterval(renderSlots, 30 * 1000);
     carregarTudo();
@@ -1818,15 +2004,21 @@
     // ---------- Fazer vídeo agora (rotinas Claude Code) ----------
 
     const CHAVE_SENHA = 'vcd_painel_senha';
-    const CHAVE_COOLDOWN = 'vcd_rodar_cooldown'; // { screenshots: ts, trailer: ts }
-    const CHAVE_PRODUCAO = 'vcd_producao_ativa';
+
+    function chaveCooldown() {
+      return canalAtual() === 'nv' ? 'nv_rodar_cooldown' : 'vcd_rodar_cooldown';
+    }
+
+    function chaveProducao() {
+      return canalAtual() === 'nv' ? 'nv_producao_ativa' : 'vcd_producao_ativa';
+    }
     const COOLDOWN_MS_UI = 30 * 60 * 1000;
     const ESTIMATIVA_MS = 20 * 60 * 1000; // ~20 min até o Short
     const LIMITE_ESPERA_MS = 45 * 60 * 1000; // depois disso: demorou demais
 
     function lerCooldownLocal() {
       try {
-        return JSON.parse(localStorage.getItem(CHAVE_COOLDOWN) || '{}') || {};
+        return JSON.parse(localStorage.getItem(chaveCooldown()) || '{}') || {};
       } catch {
         return {};
       }
@@ -1836,7 +2028,7 @@
       try {
         const map = lerCooldownLocal();
         map[tipo] = Date.now();
-        localStorage.setItem(CHAVE_COOLDOWN, JSON.stringify(map));
+        localStorage.setItem(chaveCooldown(), JSON.stringify(map));
       } catch {
         /* ignore */
       }
@@ -1850,7 +2042,7 @@
 
     function lerProducao() {
       try {
-        return JSON.parse(localStorage.getItem(CHAVE_PRODUCAO) || 'null');
+        return JSON.parse(localStorage.getItem(chaveProducao()) || 'null');
       } catch {
         return null;
       }
@@ -1858,8 +2050,8 @@
 
     function salvarProducao(estado) {
       try {
-        if (!estado) localStorage.removeItem(CHAVE_PRODUCAO);
-        else localStorage.setItem(CHAVE_PRODUCAO, JSON.stringify(estado));
+        if (!estado) localStorage.removeItem(chaveProducao());
+        else localStorage.setItem(chaveProducao(), JSON.stringify(estado));
       } catch {
         /* ignore */
       }
@@ -1870,7 +2062,8 @@
     }
 
     function rotuloTipo(tipo) {
-      return tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+      const rotina = uiCanal().rotinas.find((r) => r.tipo === tipo);
+      return rotina ? rotina.rotulo : 'Vídeo';
     }
 
     function formatarFaltaEstimativa(ms) {
@@ -2004,19 +2197,19 @@
     }
 
     function atualizarBotoesRodar() {
-      for (const tipo of ['screenshots', 'trailer']) {
-        const btn = document.querySelector(`.btn-acao[data-tipo="${tipo}"]`);
+      for (const rotina of uiCanal().rotinas) {
+        const btn = document.querySelector(`.btn-acao[data-tipo="${rotina.tipo}"]`);
         if (!btn) continue;
-        const falta = cooldownRestante(tipo);
+        const falta = cooldownRestante(rotina.tipo);
+        const rotulo = btn.querySelector('.rotulo');
+        if (!rotulo) continue;
         if (falta > 0) {
           btn.disabled = true;
           const min = Math.ceil(falta / 60000);
-          btn.querySelector('.rotulo').textContent =
-            tipo === 'trailer' ? `Trailer (${min}m)` : `Screenshots (${min}m)`;
+          rotulo.textContent = `${rotina.rotulo} (${min}m)`;
         } else {
           btn.disabled = false;
-          btn.querySelector('.rotulo').textContent =
-            tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+          rotulo.textContent = rotina.rotulo;
         }
       }
     }
@@ -2044,7 +2237,7 @@
         const modal = document.getElementById('modal-senha-rodar');
         const input = document.getElementById('campo-senha-rodar');
         const lembrar = document.getElementById('lembrar-senha-rodar');
-        const nome = tipo === 'trailer' ? 'Trailer' : 'Screenshots';
+        const nome = rotuloTipo(tipo);
         document.getElementById('modal-senha-titulo').textContent = subtituloCustom
           ? 'Confirmar'
           : 'Confirmar disparo';
@@ -2107,7 +2300,7 @@
       mostrarMsgAcao('Disparando rotina…', 'info');
 
       try {
-        const res = await fetch('/api/rodar', {
+        const res = await fetch(urlApi('/api/rodar'), {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -2168,11 +2361,10 @@
       }
     }
 
-    document.getElementById('btn-screenshots').addEventListener('click', () => {
-      dispararAgora('screenshots');
-    });
-    document.getElementById('btn-trailer').addEventListener('click', () => {
-      dispararAgora('trailer');
+    document.getElementById('botoes-acao').addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.btn-acao');
+      if (!btn || btn.disabled) return;
+      dispararAgora(btn.getAttribute('data-tipo'));
     });
 
     atualizarBotoesRodar();

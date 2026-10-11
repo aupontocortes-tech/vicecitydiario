@@ -90,6 +90,67 @@
       margin-top: 2px;
     }
 
+    .seletor-canal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn-canal {
+      min-height: 48px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--borda);
+      background: transparent;
+      color: var(--texto-suave);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-canal[aria-pressed="true"] {
+      background: var(--rosa);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-canal:focus-visible {
+      outline: 2px solid var(--amarelo);
+      outline-offset: 2px;
+    }
+
+    .logo-sigla {
+      display: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #120a1f;
+      background: #28e6dc;
+      box-shadow: 0 0 16px rgba(40, 230, 220, 0.55);
+    }
+
+    body.canal-nv .logo { display: none; }
+    body.canal-nv .logo-sigla { display: flex; }
+    body.canal-nv .brand h1,
+    body.canal-nv .brand p { color: #28e6dc; }
+    body.canal-nv .btn-canal[aria-pressed="true"],
+    body.canal-nv .btn-rosa {
+      background: #28e6dc;
+      color: #120a1f;
+      border-color: transparent;
+    }
+    body.canal-nv {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(40, 230, 220, 0.22), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(40, 230, 220, 0.08), transparent 50%),
+        var(--bg);
+    }
+
     .atalhos {
       display: flex;
       flex-wrap: wrap;
@@ -377,16 +438,22 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal">
+      <button type="button" class="btn-canal" data-canal="vcd" aria-pressed="true">Vice City Diário</button>
+      <button type="button" class="btn-canal" data-canal="nv" aria-pressed="false">Nunca Visto</button>
+    </div>
+
     <header class="app-header">
-      <img class="logo" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <img class="logo" id="logo-canal" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
+      <span class="logo-sigla" aria-hidden="true">NV</span>
       <div class="brand">
         <h1>Sugestões de vídeo</h1>
-        <p>Vice City Diário · ideias para Shorts</p>
+        <p id="marca-canal">Vice City Diário · ideias para Shorts</p>
       </div>
     </header>
 
     <nav class="atalhos" aria-label="Navegação do painel">
-      <a href="/">← Painel</a>
+      <a href="/" id="link-painel">← Painel</a>
       <a href="/sugestoes.html" class="ativo">Sugestões</a>
     </nav>
 
@@ -450,6 +517,59 @@
      */
 
     const CHAVE_SENHA = 'vcd_painel_senha';
+    const CHAVE_CANAL = 'painel_canal';
+
+    function sincronizarCanalDaUrl() {
+      const q = new URLSearchParams(location.search).get('canal');
+      if (q === 'vcd' || q === 'nv') {
+        try { localStorage.setItem(CHAVE_CANAL, q); } catch { /* ignore */ }
+      }
+    }
+
+    function canalAtual() {
+      try {
+        return localStorage.getItem(CHAVE_CANAL) === 'nv' ? 'nv' : 'vcd';
+      } catch {
+        return 'vcd';
+      }
+    }
+
+    function urlApi(caminho) {
+      const url = new URL(caminho, location.origin);
+      url.searchParams.set('canal', canalAtual());
+      return url.pathname + url.search;
+    }
+
+    function aplicarCanal() {
+      const nv = canalAtual() === 'nv';
+      const nome = nv ? 'Nunca Visto' : 'Vice City Diário';
+      document.body.classList.toggle('canal-nv', nv);
+      document.title = `Sugestões de vídeo — ${nome}`;
+      document.getElementById('marca-canal').textContent = `${nome} · ideias para Shorts`;
+      document.getElementById('logo-canal').alt = nome;
+      document.getElementById('link-painel').href = `/?canal=${canalAtual()}`;
+      document.getElementById('campo-texto').placeholder = nv
+        ? 'Ex.: Um fato que quase ninguém viu'
+        : 'Ex.: Quem é Boobie Mike em GTA 6?';
+      document.querySelectorAll('.btn-canal').forEach((btn) => {
+        const ativo = btn.getAttribute('data-canal') === canalAtual();
+        btn.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      });
+    }
+
+    function escolherCanal(id) {
+      const novo = id === 'nv' ? 'nv' : 'vcd';
+      if (novo === canalAtual()) return;
+      try { localStorage.setItem(CHAVE_CANAL, novo); } catch { /* ignore */ }
+      const endereco = new URL(location.href);
+      endereco.searchParams.set('canal', novo);
+      history.replaceState(null, '', endereco.pathname + endereco.search);
+      aplicarCanal();
+      carregar();
+    }
+
+    sincronizarCanalDaUrl();
+    aplicarCanal();
     let sugestoesCache = [];
     let pendente = null; // { acao, texto, fonte, indice }
 
@@ -542,7 +662,7 @@
       const el = document.getElementById('lista');
       el.innerHTML = '<div class="loading">Carregando…</div>';
       try {
-        const res = await fetch('/api/config', { headers: { Accept: 'application/json' } });
+        const res = await fetch(urlApi('/api/config'), { headers: { Accept: 'application/json' } });
         const dados = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(dados.erro || `Erro ${res.status}`);
         renderLista(dados.sugestoes || []);
@@ -595,7 +715,7 @@
     }
 
     async function gravar(payload) {
-      const res = await fetch('/api/config', {
+      const res = await fetch(urlApi('/api/config'), {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -701,6 +821,12 @@
       if (ev.target.id === 'modal-senha') {
         document.getElementById('btn-cancelar').click();
       }
+    });
+
+    document.getElementById('seletor-canal').addEventListener('click', (ev) => {
+      const btn = ev.target.closest('[data-canal]');
+      if (!btn) return;
+      escolherCanal(btn.getAttribute('data-canal'));
     });
 
     atualizarContadores();

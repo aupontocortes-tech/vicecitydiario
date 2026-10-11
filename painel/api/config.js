@@ -5,42 +5,22 @@
  */
 
 import crypto from 'crypto';
+import { OWNER, obterCanal } from './canais.js';
 
-const OWNER = 'aupontocortes-tech';
-const REPO = 'vicecitydiario';
 const PATH = 'CONFIG_CANAL.md';
 const BRANCH = 'main';
-const CONTENTS_URL =
-  `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
 
 const SECAO_SUGESTOES = 'SUGESTÕES DE VÍDEO';
 const SECAO_PAUSAS = 'PAUSAS';
-const HORARIOS_PAUSA = ['08h', '12h', '14h'];
 const LIMITE_ITEM = 300;
 
-/** Markdown inicial se o arquivo ainda não existir no repositório. */
-const ARQUIVO_INICIAL = `# Configuração do canal Vice City Diário
+function contentsUrl(canal) {
+  return `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${PATH}`;
+}
 
-Arquivo editado pelo painel. Não coloque senhas aqui.
-
-## FONTES
-
-## FONTES SÓ PARA CONFIRMAR
-
-## FONTES PROIBIDAS
-
-## O QUE PROCURAR
-
-## EVITAR
-
-## ESTILO DOS VÍDEOS
-
-## OPINIÕES DO THIAGO
-
-## ${SECAO_SUGESTOES}
-
-## ${SECAO_PAUSAS}
-`;
+function horariosDoCanal(canal) {
+  return (canal.horarios || []).map((h) => String(h).trim().toLowerCase());
+}
 
 function headersGithub(token, extra = {}) {
   return {
@@ -220,8 +200,8 @@ function itensDaSecao(md, titulo) {
 }
 
 /** Lê o arquivo no GitHub. Retorna { sha, texto } ou null se 404. */
-async function lerArquivo(token) {
-  const url = `${CONTENTS_URL}?ref=${BRANCH}`;
+async function lerArquivo(token, canal) {
+  const url = `${contentsUrl(canal)}?ref=${BRANCH}`;
   const res = await fetch(url, { headers: headersGithub(token) });
 
   if (res.status === 404) {
@@ -238,7 +218,7 @@ async function lerArquivo(token) {
 }
 
 /** Grava o arquivo (cria ou atualiza). Lança erro com codigo 409 em conflito. */
-async function gravarArquivo(token, texto, sha, mensagem) {
+async function gravarArquivo(token, canal, texto, sha, mensagem) {
   const corpo = {
     message: mensagem,
     content: Buffer.from(texto, 'utf8').toString('base64'),
@@ -246,7 +226,7 @@ async function gravarArquivo(token, texto, sha, mensagem) {
   };
   if (sha) corpo.sha = sha;
 
-  const res = await fetch(CONTENTS_URL, {
+  const res = await fetch(contentsUrl(canal), {
     method: 'PUT',
     headers: headersGithub(token, { 'Content-Type': 'application/json' }),
     body: JSON.stringify(corpo),
@@ -270,14 +250,14 @@ async function gravarArquivo(token, texto, sha, mensagem) {
  * Lê → aplica mutação → grava.
  * Se der 409, lê de novo e tenta a mutação mais uma vez.
  */
-async function lerMutarGravar(token, mutator, mensagem) {
+async function lerMutarGravar(token, canal, mutator, mensagem) {
   for (let tentativa = 0; tentativa < 2; tentativa++) {
-    const arq = await lerArquivo(token);
-    const textoBase = arq ? arq.texto : ARQUIVO_INICIAL;
+    const arq = await lerArquivo(token, canal);
+    const textoBase = arq ? arq.texto : canal.arquivoInicial;
     const sha = arq ? arq.sha : null;
     const textoNovo = mutator(textoBase);
     try {
-      await gravarArquivo(token, textoNovo, sha, mensagem);
+      await gravarArquivo(token, canal, textoNovo, sha, mensagem);
       return;
     } catch (err) {
       if (err.codigo === 409 && tentativa === 0) continue;
@@ -296,13 +276,14 @@ function responderJson(res, status, obj, cache = false) {
   return res.status(status).json(obj);
 }
 
-function montarRespostaLeitura(texto, sha) {
+function montarRespostaLeitura(texto, sha, canal) {
   const { secoes, ordem } = parseMarkdown(texto);
   const brutos = secoes[SECAO_SUGESTOES] || [];
   const sugestoes = brutos.map((b, i) => parseSugestao(b, i));
+  const permitidos = horariosDoCanal(canal);
   const pausas = (secoes[SECAO_PAUSAS] || [])
     .map((item) => String(item).trim().toLowerCase())
-    .filter((item) => HORARIOS_PAUSA.includes(item));
+    .filter((item) => permitidos.includes(item));
 
   // Seções “normais” (sem o conteúdo bruto das sugestões tipado)
   const secoesLimpas = {};
@@ -313,6 +294,7 @@ function montarRespostaLeitura(texto, sha) {
 
   return {
     atualizadoEm: new Date().toISOString(),
+    canal: canal.id,
     sha: sha || null,
     secoes: secoesLimpas,
     ordemSecoes: ordem.filter((n) => n !== SECAO_SUGESTOES),
@@ -329,6 +311,7 @@ export default async function handler(req, res) {
     return responderJson(res, 405, { erro: 'Método não permitido' });
   }
 
+  const canal = obterCanal(req);
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
     return responderJson(res, 503, {
@@ -338,16 +321,16 @@ export default async function handler(req, res) {
 
   try {
     if (method === 'GET') {
-      const arq = await lerArquivo(token);
+      const arq = await lerArquivo(token, canal);
       if (!arq) {
         return responderJson(
           res,
           200,
-          montarRespostaLeitura(ARQUIVO_INICIAL, null),
+          montarRespostaLeitura(canal.arquivoInicial, null, canal),
           true
         );
       }
-      return responderJson(res, 200, montarRespostaLeitura(arq.texto, arq.sha), true);
+      return responderJson(res, 200, montarRespostaLeitura(arq.texto, arq.sha, canal), true);
     }
 
     // ----- POST: exige senha -----
@@ -369,11 +352,12 @@ export default async function handler(req, res) {
       return responderJson(res, 401, { erro: 'Senha errada' });
     }
 
-    // ========== Pausar horário (08h, 12h, 14h) ==========
+    // ========== Pausar horário do canal escolhido ==========
     if (body.tipo === 'pausa') {
       const horario = String(body.horario || '').trim().toLowerCase();
       const acaoPausa = body.acao;
-      if (!HORARIOS_PAUSA.includes(horario)) {
+      const horarios = horariosDoCanal(canal);
+      if (!horarios.includes(horario)) {
         return responderJson(res, 400, { erro: 'Horário inválido.' });
       }
       if (acaoPausa !== 'pausar' && acaoPausa !== 'despausar') {
@@ -382,23 +366,24 @@ export default async function handler(req, res) {
 
       await lerMutarGravar(
         token,
+        canal,
         (textoBase) => {
           const atuais = (itensDaSecao(textoBase, SECAO_PAUSAS) || [])
             .map((item) => String(item).trim().toLowerCase())
-            .filter((item) => HORARIOS_PAUSA.includes(item));
+            .filter((item) => horarios.includes(item));
           const conjunto = new Set(atuais);
           if (acaoPausa === 'pausar') conjunto.add(horario);
           else conjunto.delete(horario);
-          const linhas = HORARIOS_PAUSA.filter((h) => conjunto.has(h)).map((h) => `- ${h}`);
+          const linhas = horarios.filter((h) => conjunto.has(h)).map((h) => `- ${h}`);
           return aplicarItensNaSecao(textoBase, SECAO_PAUSAS, linhas);
         },
         `Painel: ${acaoPausa} ${horario}`
       );
 
-      const depois = await lerArquivo(token);
+      const depois = await lerArquivo(token, canal);
       const leitura = depois
-        ? montarRespostaLeitura(depois.texto, depois.sha)
-        : montarRespostaLeitura(ARQUIVO_INICIAL, null);
+        ? montarRespostaLeitura(depois.texto, depois.sha, canal)
+        : montarRespostaLeitura(canal.arquivoInicial, null, canal);
       return responderJson(res, 200, {
         ok: true,
         mensagem: acaoPausa === 'pausar' ? `${horario} pausado.` : `${horario} despausado.`,
@@ -446,6 +431,7 @@ export default async function handler(req, res) {
 
       await lerMutarGravar(
         token,
+        canal,
         (textoBase) => {
           const lista = itensDaSecao(textoBase, SECAO_SUGESTOES).map((b, i) =>
             parseSugestao(b, i)
@@ -499,7 +485,7 @@ export default async function handler(req, res) {
         `Painel: ${acao} em ${SECAO_SUGESTOES}`
       );
 
-      const depois = await lerArquivo(token);
+      const depois = await lerArquivo(token, canal);
       return responderJson(res, 200, {
         ok: true,
         mensagem:
@@ -509,8 +495,8 @@ export default async function handler(req, res) {
               ? 'Sugestão apagada.'
               : 'Sugestão atualizada.',
         ...(depois
-          ? montarRespostaLeitura(depois.texto, depois.sha)
-          : montarRespostaLeitura(ARQUIVO_INICIAL, null)),
+          ? montarRespostaLeitura(depois.texto, depois.sha, canal)
+          : montarRespostaLeitura(canal.arquivoInicial, null, canal)),
       });
     }
 
@@ -532,6 +518,7 @@ export default async function handler(req, res) {
 
     await lerMutarGravar(
       token,
+      canal,
       (textoBase) => {
         let itens = [...itensDaSecao(textoBase, secao)];
         if (acao === 'adicionar') {
@@ -558,13 +545,13 @@ export default async function handler(req, res) {
       `Painel: ${acao} em ${secao}`
     );
 
-    const depois = await lerArquivo(token);
+    const depois = await lerArquivo(token, canal);
     return responderJson(res, 200, {
       ok: true,
       mensagem: 'Salvo!',
       ...(depois
-        ? montarRespostaLeitura(depois.texto, depois.sha)
-        : montarRespostaLeitura(ARQUIVO_INICIAL, null)),
+        ? montarRespostaLeitura(depois.texto, depois.sha, canal)
+        : montarRespostaLeitura(canal.arquivoInicial, null, canal)),
     });
   } catch (err) {
     console.error('[api/config]', err);

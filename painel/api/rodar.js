@@ -4,8 +4,9 @@
  *
  * Variáveis de ambiente (Vercel):
  *   SENHA_PAINEL
- *   ROTINA_8H_URL   + ROTINA_8H_TOKEN   → tipo "screenshots"
- *   ROTINA_12H_URL  + ROTINA_12H_TOKEN  → tipo "trailer"
+ *   ROTINA_8H_URL   + ROTINA_8H_TOKEN   → Vice City Diário, tipo "screenshots"
+ *   ROTINA_12H_URL  + ROTINA_12H_TOKEN  → Vice City Diário, tipo "trailer"
+ *   ROTINA_NV_URL   + ROTINA_NV_TOKEN   → Nunca Visto, tipo "curiosidade"
  *
  * Formato oficial do gatilho API (claude.ai/code → Rotinas → gatilho API):
  *   POST <URL_DO_GATILHO>
@@ -18,18 +19,16 @@
  */
 
 import crypto from 'crypto';
+import { obterCanal } from './canais.js';
 
 const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutos
 const ANTHROPIC_VERSION = '2023-06-01';
 
 /**
- * Último disparo por tipo, em memória da instância serverless.
+ * Último disparo por canal+tipo, em memória da instância serverless.
  * Em cold start a memória zera — o navegador também bloqueia 30 min (localStorage).
  */
-const ultimoDisparo = {
-  screenshots: 0,
-  trailer: 0,
-};
+const ultimoDisparo = {};
 
 function senhaCorreta(enviada, esperada) {
   if (!esperada || typeof enviada !== 'string') return false;
@@ -63,35 +62,16 @@ function responder(res, status, obj) {
   return res.status(status).json(obj);
 }
 
-/** Escolhe URL/token conforme o tipo pedido pelo painel. */
-function credenciaisDoTipo(tipo) {
-  if (tipo === 'screenshots') {
-    return {
-      url: process.env.ROTINA_8H_URL,
-      token: process.env.ROTINA_8H_TOKEN,
-      rotulo: 'screenshots (8h)',
-    };
-  }
-  if (tipo === 'trailer') {
-    return {
-      url: process.env.ROTINA_12H_URL,
-      token: process.env.ROTINA_12H_TOKEN,
-      rotulo: 'trailer (12h)',
-    };
-  }
-  return null;
+/** Rotina do canal, ou null se o tipo não existir nele. */
+function rotinaDoCanal(canal, tipo) {
+  return (canal.rotinas || []).find((r) => r.tipo === tipo) || null;
 }
 
 /**
  * Chama o endpoint /fire da rotina Claude Code.
  * Ajuste headers/body aqui se o modal "API" da rotina mostrar outro formato.
  */
-async function dispararRotina(url, token, tipo) {
-  const texto =
-    tipo === 'trailer'
-      ? 'Disparo manual pelo painel Vice City Diário: produzir Short com trecho de trailer agora.'
-      : 'Disparo manual pelo painel Vice City Diário: produzir Short com screenshots agora.';
-
+async function dispararRotina(url, token, mensagem) {
   const resposta = await fetch(url, {
     method: 'POST',
     headers: {
@@ -100,7 +80,7 @@ async function dispararRotina(url, token, tipo) {
       'Content-Type': 'application/json',
       'User-Agent': 'ViceCityDiarioPainel/1.0',
     },
-    body: JSON.stringify({ text: texto }),
+    body: JSON.stringify({ text: mensagem }),
   });
 
   const corpo = await resposta.text().catch(() => '');
@@ -129,14 +109,17 @@ export default async function handler(req, res) {
     return responder(res, 401, { erro: 'Senha errada' });
   }
 
+  const canal = obterCanal(req);
   const tipo = body.tipo;
-  if (tipo !== 'screenshots' && tipo !== 'trailer') {
-    return responder(res, 400, { erro: 'Tipo inválido. Use screenshots ou trailer.' });
+  const rotina = rotinaDoCanal(canal, tipo);
+  if (!rotina) {
+    return responder(res, 400, { erro: 'Tipo inválido para este canal.' });
   }
 
-  // Proteção contra clique duplo (servidor)
+  // Proteção contra clique duplo (servidor), separada por canal
+  const chave = `${canal.id}:${tipo}`;
   const agora = Date.now();
-  const ultimo = ultimoDisparo[tipo] || 0;
+  const ultimo = ultimoDisparo[chave] || 0;
   const falta = COOLDOWN_MS - (agora - ultimo);
   if (falta > 0) {
     const min = Math.ceil(falta / 60000);
@@ -146,16 +129,15 @@ export default async function handler(req, res) {
     });
   }
 
-  const cred = credenciaisDoTipo(tipo);
-  if (!cred || !cred.url || !cred.token) {
+  if (!rotina.url || !rotina.token) {
     return responder(res, 503, {
-      erro: `Variáveis da rotina ${cred?.rotulo || tipo} não configuradas na Vercel.`,
+      erro: `Variáveis da rotina ${rotina.rotulo || tipo} não configuradas na Vercel.`,
     });
   }
 
   // Só aceita https (evita SSRF para endereços internos)
   try {
-    const u = new URL(cred.url);
+    const u = new URL(rotina.url);
     if (u.protocol !== 'https:') {
       return responder(res, 500, { erro: 'URL da rotina deve ser https.' });
     }
@@ -164,7 +146,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const resultado = await dispararRotina(cred.url, cred.token, tipo);
+    const resultado = await dispararRotina(rotina.url, rotina.token, rotina.mensagem);
 
     if (resultado.status < 200 || resultado.status >= 300) {
       console.error('[api/rodar] rotina', tipo, resultado.status, resultado.corpo.slice(0, 200));
@@ -173,10 +155,11 @@ export default async function handler(req, res) {
       });
     }
 
-    ultimoDisparo[tipo] = Date.now();
+    ultimoDisparo[chave] = Date.now();
 
     return responder(res, 200, {
       ok: true,
+      canal: canal.id,
       tipo,
       mensagem: 'Vídeo em produção! Fica pronto em ~20 min.',
       cooldownSegundos: Math.floor(COOLDOWN_MS / 1000),

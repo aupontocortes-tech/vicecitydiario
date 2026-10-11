@@ -5,6 +5,7 @@
  * Variáveis opcionais no ambiente:
  *   GITHUB_TOKEN, SENHA_PAINEL  (necessárias para /api/config)
  *   ROTINA_8H_URL, ROTINA_8H_TOKEN, ROTINA_12H_URL, ROTINA_12H_TOKEN (/api/rodar)
+ *   ROTINA_NV_URL, ROTINA_NV_TOKEN (rotina do Nunca Visto)
  */
 import http from 'http';
 import fs from 'fs';
