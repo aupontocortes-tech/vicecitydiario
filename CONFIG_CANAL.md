@@ -25,5 +25,4 @@ Tema: o Cyberleek vazou 25 minutos de gameplay em 8 de outubro. Jason aparece to
 - [x] GTA vai ter conteúdo mais 18 com senas de sexo ? Verifica nas fontes mas não pos algo que vai violar alguma diretrizes (06/10/2026)
 
 ## PAUSAS
-- 12h
 - 14h
