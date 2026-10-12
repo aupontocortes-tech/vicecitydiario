@@ -139,6 +139,40 @@ async function buscarViewsAoVivo(channelId) {
   return mapa;
 }
 
+/** Quantidade de inscritos do canal, no texto público do YouTube. */
+async function buscarInscritos(channelId) {
+  const resposta = await fetch('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0',
+      'Accept-Language': 'pt-BR,pt;q=0.9',
+    },
+    body: JSON.stringify({
+      context: {
+        client: {
+          clientName: 'WEB',
+          clientVersion: '2.20241001.00.00',
+          hl: 'pt',
+          gl: 'BR',
+        },
+      },
+      browseId: channelId,
+    }),
+    signal: AbortSignal.timeout(8000),
+  });
+
+  if (!resposta.ok) {
+    throw new Error(`YouTube canal respondeu ${resposta.status}`);
+  }
+
+  const dados = await resposta.text();
+  const m = dados.match(/"content":"((?:\\.|[^"\\])*inscritos)"/i);
+  if (!m) return null;
+  const texto = m[1].replace(/\\u0026/g, '&').replace(/inscritos/i, 'visualizações');
+  return parseViewsPt(texto);
+}
+
 export default async function handler(req, res) {
   // Só GET
   if (req.method && req.method !== 'GET') {
@@ -167,6 +201,7 @@ export default async function handler(req, res) {
     let somaViews = videos.reduce((acc, v) => acc + (v.views || 0), 0);
     let totalShorts = videos.length;
     let destaque = null;
+    let inscritos = null;
 
     try {
       const aoVivo = await buscarViewsAoVivo(canal.channelId);
@@ -192,6 +227,12 @@ export default async function handler(req, res) {
       console.error('[api/videos] views ao vivo', err);
     }
 
+    try {
+      inscritos = await buscarInscritos(canal.channelId);
+    } catch (err) {
+      console.error('[api/videos] inscritos', err);
+    }
+
     // Cache de 2 minutos na CDN da Vercel (+ stale enquanto revalida)
     res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=300');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -203,6 +244,7 @@ export default async function handler(req, res) {
       total: videos.length,
       totalShorts,
       somaViews,
+      inscritos,
       destaque,
       videos,
     });

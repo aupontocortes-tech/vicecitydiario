@@ -89,6 +89,38 @@
       margin-bottom: 12px;
     }
 
+    .brand {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .inscritos {
+      margin-left: auto;
+      text-align: right;
+      flex-shrink: 0;
+      line-height: 1.1;
+    }
+
+    .inscritos[hidden] {
+      display: none;
+    }
+
+    .inscritos .num {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--ciano);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .inscritos .rotulo {
+      margin-top: 2px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--texto-suave);
+    }
+
     .atalhos {
       display: flex;
       flex-wrap: wrap;
@@ -100,6 +132,11 @@
 
     .atalhos a {
       color: var(--ciano);
+    }
+
+    .atalhos a#link-sugestoes {
+      font-size: 1.35rem;
+      font-weight: 800;
     }
 
     .atalhos a:hover {
@@ -1248,6 +1285,10 @@
         <h1 id="titulo-canal">Vice City Diário</h1>
         <p id="subtitulo-canal">Painel do canal · só leitura</p>
       </div>
+      <div class="inscritos" id="inscritos" hidden>
+        <div class="num" id="inscritos-num">0</div>
+        <div class="rotulo">inscritos</div>
+      </div>
     </header>
 
     <nav class="atalhos" aria-label="Navegação do painel">
@@ -1479,6 +1520,7 @@
       document.title = `${ui.nome} — Painel`;
       document.getElementById('titulo-canal').textContent = ui.nome;
       document.getElementById('subtitulo-canal').textContent = ui.subtitulo;
+      renderInscritos(null);
       document.getElementById('logo-canal').alt = ui.nome;
       document.querySelectorAll('.btn-canal').forEach((btn) => {
         const ativo = btn.getAttribute('data-canal') === ui.id;
@@ -1711,6 +1753,17 @@
 
     // ---------- Resumo + vídeos ----------
 
+    function renderInscritos(n) {
+      const box = document.getElementById('inscritos');
+      if (!box) return;
+      if (!Number.isFinite(n)) {
+        box.hidden = true;
+        return;
+      }
+      box.hidden = false;
+      document.getElementById('inscritos-num').textContent = formatarNumero(n);
+    }
+
     function renderResumo(videos, extra) {
       const el = document.getElementById('resumo');
       if (!videos.length) {
@@ -1937,6 +1990,7 @@
 
       if (videosResult.status === 'fulfilled') {
         const videos = videosResult.value.videos || [];
+        renderInscritos(videosResult.value.inscritos);
         renderResumo(videos, videosResult.value);
         renderVideos(videos);
         renderStatusProducao(videos);
@@ -2384,6 +2438,13 @@
       return /iphone|ipad|ipod/i.test(navigator.userAgent);
     }
 
+    function ehCelular() {
+      return (
+        window.matchMedia('(max-width: 800px)').matches ||
+        /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)
+      );
+    }
+
     function deveMostrarBanner() {
       if (jaEstaInstalado()) return false;
       try {
@@ -2467,13 +2528,11 @@
       document.getElementById('instalar-app').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    // iOS / primeira visita: mostra o card na frente
-    if (deveMostrarBanner()) {
+    // O card grande só abre sozinho no celular.
+    // No notebook ele fica escondido até a pessoa tocar em "Baixar no celular",
+    // ou até o navegador oferecer instalar o site.
+    if (ehCelular() && deveMostrarBanner()) {
       mostrarBannerInstalar(false);
-      // Se não veio beforeinstallprompt em 1,5s, mostra mesmo assim (com dica)
-      setTimeout(() => {
-        if (deveMostrarBanner()) mostrarBannerInstalar(false);
-      }, 1500);
     }
 
     // Registra o service worker (ajuda o Chrome a liberar “Instalar”)
