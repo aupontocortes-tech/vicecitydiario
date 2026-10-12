@@ -11,15 +11,14 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## O QUE PROCURAR
 
 ## EVITAR
+- Não baixar o "An Extended Look" inteiro (14 GB). Use primeiro o Trailer 1, o Trailer 2 e os clipes curtos de personagem. Se precisar do Extended Look, recorte só os trechos necessários direto do link com ffmpeg (-ss e -t), sem baixar o arquivo todo.
 
 ## ESTILO DOS VÍDEOS
 
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
-- [ ] Crie um YouTube Short para o canal Vice City Diário sobre a nudez nos vazamentos do GTA 6.
-
-Tema: o Cyberleek vazou 25 minutos de gameplay em 8 de outubro. Jason aparece totalmente nu por cerca de 14 minutos, inclusive em cutscenes. Lucia aparece só de costas, de calcinha/biquíni. Em agosto já tinha (12/10/2026)
+- [ ] NOTÍCIA/VERDADE OU MENTIRA: GTA 6 vai ter nudez? Segundo relatos da imprensa sobre o vazamento do Cyberleek (gameplay vazado em 8/10), Jason apareceria nu em parte das cenas e Lucia apareceria de costas, de roupa íntima. Trate como RUMOR (selo RUMOR + a palavra "rumor" na narração): a Rockstar não confirmou. Cite só o que sites confiáveis relataram. Use SÓ imagens oficiais da Rockstar do Jason e da Lucia (nada do vazamento, nada sensual). Pode comparar com o que a classificação etária oficial já confirmou. Não repetir o ângulo dos vídeos de 06/10 e 08/10. (12/10/2026)
 - [x] GTA 6 vazou de novo: 25 minutos de gameplay!" (08/10/2026)
 - [x] SUPOSTO RETORNO DO HACKER DE GTA 6? 👀” (06/10/2026)
 - [x] GTA vai ter conteúdo mais 18 com senas de sexo ? Verifica nas fontes mas não pos algo que vai violar alguma diretrizes (06/10/2026)
