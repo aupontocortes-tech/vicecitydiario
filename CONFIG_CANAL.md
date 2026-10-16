@@ -18,7 +18,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
-- [ ] GTA 6 pode ser indicado au goty , jogo do ano (16/10/2026)
+- [x] GTA 6 pode ser indicado au goty , jogo do ano (16/10/2026)
 - [x] ANÁLISE DO TRAILER DE LANÇAMENTO (15/10/2026), com destaque para o casal Jason e Lucia. Fatos: lançamento em 19/11 (PS5 e Xbox Series X|S), música "Flower in a Hurricane" (Justice com Tame Impala, SZA e King Gizzard), Lucia com tornozeleira, golpe que dá errado em Leonida. Destaque: o momento íntimo (15/10/2026)
 - [x] Rumores que a versão do PC vai vai lançar junto com a versão online acho que no começo do ano em março se puder pesquisar para mim a fonte e a não se a se o rumo é foi lançado mesmo (14/10/2026)
 - [x] NOTÍCIA/VERDADE OU MENTIRA: GTA 6 vai ter nudez? Segundo relatos da imprensa sobre o vazamento do Cyberleek (gameplay vazado em 8/10), Jason apareceria nu em parte das cenas e Lucia apareceria de costas, de roupa íntima. Trate como RUMOR (selo RUMOR + a palavra "rumor" na narração): a Rockstar não confirmou. Cite só o que sites confiáveis relataram. Use SÓ imagens oficiais da Rockstar do Jason e da Lucia (nada do vazamento, nada sensual). Pode comparar com o que a classificação etária oficial já confirmou. Não repetir o ângulo dos vídeos de 06/10 e 08/10. (12/10/2026)
