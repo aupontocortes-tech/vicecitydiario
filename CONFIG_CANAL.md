@@ -28,3 +28,4 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 
 ## PAUSAS
 - 12h
+- 14h
