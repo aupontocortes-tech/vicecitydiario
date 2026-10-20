@@ -9,8 +9,18 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## FONTES PROIBIDAS
 
 ## O QUE PROCURAR
+- Até o lançamento (19/11), dê prioridade a estes formatos, que são os que mais dão views no canal:
+  - MOMENTOS DO TRAILER: "os 3 momentos mais insanos", "a cena que ninguém percebeu" (com cenas dos trailers em movimento).
+  - VERDADE OU MENTIRA: boato que está rodando + resposta clara (confirmado x rumor).
+  - GTA 5 x GTA 6: comparar 1 coisa lado a lado (carros, polícia, água, personagens, mapa).
+  - LUGAR REAL: o lugar de Miami/Flórida que inspirou um local do jogo.
+  - CONTAGEM REGRESSIVA: só nas 2 últimas semanas antes do lançamento, no máximo 2x por semana.
+- Notícia só entra se for GRANDE (anúncio oficial da Rockstar, gameplay novo, notas/análises, data, polêmica que está todo mundo comentando).
+- Prefira SEMPRE trechos dos trailers em movimento a screenshots parados.
 
 ## EVITAR
+- Notícia técnica ou de nicho que não gera hype: tamanho em GB, pré-download, disco na caixa, política/deputados, prêmios, preço de edição de colecionador. Esses vídeos ficaram com menos de 50 views.
+- Se o único assunto disponível for fraco, escolha um dos formatos de "O QUE PROCURAR" em vez de uma notícia pequena.
 - Não baixar o "An Extended Look" inteiro (14 GB). Use primeiro o Trailer 1, o Trailer 2 e os clipes curtos de personagem. Se precisar do Extended Look, recorte só os trechos necessários direto do link com ffmpeg (-ss e -t), sem baixar o arquivo todo.
 
 ## ESTILO DOS VÍDEOS
