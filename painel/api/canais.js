@@ -52,6 +52,17 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## PAUSAS
 `;
 
+const ARQUIVO_VF = `# Configuração do canal Veil Frequency
+
+Arquivo editado pelo painel. Não coloque senhas aqui.
+
+## SUGESTÕES DE VÍDEO
+
+## EVITAR
+
+## PAUSAS
+`;
+
 const CANAIS = {
   vcd: {
     id: 'vcd',
@@ -109,6 +120,26 @@ const CANAIS = {
         // Este canal não usa rotina do Claude: o botão dispara o GitHub Actions (publica na hora)
         tipo: 'psicologia',
         github: { workflow: 'publicar.yml', inputs: { modo: 'agora' } },
+        rotulo: 'publicar agora',
+        mensagem: '',
+      },
+    ],
+  },
+  vf: {
+    id: 'vf',
+    nome: 'Veil Frequency',
+    repo: 'mentesecreta', // mora na pasta veil/ do repositório do Mente Secreta
+    configPath: 'veil/CONFIG_CANAL.md',
+    pastaFila: 'veil/serie/fila',
+    workflow: 'veil.yml',
+    channelId: process.env.VF_CHANNEL_ID || '',
+    horarios: ['18h'],
+    arquivoInicial: ARQUIVO_VF,
+    rotinas: [
+      {
+        // Publica pelo GitHub Actions (workflow veil.yml), igual ao Mente Secreta
+        tipo: 'terror',
+        github: { workflow: 'veil.yml', inputs: { modo: 'agora' } },
         rotulo: 'publicar agora',
         mensagem: '',
       },

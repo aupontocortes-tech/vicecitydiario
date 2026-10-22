@@ -55,7 +55,7 @@ async function gh(token, caminho, opcoes = {}) {
 async function listarFila(token, canal, ref = BRANCH) {
   let itens;
   try {
-    itens = await gh(token, `${canal.repo}/contents/${PASTA_FILA}?ref=${ref}`);
+    itens = await gh(token, `${canal.repo}/contents/${canal.pastaFila || PASTA_FILA}?ref=${ref}`);
   } catch (e) {
     if (String(e.message).includes(' 404')) return [];
     throw e;
@@ -95,7 +95,7 @@ async function trocarNaFila(token, canal) {
   const numeros = fila.map((f) => parseInt(f.name, 10)).filter((n) => Number.isFinite(n));
   const novoNum = String((numeros.length ? Math.max(...numeros) : fila.length) + 1).padStart(2, '0');
   const resto = primeiro.name.replace(/^\d+_?/, '') || primeiro.name;
-  const novoCaminho = `${PASTA_FILA}/${novoNum}_${resto}`;
+  const novoCaminho = `${canal.pastaFila || PASTA_FILA}/${novoNum}_${resto}`;
 
   // Um commit só: cria o arquivo com o nome novo (mesmo conteúdo) e apaga o antigo.
   const ref = await gh(token, `${canal.repo}/git/ref/heads/${BRANCH}`);
@@ -176,7 +176,7 @@ export default async function handler(req, res) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) return responder(res, 503, { erro: 'GITHUB_TOKEN não configurado na Vercel.' });
 
-  const usaFila = canal.id === 'ms';
+  const usaFila = canal.id === 'ms' || Boolean(canal.pastaFila);
   const ler = (ref) => (usaFila ? proximoDaFila(token, canal, ref) : proximaSugestao(token, canal));
 
   try {

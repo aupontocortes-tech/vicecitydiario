@@ -15,7 +15,7 @@ const SECAO_PAUSAS = 'PAUSAS';
 const LIMITE_ITEM = 300;
 
 function contentsUrl(canal) {
-  return `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${PATH}`;
+  return `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${canal.configPath || PATH}`;
 }
 
 function horariosDoCanal(canal) {

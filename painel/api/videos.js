@@ -182,6 +182,11 @@ export default async function handler(req, res) {
 
   const canal = obterCanal(req);
 
+  if (!canal.channelId) {
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(200).json({ atualizadoEm: new Date().toISOString(), canal: canal.id, canalId: '', total: 0, totalShorts: 0, somaViews: 0, inscritos: null, destaque: null, videos: [] });
+  }
+
   try {
     const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${canal.channelId}`;
     const resposta = await fetch(feedUrl, {
