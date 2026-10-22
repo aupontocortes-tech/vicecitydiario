@@ -1,7 +1,7 @@
 /**
  * Configuração dos canais do painel.
  * Segredos só em process.env — este arquivo não guarda token.
- * ?canal=vcd (padrão) ou ?canal=nv.
+ * ?canal=vcd (padrão), ?canal=nv ou ?canal=ms.
  */
 
 export const OWNER = 'aupontocortes-tech';
@@ -30,6 +30,17 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 `;
 
 const ARQUIVO_NV = `# Configuração do canal Nunca Visto
+
+Arquivo editado pelo painel. Não coloque senhas aqui.
+
+## SUGESTÕES DE VÍDEO
+
+## EVITAR
+
+## PAUSAS
+`;
+
+const ARQUIVO_MS = `# Configuração do canal Mente Secreta
 
 Arquivo editado pelo painel. Não coloque senhas aqui.
 
@@ -82,6 +93,23 @@ const CANAIS = {
         rotulo: 'curiosidade (18h)',
         mensagem:
           'Disparo manual pelo painel Nunca Visto: produzir 1 Short de curiosidade agora.',
+      },
+    ],
+  },
+  ms: {
+    id: 'ms',
+    nome: 'Mente Secreta',
+    repo: 'mentesecreta',
+    channelId: process.env.MS_CHANNEL_ID || '',
+    horarios: ['12h'],
+    arquivoInicial: ARQUIVO_MS,
+    rotinas: [
+      {
+        // Este canal não usa rotina do Claude: o botão dispara o GitHub Actions (publica na hora)
+        tipo: 'psicologia',
+        github: { workflow: 'publicar.yml', inputs: { modo: 'agora' } },
+        rotulo: 'publicar agora',
+        mensagem: '',
       },
     ],
   },

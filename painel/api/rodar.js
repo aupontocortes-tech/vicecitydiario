@@ -7,6 +7,7 @@
  *   ROTINA_8H_URL   + ROTINA_8H_TOKEN   → Vice City Diário, tipo "screenshots"
  *   ROTINA_12H_URL  + ROTINA_12H_TOKEN  → Vice City Diário, tipo "trailer"
  *   ROTINA_NV_URL   + ROTINA_NV_TOKEN   → Nunca Visto, tipo "curiosidade"
+ *   GITHUB_TOKEN (precisa de Actions: write no repo mentesecreta) → Mente Secreta, tipo "psicologia"
  *
  * Formato oficial do gatilho API (claude.ai/code → Rotinas → gatilho API):
  *   POST <URL_DO_GATILHO>
@@ -19,7 +20,7 @@
  */
 
 import crypto from 'crypto';
-import { obterCanal } from './canais.js';
+import { OWNER, obterCanal } from './canais.js';
 
 const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutos
 const ANTHROPIC_VERSION = '2023-06-01';
@@ -127,6 +128,41 @@ export default async function handler(req, res) {
       erro: `Aguarde ${min} min antes de disparar de novo este tipo.`,
       cooldownSegundos: Math.ceil(falta / 1000),
     });
+  }
+
+  // Canais que publicam pelo GitHub Actions (ex.: Mente Secreta)
+  if (rotina.github) {
+    const gh = process.env.GITHUB_TOKEN;
+    if (!gh) return responder(res, 503, { erro: 'GITHUB_TOKEN não configurado na Vercel.' });
+    try {
+      const r = await fetch(
+        `https://api.github.com/repos/${OWNER}/${canal.repo}/actions/workflows/${rotina.github.workflow}/dispatches`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/vnd.github+json',
+            Authorization: `Bearer ${gh}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'ViceCityDiarioPainel/1.0',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ref: 'main', inputs: rotina.github.inputs || {} }),
+        }
+      );
+      if (r.status !== 204) {
+        console.error('[api/rodar] github', r.status, (await r.text().catch(() => '')).slice(0, 200));
+        return responder(res, 502, { erro: 'O GitHub não aceitou o disparo. Confira o GITHUB_TOKEN (Actions: write).' });
+      }
+      ultimoDisparo[chave] = Date.now();
+      return responder(res, 200, {
+        ok: true, canal: canal.id, tipo,
+        mensagem: 'Vídeo em produção! Fica no ar em ~10 min.',
+        cooldownSegundos: Math.floor(COOLDOWN_MS / 1000),
+      });
+    } catch (err) {
+      console.error('[api/rodar] github', err);
+      return responder(res, 502, { erro: 'Erro ao chamar o GitHub. Tente de novo em instantes.' });
+    }
   }
 
   if (!rotina.url || !rotina.token) {

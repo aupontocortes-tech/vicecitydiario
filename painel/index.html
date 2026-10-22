@@ -246,7 +246,7 @@
 
     .seletor-canal {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
       margin-bottom: 16px;
     }
@@ -285,6 +285,26 @@
       box-shadow: 0 0 16px rgba(40, 230, 220, 0.55);
     }
 
+
+    body.canal-ms .logo { display: none; }
+    body.canal-ms .logo-sigla { display: block; box-shadow: 0 0 16px rgba(225, 26, 38, 0.55); }
+    body.canal-ms .brand h1, body.canal-ms .brand p { color: #e11a26; }
+    body.canal-ms .btn-canal[aria-pressed="true"], body.canal-ms .btn-rosa {
+      background: #e11a26;
+      color: #120a1f;
+      border-color: transparent;
+    }
+    body.canal-ms .slot.proximo {
+      border-color: #e11a26;
+      box-shadow: 0 0 0 1px rgba(225, 26, 38, 0.35), 0 0 24px rgba(225, 26, 38, 0.15);
+    }
+    body.canal-ms .slot.proximo .hora { color: #e11a26; }
+    body.canal-ms {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(225, 26, 38, 0.20), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(225, 26, 38, 0.07), transparent 50%),
+        var(--bg);
+    }
     body.canal-nv .logo { display: none; }
     body.canal-nv .logo-sigla { display: block; }
     body.canal-nv .brand h1 { color: #28e6dc; }
@@ -1276,6 +1296,7 @@
     <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal">
       <button type="button" class="btn-canal" data-canal="vcd" aria-pressed="true">Vice City Diário</button>
       <button type="button" class="btn-canal" data-canal="nv" aria-pressed="false">Nunca Visto</button>
+      <button type="button" class="btn-canal" data-canal="ms" aria-pressed="false">Mente Secreta</button>
     </div>
 
     <header class="app-header">
@@ -1475,18 +1496,30 @@
           { tipo: 'curiosidade', rotulo: 'Curiosidade', icone: '✨', classe: 'curiosidade' },
         ],
       },
+      ms: {
+        id: 'ms',
+        nome: 'Mente Secreta',
+        subtitulo: 'Painel do canal · só leitura',
+        slots: [
+          { hora: 12, tipo: 'Psicologia', sub: 'Agendado pro meio-dia' },
+        ],
+        rotinas: [
+          { tipo: 'psicologia', rotulo: 'Publicar agora', icone: '🧠', classe: 'curiosidade' },
+        ],
+      },
     };
 
     function sincronizarCanalDaUrl() {
       const q = new URLSearchParams(location.search).get('canal');
-      if (q === 'vcd' || q === 'nv') {
+      if (['vcd', 'nv', 'ms'].includes(q)) {
         try { localStorage.setItem(CHAVE_CANAL, q); } catch { /* ignore */ }
       }
     }
 
     function canalAtual() {
       try {
-        return localStorage.getItem(CHAVE_CANAL) === 'nv' ? 'nv' : 'vcd';
+        const c = localStorage.getItem(CHAVE_CANAL);
+        return ['vcd', 'nv', 'ms'].includes(c) ? c : 'vcd';
       } catch {
         return 'vcd';
       }
@@ -1517,6 +1550,9 @@
     function aplicarCanal() {
       const ui = uiCanal();
       document.body.classList.toggle('canal-nv', ui.id === 'nv');
+      document.body.classList.toggle('canal-ms', ui.id === 'ms');
+      const sigla = document.getElementById('logo-sigla');
+      if (sigla) { sigla.src = ui.id === 'ms' ? '/icon-ms.jpg' : '/icon-nv.jpg'; sigla.alt = ui.nome; }
       document.title = `${ui.nome} — Painel`;
       document.getElementById('titulo-canal').textContent = ui.nome;
       document.getElementById('subtitulo-canal').textContent = ui.subtitulo;
@@ -2019,7 +2055,7 @@
     }
 
     function escolherCanal(id) {
-      const novo = id === 'nv' ? 'nv' : 'vcd';
+      const novo = ['vcd', 'nv', 'ms'].includes(id) ? id : 'vcd';
       if (novo === canalAtual()) return;
       try { localStorage.setItem(CHAVE_CANAL, novo); } catch { /* ignore */ }
       const endereco = new URL(location.href);
