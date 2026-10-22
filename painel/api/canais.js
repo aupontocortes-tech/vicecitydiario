@@ -101,7 +101,7 @@ const CANAIS = {
     id: 'ms',
     nome: 'Mente Secreta',
     repo: 'mentesecreta',
-    channelId: process.env.MS_CHANNEL_ID || '',
+    channelId: process.env.MS_CHANNEL_ID || 'UCyR9GXiWtZCoHhvhrJZoUzQ',
     horarios: ['12h'],
     arquivoInicial: ARQUIVO_MS,
     rotinas: [
