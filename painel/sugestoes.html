@@ -132,24 +132,30 @@
     }
 
 
-    body.canal-ms .logo { display: none; }
-    body.canal-ms .logo-sigla { display: block; box-shadow: 0 0 16px rgba(225, 26, 38, 0.55); }
-    body.canal-ms .brand h1, body.canal-ms .brand p { color: #e11a26; }
-    body.canal-ms .btn-canal[aria-pressed="true"], body.canal-ms .btn-rosa {
-      background: #e11a26;
-      color: #120a1f;
-      border-color: transparent;
-    }
-    body.canal-ms .slot.proximo {
-      border-color: #e11a26;
-      box-shadow: 0 0 0 1px rgba(225, 26, 38, 0.35), 0 0 24px rgba(225, 26, 38, 0.15);
-    }
-    body.canal-ms .slot.proximo .hora { color: #e11a26; }
     body.canal-ms {
+      --bg: #07060b;
+      --bg-elev: #121018;
+      --bg-card: #18161f;
+      --rosa: #b794f6;
+      --ciano: #d6c7ff;
+      --amarelo: #f4f4f6;
+      --texto: #f7f7f8;
+      --texto-suave: #c8c4d4;
+      --borda: rgba(255, 255, 255, 0.12);
       background:
-        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(225, 26, 38, 0.20), transparent 55%),
-        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(225, 26, 38, 0.07), transparent 50%),
-        var(--bg);
+        radial-gradient(ellipse 70% 45% at 0% -10%, rgba(124, 92, 191, 0.28), transparent 55%),
+        #07060b;
+      color: #f7f7f8;
+    }
+    body.canal-ms .logo { display: none; }
+    body.canal-ms .logo-sigla { display: block; box-shadow: 0 0 0 2px rgba(180, 20, 30, 0.7), 0 0 16px rgba(180, 20, 30, 0.35); }
+    body.canal-ms .brand h1 { color: #f7f7f8; }
+    body.canal-ms .brand p { color: #c8c4d4; }
+    body.canal-ms .btn-canal[aria-pressed="true"],
+    body.canal-ms .btn-rosa {
+      background: #7c5cbf;
+      color: #fff;
+      border-color: transparent;
     }
     body.canal-nv .logo { display: none; }
     body.canal-nv .logo-sigla { display: block; }
@@ -565,7 +571,7 @@
       document.body.classList.toggle('canal-nv', nv);
       document.body.classList.toggle('canal-ms', ms);
       const sigla = document.getElementById('logo-sigla');
-      if (sigla) sigla.src = ms ? '/icon-ms.jpg' : '/icon-nv.jpg';
+      if (sigla) sigla.src = ms ? '/icon-ms.jpg?v=2' : '/icon-nv.jpg';
       document.title = `Sugestões de vídeo — ${nome}`;
       document.getElementById('marca-canal').textContent = `${nome} · ideias para Shorts`;
       document.getElementById('logo-canal').alt = nome;
