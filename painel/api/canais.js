@@ -1,6 +1,7 @@
 /**
  * Configuração dos canais do painel.
  * Segredos só em process.env — este arquivo não guarda token.
+ * NOVO CANAL: adicione aqui (repo, channelId, horários, rotina) E em painel/canais-ui.js (nome, cor, ícone, botões).
  * ?canal=vcd (padrão), ?canal=nv ou ?canal=ms.
  */
 
@@ -100,7 +101,7 @@ const CANAIS = {
     id: 'ms',
     nome: 'Mente Secreta',
     repo: 'mentesecreta',
-    channelId: process.env.MS_CHANNEL_ID || '',
+    channelId: process.env.MS_CHANNEL_ID || 'UCyR9GXiWtZCoHhvhrJZoUzQ',
     horarios: ['12h'],
     arquivoInicial: ARQUIVO_MS,
     rotinas: [
