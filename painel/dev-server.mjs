@@ -15,6 +15,7 @@ import videos from './api/videos.js';
 import status from './api/status.js';
 import config from './api/config.js';
 import rodar from './api/rodar.js';
+import tema from './api/tema.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3000;
@@ -86,6 +87,7 @@ const rotasApi = {
   '/api/status': adaptar(status),
   '/api/config': adaptar(config),
   '/api/rodar': adaptar(rodar),
+  '/api/tema': adaptar(tema),
 };
 
 const server = http.createServer(async (req, res) => {

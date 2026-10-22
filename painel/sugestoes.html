@@ -460,6 +460,28 @@
       .wrap { width: min(100%, 720px); padding-top: 32px; }
       html, body { font-size: 20px; }
     }
+
+    /* Próximo tema */
+    .tema-card {
+      background: var(--bg-card);
+      border: 1px solid var(--borda);
+      border-radius: var(--raio);
+      padding: 14px;
+      margin-bottom: 22px;
+    }
+    .tema-card h2 { margin-bottom: 4px; }
+    .tema-sub { font-size: 0.85rem; color: var(--texto-suave); margin-bottom: 10px; }
+    .tema-texto {
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--bg-elev);
+      margin-bottom: 10px;
+    }
+    .tema-texto.escondido { color: var(--texto-suave); font-weight: 400; font-style: italic; }
+    .tema-acoes { display: flex; gap: 8px; }
+    .tema-acoes .btn { flex: 1; width: auto; }
   </style>
 </head>
 <body>
@@ -479,6 +501,16 @@
       <a href="/" id="link-painel">← Painel</a>
       <a href="/sugestoes.html" class="ativo">Sugestões</a>
     </nav>
+
+    <section class="tema-card" aria-labelledby="titulo-tema">
+      <h2 id="titulo-tema">Próximo vídeo</h2>
+      <p class="tema-sub" id="tema-sub">Toque em revelar para ver o tema.</p>
+      <div class="tema-texto escondido" id="tema-texto">Tema escondido</div>
+      <div class="tema-acoes">
+        <button type="button" class="btn btn-rosa" id="btn-revelar">Revelar tema</button>
+        <button type="button" class="btn btn-ghost" id="btn-trocar">Trocar tema</button>
+      </div>
+    </section>
 
     <section aria-labelledby="titulo-nova">
       <h2 id="titulo-nova">Nova sugestão</h2>
@@ -588,6 +620,7 @@
       endereco.searchParams.set('canal', novo);
       history.replaceState(null, '', endereco.pathname + endereco.search);
       aplicarCanal();
+      esconderTema();
       carregar();
     }
 
@@ -853,7 +886,80 @@
       escolherCanal(btn.getAttribute('data-canal'));
     });
 
+    // ----- Próximo tema (revelar / trocar) -----
+    function subTema() {
+      return canalAtual() === 'ms'
+        ? 'Próximo roteiro da fila (sai às 12h)'
+        : 'Próxima sugestão pendente que o robô vai usar';
+    }
+
+    function esconderTema() {
+      const el = document.getElementById('tema-texto');
+      el.textContent = 'Tema escondido';
+      el.className = 'tema-texto escondido';
+      document.getElementById('tema-sub').textContent = subTema();
+      document.getElementById('btn-revelar').textContent = 'Revelar tema';
+    }
+
+    function mostrarTema(d) {
+      const el = document.getElementById('tema-texto');
+      if (d.proximo) {
+        el.textContent = d.proximo.texto;
+        el.className = 'tema-texto';
+        const extra = d.restantes > 1 ? ` · ${d.restantes} na fila` : '';
+        document.getElementById('tema-sub').textContent = subTema() + extra;
+      } else {
+        el.textContent = d.aviso || 'Nada na fila.';
+        el.className = 'tema-texto escondido';
+      }
+      document.getElementById('btn-revelar').textContent = 'Esconder';
+    }
+
+    document.getElementById('btn-revelar').addEventListener('click', async (ev) => {
+      const btn = ev.currentTarget;
+      if (btn.textContent === 'Esconder') return esconderTema();
+      btn.disabled = true;
+      document.getElementById('tema-texto').textContent = 'Carregando…';
+      try {
+        const res = await fetch(urlApi('/api/tema'), { headers: { Accept: 'application/json' } });
+        const d = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(d.erro || `Erro ${res.status}`);
+        mostrarTema(d);
+      } catch (err) {
+        esconderTema();
+        toast(err.message || 'Erro ao carregar o tema', false);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('btn-trocar').addEventListener('click', async (ev) => {
+      const btn = ev.currentTarget;
+      if (!confirm('Trocar o tema do próximo vídeo? O atual vai para o fim da fila.')) return;
+      const senha = await pedirSenha('Digite a senha para trocar o tema.');
+      if (!senha) return;
+      btn.disabled = true;
+      try {
+        const res = await fetch(urlApi('/api/tema'), {
+          method: 'POST',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acao: 'trocar', senha }),
+        });
+        const d = await res.json().catch(() => ({}));
+        if (res.status === 401) { salvarSenhaLocal('', false); throw new Error('Senha errada'); }
+        if (!res.ok) throw new Error(d.erro || 'Erro ao trocar');
+        mostrarTema(d);
+        toast(d.mensagem || 'Tema trocado!', true);
+        if (canalAtual() !== 'ms') carregar();
+      } catch (err) {
+        toast(err.message || 'Erro ao trocar', false);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
     atualizarContadores();
+    esconderTema();
     carregar();
   </script>
 </body>
