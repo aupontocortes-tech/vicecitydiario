@@ -245,11 +245,15 @@
     }
 
     .seletor-canal {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      display: flex;
       gap: 8px;
       margin-bottom: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
+    .seletor-canal::-webkit-scrollbar { display: none; }
+    .seletor-canal .btn-canal { flex: 1 0 96px; padding-inline: 10px; font-size: 0.92rem; white-space: nowrap; }
 
     .btn-canal {
       min-height: 48px;
@@ -286,43 +290,27 @@
     }
 
 
-    body.canal-ms .logo { display: none; }
-    body.canal-ms .logo-sigla { display: block; box-shadow: 0 0 16px rgba(225, 26, 38, 0.55); }
-    body.canal-ms .brand h1, body.canal-ms .brand p { color: #e11a26; }
-    body.canal-ms .btn-canal[aria-pressed="true"], body.canal-ms .btn-rosa {
-      background: #e11a26;
-      color: #120a1f;
+    /* Tema por canal: a cor vem de canais-ui.js (--cor-canal) */
+    body.canal-tema .logo { display: none; }
+    body.canal-tema .logo-sigla { display: block; box-shadow: 0 0 16px color-mix(in srgb, var(--cor-canal) 55%, transparent); }
+    body.canal-tema .brand h1 { color: var(--cor-canal); }
+    body.canal-tema .btn-canal[aria-pressed="true"], body.canal-tema .btn-rosa {
+      background: var(--cor-canal);
+      color: var(--cor-canal-texto);
       border-color: transparent;
     }
-    body.canal-ms .slot.proximo {
-      border-color: #e11a26;
-      box-shadow: 0 0 0 1px rgba(225, 26, 38, 0.35), 0 0 24px rgba(225, 26, 38, 0.15);
+    body.canal-tema .slot.proximo {
+      border-color: var(--cor-canal);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--cor-canal) 35%, transparent), 0 0 24px color-mix(in srgb, var(--cor-canal) 15%, transparent);
     }
-    body.canal-ms .slot.proximo .hora { color: #e11a26; }
-    body.canal-ms {
+    body.canal-tema .slot.proximo .hora { color: var(--cor-canal); }
+    body.canal-tema {
       background:
-        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(225, 26, 38, 0.20), transparent 55%),
-        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(225, 26, 38, 0.07), transparent 50%),
+        radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in srgb, var(--cor-canal) 20%, transparent), transparent 55%),
+        radial-gradient(ellipse 70% 45% at 100% 0%, color-mix(in srgb, var(--cor-canal) 7%, transparent), transparent 50%),
         var(--bg);
     }
-    body.canal-nv .logo { display: none; }
-    body.canal-nv .logo-sigla { display: block; }
-    body.canal-nv .brand h1 { color: #28e6dc; }
-    body.canal-nv .btn-canal[aria-pressed="true"] {
-      background: #28e6dc;
-      color: #120a1f;
-    }
-    body.canal-nv .slot.proximo {
-      border-color: #28e6dc;
-      box-shadow: 0 0 0 1px rgba(40, 230, 220, 0.35), 0 0 24px rgba(40, 230, 220, 0.15);
-    }
-    body.canal-nv .slot.proximo .hora { color: #28e6dc; }
-    body.canal-nv {
-      background:
-        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(40, 230, 220, 0.22), transparent 55%),
-        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(40, 230, 220, 0.08), transparent 50%),
-        var(--bg);
-    }
+
 
     .meta-linha {
       display: flex;
@@ -1293,11 +1281,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal">
-      <button type="button" class="btn-canal" data-canal="vcd" aria-pressed="true">Vice City Diário</button>
-      <button type="button" class="btn-canal" data-canal="nv" aria-pressed="false">Nunca Visto</button>
-      <button type="button" class="btn-canal" data-canal="ms" aria-pressed="false">Mente Secreta</button>
-    </div>
+    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal"></div>
 
     <header class="app-header">
       <img class="logo" id="logo-canal" src="/icon.jpg" width="52" height="52" alt="Vice City Diário" />
@@ -1460,6 +1444,7 @@
     </div>
   </div>
 
+  <script src="/canais-ui.js"></script>
   <script>
     /**
      * Painel Vice City Diário — frontend puro.
@@ -1470,48 +1455,11 @@
     const TZ = 'America/Sao_Paulo';
     const CHAVE_CANAL = 'painel_canal';
 
-    const CANAIS_UI = {
-      vcd: {
-        id: 'vcd',
-        nome: 'Vice City Diário',
-        subtitulo: 'Painel do canal · só leitura',
-        slots: [
-          { hora: 8, tipo: 'Screenshots', sub: 'Imagens do jogo' },
-          { hora: 12, tipo: 'Trechos de trailer', sub: 'Cortes do trailer' },
-          { hora: 14, tipo: 'Screenshots', sub: 'Imagens do jogo' },
-        ],
-        rotinas: [
-          { tipo: 'screenshots', rotulo: 'Screenshots', icone: '📸', classe: 'screenshots' },
-          { tipo: 'trailer', rotulo: 'Trailer', icone: '🎬', classe: 'trailer' },
-        ],
-      },
-      nv: {
-        id: 'nv',
-        nome: 'Nunca Visto',
-        subtitulo: 'Painel do canal · só leitura',
-        slots: [
-          { hora: 18, tipo: 'Curiosidade', sub: 'Short de curiosidade' },
-        ],
-        rotinas: [
-          { tipo: 'curiosidade', rotulo: 'Curiosidade', icone: '✨', classe: 'curiosidade' },
-        ],
-      },
-      ms: {
-        id: 'ms',
-        nome: 'Mente Secreta',
-        subtitulo: 'Painel do canal · só leitura',
-        slots: [
-          { hora: 12, tipo: 'Psicologia', sub: 'Agendado pro meio-dia' },
-        ],
-        rotinas: [
-          { tipo: 'psicologia', rotulo: 'Publicar agora', icone: '🧠', classe: 'curiosidade' },
-        ],
-      },
-    };
+    const CANAIS_UI = Object.fromEntries(CANAIS_LISTA.map((c) => [c.id, { ...c, subtitulo: 'Painel do canal · só leitura' }]));
 
     function sincronizarCanalDaUrl() {
       const q = new URLSearchParams(location.search).get('canal');
-      if (['vcd', 'nv', 'ms'].includes(q)) {
+      if (CANAIS_LISTA.some((c) => c.id === q)) {
         try { localStorage.setItem(CHAVE_CANAL, q); } catch { /* ignore */ }
       }
     }
@@ -1519,7 +1467,7 @@
     function canalAtual() {
       try {
         const c = localStorage.getItem(CHAVE_CANAL);
-        return ['vcd', 'nv', 'ms'].includes(c) ? c : 'vcd';
+        return CANAIS_LISTA.some((x) => x.id === c) ? c : CANAIS_LISTA[0].id;
       } catch {
         return 'vcd';
       }
@@ -1549,10 +1497,9 @@
 
     function aplicarCanal() {
       const ui = uiCanal();
-      document.body.classList.toggle('canal-nv', ui.id === 'nv');
-      document.body.classList.toggle('canal-ms', ui.id === 'ms');
+      aplicarTemaCanal(ui);
       const sigla = document.getElementById('logo-sigla');
-      if (sigla) { sigla.src = ui.id === 'ms' ? '/icon-ms.jpg' : '/icon-nv.jpg'; sigla.alt = ui.nome; }
+      if (sigla) { sigla.src = ui.icone; sigla.alt = ui.nome; }
       document.title = `${ui.nome} — Painel`;
       document.getElementById('titulo-canal').textContent = ui.nome;
       document.getElementById('subtitulo-canal').textContent = ui.subtitulo;
@@ -1568,6 +1515,7 @@
     }
 
     sincronizarCanalDaUrl();
+    montarSeletorCanais(document.getElementById('seletor-canal'), canalAtual());
 
     // ---------- Utilitários ----------
 
@@ -2055,7 +2003,7 @@
     }
 
     function escolherCanal(id) {
-      const novo = ['vcd', 'nv', 'ms'].includes(id) ? id : 'vcd';
+      const novo = CANAIS_LISTA.some((c) => c.id === id) ? id : CANAIS_LISTA[0].id;
       if (novo === canalAtual()) return;
       try { localStorage.setItem(CHAVE_CANAL, novo); } catch { /* ignore */ }
       const endereco = new URL(location.href);
@@ -2092,11 +2040,11 @@
     const CHAVE_SENHA = 'vcd_painel_senha';
 
     function chaveCooldown() {
-      return canalAtual() === 'nv' ? 'nv_rodar_cooldown' : 'vcd_rodar_cooldown';
+      return `${canalAtual()}_rodar_cooldown`;
     }
 
     function chaveProducao() {
-      return canalAtual() === 'nv' ? 'nv_producao_ativa' : 'vcd_producao_ativa';
+      return `${canalAtual()}_producao_ativa`;
     }
     const COOLDOWN_MS_UI = 30 * 60 * 1000;
     const ESTIMATIVA_MS = 20 * 60 * 1000; // ~20 min até o Short
