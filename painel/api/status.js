@@ -30,6 +30,17 @@ export default async function handler(req, res) {
   }
 
   const canal = obterCanal(req);
+  if (!canal.repo) {
+    res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=300');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    return res.status(200).json({
+      atualizadoEm: new Date().toISOString(),
+      canal: canal.id,
+      workflow: WORKFLOW,
+      repositorio: '',
+      runs: [],
+    });
+  }
   const runsUrl =
     `https://api.github.com/repos/${OWNER}/${canal.repo}/actions/workflows/${WORKFLOW}/runs?per_page=8`;
 

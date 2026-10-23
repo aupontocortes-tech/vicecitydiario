@@ -41,6 +41,17 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## PAUSAS
 `;
 
+const ARQUIVO_VEIL = `# Configuração do canal Veil Frequency
+
+Arquivo editado pelo painel. Não coloque senhas aqui.
+
+## SUGESTÕES DE VÍDEO
+
+## EVITAR
+
+## PAUSAS
+`;
+
 const ARQUIVO_MS = `# Configuração do canal Mente Secreta
 
 Arquivo editado pelo painel. Não coloque senhas aqui.
@@ -113,6 +124,15 @@ const CANAIS = {
         mensagem: '',
       },
     ],
+  },
+  veil: {
+    id: 'veil',
+    nome: 'Veil Frequency',
+    repo: '',
+    channelId: process.env.VEIL_CHANNEL_ID || '',
+    horarios: [],
+    arquivoInicial: ARQUIVO_VEIL,
+    rotinas: [],
   },
 };
 

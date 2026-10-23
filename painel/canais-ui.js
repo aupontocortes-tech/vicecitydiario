@@ -48,6 +48,17 @@ window.CANAIS_LISTA = [
     slots: [{ hora: 12, tipo: 'Psicologia', sub: 'Agendado pro meio-dia' }],
     rotinas: [{ tipo: 'psicologia', rotulo: 'Publicar agora', icone: '🧠', classe: 'curiosidade' }],
   },
+  {
+    id: 'veil',
+    nome: 'Veil Frequency',
+    curto: 'Veil Frequency',
+    cor: '#c1121f',
+    corTexto: '#ffffff',
+    icone: '/icon-veil.jpg',
+    placeholder: 'Ex.: Um sinal que quase ninguém escuta',
+    slots: [],
+    rotinas: [],
+  },
 ];
 
 /** Aplica a cor do canal no <body> (variáveis CSS usadas pelo tema). */
@@ -57,6 +68,7 @@ window.aplicarTemaCanal = function (canal) {
   b.style.setProperty('--cor-canal-texto', canal.corTexto || '#ffffff');
   b.classList.toggle('canal-tema', canal.id !== window.CANAIS_LISTA[0].id);
   b.classList.toggle('canal-ms', canal.id === 'ms');
+  b.classList.toggle('canal-veil', canal.id === 'veil');
 };
 
 /** Monta os botões do seletor de canal. */

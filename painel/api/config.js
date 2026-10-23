@@ -312,6 +312,10 @@ export default async function handler(req, res) {
   }
 
   const canal = obterCanal(req);
+  if (!canal.repo && method === 'GET') {
+    return responderJson(res, 200, montarRespostaLeitura(canal.arquivoInicial, null, canal), true);
+  }
+
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
     return responderJson(res, 503, {
@@ -320,6 +324,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!canal.repo) {
+      return responderJson(res, 503, { erro: 'Repositório deste canal ainda não configurado.' });
+    }
+
     if (method === 'GET') {
       const arq = await lerArquivo(token, canal);
       if (!arq) {
