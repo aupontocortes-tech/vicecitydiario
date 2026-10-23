@@ -15,14 +15,14 @@ const SECAO_PAUSAS = 'PAUSAS';
 const LIMITE_ITEM = 300;
 
 function contentsUrl(canal) {
-  return `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${PATH}`;
+  return `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${canal.configPath || PATH}`;
 }
 
 function horariosDoCanal(canal) {
   return (canal.horarios || []).map((h) => String(h).trim().toLowerCase());
 }
 
-function headersGithub(token, extra = {}) {
+export function headersGithub(token, extra = {}) {
   return {
     Accept: 'application/vnd.github+json',
     'User-Agent': 'ViceCityDiarioPainel/1.0',
@@ -33,7 +33,7 @@ function headersGithub(token, extra = {}) {
 }
 
 /** Compara senha sem vazar o tamanho exato em tempo constante aproximado. */
-function senhaCorreta(enviada, esperada) {
+export function senhaCorreta(enviada, esperada) {
   if (!esperada || typeof enviada !== 'string') return false;
   const a = Buffer.from(String(enviada));
   const b = Buffer.from(String(esperada));
@@ -47,7 +47,7 @@ function senhaCorreta(enviada, esperada) {
 }
 
 /** Lê o corpo JSON (Vercel já parseia; local precisa do stream). */
-async function lerBody(req) {
+export async function lerBody(req) {
   if (req.body != null) {
     if (typeof req.body === 'string') {
       return req.body ? JSON.parse(req.body) : {};
@@ -89,7 +89,7 @@ function parseMarkdown(md) {
 }
 
 /** Interpreta uma linha de sugestão: [ ]/[x] texto | fonte: ... (data). */
-function parseSugestao(conteudo, indice) {
+export function parseSugestao(conteudo, indice) {
   const raw = String(conteudo || '').trim();
   const m = raw.match(
     /^\[([ xX])\]\s*(.+?)(?:\s*\|\s*fonte:\s*(.+?))?\s*(?:\((\d{2}\/\d{2}\/\d{4})\))?\s*$/
@@ -117,7 +117,7 @@ function parseSugestao(conteudo, indice) {
 }
 
 /** Monta a linha markdown de uma sugestão. */
-function montarLinhaSugestao({ feito, texto, fonte, data }) {
+export function montarLinhaSugestao({ feito, texto, fonte, data }) {
   const marca = feito ? 'x' : ' ';
   const fonteParte = fonte ? ` | fonte: ${fonte}` : '';
   const dataParte = data ? ` (${data})` : '';
@@ -138,7 +138,7 @@ function dataHojeBrasilia() {
  * Reconstrói o markdown alterando só os itens de uma seção.
  * Preserva título, textos fora de lista e outras seções.
  */
-function aplicarItensNaSecao(md, tituloSecao, novosItensLinhas) {
+export function aplicarItensNaSecao(md, tituloSecao, novosItensLinhas) {
   const texto = String(md || '').replace(/\r\n/g, '\n');
   const linhas = texto.split('\n');
   const header = `## ${tituloSecao}`;
@@ -194,13 +194,13 @@ function escapeRegex(s) {
 }
 
 /** Lista itens "- ..." de uma seção (conteúdo sem o "- "). */
-function itensDaSecao(md, titulo) {
+export function itensDaSecao(md, titulo) {
   const { secoes } = parseMarkdown(md);
   return secoes[titulo] || [];
 }
 
 /** Lê o arquivo no GitHub. Retorna { sha, texto } ou null se 404. */
-async function lerArquivo(token, canal) {
+export async function lerArquivo(token, canal) {
   const url = `${contentsUrl(canal)}?ref=${BRANCH}`;
   const res = await fetch(url, { headers: headersGithub(token) });
 
@@ -250,7 +250,7 @@ async function gravarArquivo(token, canal, texto, sha, mensagem) {
  * Lê → aplica mutação → grava.
  * Se der 409, lê de novo e tenta a mutação mais uma vez.
  */
-async function lerMutarGravar(token, canal, mutator, mensagem) {
+export async function lerMutarGravar(token, canal, mutator, mensagem) {
   for (let tentativa = 0; tentativa < 2; tentativa++) {
     const arq = await lerArquivo(token, canal);
     const textoBase = arq ? arq.texto : canal.arquivoInicial;

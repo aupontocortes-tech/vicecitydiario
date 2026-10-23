@@ -49,15 +49,15 @@ window.CANAIS_LISTA = [
     rotinas: [{ tipo: 'psicologia', rotulo: 'Publicar agora', icone: '🧠', classe: 'curiosidade' }],
   },
   {
-    id: 'veil',
+    id: 'vf',
     nome: 'Veil Frequency',
     curto: 'Veil Frequency',
     cor: '#c1121f',
     corTexto: '#ffffff',
     icone: '/icon-veil.jpg',
-    placeholder: 'Ex.: Um sinal que quase ninguém escuta',
-    slots: [],
-    rotinas: [],
+    placeholder: 'Ex.: A transmission from a lighthouse that was torn down in 1961',
+    slots: [{ hora: 18, tipo: 'Terror (inglês)', sub: 'Vai ao ar às 18h' }],
+    rotinas: [{ tipo: 'terror', rotulo: 'Publicar agora', icone: '📻', classe: 'curiosidade' }],
   },
 ];
 
@@ -68,7 +68,7 @@ window.aplicarTemaCanal = function (canal) {
   b.style.setProperty('--cor-canal-texto', canal.corTexto || '#ffffff');
   b.classList.toggle('canal-tema', canal.id !== window.CANAIS_LISTA[0].id);
   b.classList.toggle('canal-ms', canal.id === 'ms');
-  b.classList.toggle('canal-veil', canal.id === 'veil');
+  b.classList.toggle('canal-veil', canal.id === 'vf');
 };
 
 /** Monta os botões do seletor de canal. */

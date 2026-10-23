@@ -183,7 +183,7 @@ export default async function handler(req, res) {
   const canal = obterCanal(req);
 
   if (!canal.channelId) {
-    res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=300');
+    res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     return res.status(200).json({
       atualizadoEm: new Date().toISOString(),

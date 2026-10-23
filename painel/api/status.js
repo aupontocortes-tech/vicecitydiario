@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     });
   }
   const runsUrl =
-    `https://api.github.com/repos/${OWNER}/${canal.repo}/actions/workflows/${WORKFLOW}/runs?per_page=8`;
+    `https://api.github.com/repos/${OWNER}/${canal.repo}/actions/workflows/${canal.workflow || WORKFLOW}/runs?per_page=8`;
 
   try {
     const headers = {

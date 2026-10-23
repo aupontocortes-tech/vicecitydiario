@@ -41,7 +41,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## PAUSAS
 `;
 
-const ARQUIVO_VEIL = `# Configuração do canal Veil Frequency
+const ARQUIVO_MS = `# Configuração do canal Mente Secreta
 
 Arquivo editado pelo painel. Não coloque senhas aqui.
 
@@ -52,7 +52,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## PAUSAS
 `;
 
-const ARQUIVO_MS = `# Configuração do canal Mente Secreta
+const ARQUIVO_VF = `# Configuração do canal Veil Frequency
 
 Arquivo editado pelo painel. Não coloque senhas aqui.
 
@@ -125,14 +125,25 @@ const CANAIS = {
       },
     ],
   },
-  veil: {
-    id: 'veil',
+  vf: {
+    id: 'vf',
     nome: 'Veil Frequency',
-    repo: '',
-    channelId: process.env.VEIL_CHANNEL_ID || '',
-    horarios: [],
-    arquivoInicial: ARQUIVO_VEIL,
-    rotinas: [],
+    repo: 'mentesecreta', // mora na pasta veil/ do repositório do Mente Secreta
+    configPath: 'veil/CONFIG_CANAL.md',
+    pastaFila: 'veil/serie/fila',
+    workflow: 'veil.yml',
+    channelId: process.env.VF_CHANNEL_ID || 'UCoe34hx015k4fnSI9IwwElg',
+    horarios: ['18h'],
+    arquivoInicial: ARQUIVO_VF,
+    rotinas: [
+      {
+        // Publica pelo GitHub Actions (workflow veil.yml), igual ao Mente Secreta
+        tipo: 'terror',
+        github: { workflow: 'veil.yml', inputs: { modo: 'agora' } },
+        rotulo: 'publicar agora',
+        mensagem: '',
+      },
+    ],
   },
 };
 
