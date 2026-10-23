@@ -132,7 +132,7 @@ const CANAIS = {
     configPath: 'veil/CONFIG_CANAL.md',
     pastaFila: 'veil/serie/fila',
     workflow: 'veil.yml',
-    channelId: process.env.VF_CHANNEL_ID || '',
+    channelId: process.env.VF_CHANNEL_ID || 'UCoe34hx015k4fnSI9IwwElg',
     horarios: ['18h'],
     arquivoInicial: ARQUIVO_VF,
     rotinas: [
