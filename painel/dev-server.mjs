@@ -16,9 +16,10 @@ import status from './api/status.js';
 import config from './api/config.js';
 import rodar from './api/rodar.js';
 import tema from './api/tema.js';
+import roteiros from './api/roteiros.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -86,6 +87,7 @@ const rotasApi = {
   '/api/videos': adaptar(videos),
   '/api/status': adaptar(status),
   '/api/config': adaptar(config),
+  '/api/roteiros': adaptar(roteiros),
   '/api/rodar': adaptar(rodar),
   '/api/tema': adaptar(tema),
 };

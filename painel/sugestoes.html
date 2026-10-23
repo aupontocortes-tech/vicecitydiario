@@ -534,6 +534,7 @@
         <button type="button" class="btn btn-rosa" id="btn-revelar">Revelar tema</button>
         <button type="button" class="btn btn-ghost" id="btn-trocar">Trocar tema</button>
       </div>
+      <a href="/roteiros.html" id="link-roteiros" style="display:block;margin-top:12px;font-weight:700">Ver todos os roteiros da fila →</a>
     </section>
 
     <section aria-labelledby="titulo-nova">
@@ -630,6 +631,7 @@
       document.getElementById('marca-canal').textContent = `${ui.nome} · ideias para Shorts`;
       document.getElementById('logo-canal').alt = ui.nome;
       document.getElementById('link-painel').href = `/?canal=${ui.id}`;
+      document.getElementById('link-roteiros').href = `/roteiros.html?canal=${ui.id}`;
       document.getElementById('campo-texto').placeholder = ui.placeholder || 'Sua ideia de vídeo';
       document.querySelectorAll('.btn-canal').forEach((btn) => {
         btn.setAttribute('aria-pressed', btn.getAttribute('data-canal') === ui.id ? 'true' : 'false');

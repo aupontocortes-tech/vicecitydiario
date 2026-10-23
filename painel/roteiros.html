@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#120a1f" />
+  <meta name="description" content="Roteiros que ainda vão ser publicados" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon.jpg" type="image/jpeg" />
+  <title>Roteiros — Painel</title>
+  <style>
+    :root {
+      --bg: #120a1f; --bg-card: #24183a; --rosa: #ff3c96; --ciano: #28e6dc; --amarelo: #ffde28;
+      --texto: #f3eef8; --texto-suave: #b9aec9; --borda: rgba(255,255,255,0.08); --raio: 16px;
+      --cor-canal: #ff3c96; --cor-canal-texto: #fff;
+      --fonte: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--texto); font-family: var(--fonte); font-size: 17px; line-height: 1.55; }
+    body { background: radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in srgb, var(--cor-canal) 18%, transparent), transparent 55%), var(--bg); }
+    a { color: var(--ciano); text-decoration: none; }
+    .wrap { width: min(100%, 620px); margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+    .seletor-canal { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+    .seletor-canal::-webkit-scrollbar { display: none; }
+    .btn-canal { flex: 1 0 96px; min-height: 44px; padding: 8px 10px; border-radius: 999px; border: 1px solid var(--borda); background: transparent; color: var(--texto-suave); font: inherit; font-size: .92rem; font-weight: 700; white-space: nowrap; cursor: pointer; }
+    .btn-canal[aria-pressed="true"] { background: var(--cor-canal); color: var(--cor-canal-texto); border-color: transparent; }
+    h1 { font-size: 1.45rem; color: var(--cor-canal); }
+    .sub { color: var(--texto-suave); font-size: .92rem; margin: 2px 0 18px; }
+    .voltar { display: inline-block; margin-bottom: 14px; font-weight: 600; }
+    .lista { display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--bg-card); border: 1px solid var(--borda); border-radius: var(--raio); padding: 14px 16px; }
+    .card.proximo { border-color: var(--cor-canal); box-shadow: 0 0 22px color-mix(in srgb, var(--cor-canal) 18%, transparent); }
+    .tag { display: inline-block; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--texto-suave); margin-bottom: 6px; }
+    .card.proximo .tag { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .tit { font-size: 1.08rem; font-weight: 800; line-height: 1.3; }
+    .tit-pt { color: var(--amarelo); font-weight: 700; margin-top: 2px; }
+    .resumo { color: var(--texto-suave); margin-top: 8px; font-size: .95rem; }
+    .meta { color: var(--texto-suave); font-size: .8rem; margin-top: 6px; }
+    details { margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 700; color: var(--ciano); list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▸ "; }
+    details[open] summary::before { content: "▾ "; }
+    ol { margin: 10px 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
+    li { font-size: .95rem; }
+    li .pt { display: block; color: var(--texto-suave); font-size: .88rem; }
+    li .voz { font-size: .72rem; font-weight: 800; color: var(--amarelo); text-transform: uppercase; margin-right: 6px; }
+    .vazio, .erro { color: var(--texto-suave); text-align: center; padding: 28px 10px; border: 1px dashed var(--borda); border-radius: var(--raio); }
+    button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal"></div>
+    <a class="voltar" id="link-painel" href="/">← Voltar ao painel</a>
+    <h1 id="titulo">Próximos roteiros</h1>
+    <p class="sub" id="sub">Os vídeos que o robô ainda vai publicar, na ordem.</p>
+    <div class="lista" id="lista"><div class="vazio">Carregando…</div></div>
+  </main>
+
+  <script src="/canais-ui.js"></script>
+  <script>
+    const CHAVE_CANAL = 'painel_canal';
+    const VOZ_PT = { mulher: 'narradora', homem: 'narrador', idosa: 'idosa', idoso: 'idoso', crianca: 'criança', sombria: 'voz sombria', sombrio: 'voz sombria' };
+    function canalAtual() {
+      const q = new URLSearchParams(location.search).get('canal');
+      if (CANAIS_LISTA.some((c) => c.id === q)) { try { localStorage.setItem(CHAVE_CANAL, q); } catch {} return q; }
+      try { const c = localStorage.getItem(CHAVE_CANAL); return CANAIS_LISTA.some((x) => x.id === c) ? c : CANAIS_LISTA[0].id; } catch { return CANAIS_LISTA[0].id; }
+    }
+    function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+    function cartao(r, i) {
+      const proximo = i === 0;
+      const cenas = (r.cenas || []).map((c) => `<li>${c.voz ? `<span class="voz">${esc(VOZ_PT[c.voz] || c.voz)}</span>` : ''}${esc(c.texto)}${c.pt ? `<span class="pt">${esc(c.pt)}</span>` : ''}</li>`).join('');
+      return `<article class="card ${proximo ? 'proximo' : ''}">
+        <span class="tag">${proximo ? 'Próximo a publicar' : `${i + 1}º da fila`}</span>
+        <div class="tit">${esc(r.titulo)}</div>
+        ${r.tituloPt ? `<div class="tit-pt">${esc(r.tituloPt)}</div>` : ''}
+        ${r.resumoPt ? `<p class="resumo">${esc(r.resumoPt)}</p>` : ''}
+        <div class="meta">${(r.cenas || []).length} cenas · ${r.palavras || 0} palavras${r.narrador ? ' · ' + esc(VOZ_PT[r.narrador] || r.narrador) : ''}</div>
+        ${cenas ? `<details ${proximo ? 'open' : ''}><summary>Ver roteiro completo</summary><ol>${cenas}</ol></details>` : ''}
+      </article>`;
+    }
+
+    async function carregar() {
+      const id = canalAtual();
+      const ui = CANAIS_LISTA.find((c) => c.id === id) || CANAIS_LISTA[0];
+      aplicarTemaCanal(ui);
+      document.title = `Roteiros — ${ui.nome}`;
+      document.getElementById('titulo').textContent = `Próximos roteiros · ${ui.nome}`;
+      document.getElementById('link-painel').href = `/?canal=${ui.id}`;
+      montarSeletorCanais(document.getElementById('seletor-canal'), ui.id);
+      const lista = document.getElementById('lista');
+      lista.innerHTML = '<div class="vazio">Carregando…</div>';
+      try {
+        const r = await fetch(`/api/roteiros?canal=${encodeURIComponent(ui.id)}`);
+        const d = await r.json();
+        if (canalAtual() !== ui.id) return;
+        if (!r.ok) throw new Error(d.erro || 'erro');
+        if (d.semFila) { lista.innerHTML = `<div class="vazio">${esc(d.mensagem)}</div>`; return; }
+        lista.innerHTML = d.roteiros.length ? d.roteiros.map(cartao).join('')
+          : '<div class="vazio">A fila está vazia. A tarefa semanal escreve novos roteiros no domingo.</div>';
+      } catch (e) {
+        lista.innerHTML = `<div class="erro">Não consegui carregar os roteiros agora. Tente de novo em instantes.</div>`;
+      }
+    }
+
+    document.getElementById('seletor-canal').addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-canal]'); if (!b) return;
+      try { localStorage.setItem(CHAVE_CANAL, b.dataset.canal); } catch {}
+      history.replaceState(null, '', `?canal=${b.dataset.canal}`);
+      carregar();
+    });
+    carregar();
+  </script>
+</body>
+</html>

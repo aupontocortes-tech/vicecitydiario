@@ -130,7 +130,7 @@ const CANAIS = {
     nome: 'Veil Frequency',
     repo: 'mentesecreta', // mora na pasta veil/ do repositório do Mente Secreta
     configPath: 'veil/CONFIG_CANAL.md',
-    pastaFila: 'veil/serie/fila',
+    pastaFila: 'veil/historias/fila',
     workflow: 'veil.yml',
     channelId: process.env.VF_CHANNEL_ID || 'UCoe34hx015k4fnSI9IwwElg',
     horarios: ['18h'],
@@ -176,6 +176,7 @@ export function resumoPublico(canal) {
     nome: canal.nome,
     horarios: canal.horarios,
     rotinas: canal.rotinas.map((r) => ({ tipo: r.tipo, rotulo: r.rotulo })),
+    temRoteiros: canal.id === 'ms' || Boolean(canal.pastaFila),
   };
 }
 
