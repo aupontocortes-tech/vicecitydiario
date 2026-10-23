@@ -56,7 +56,7 @@ window.CANAIS_LISTA = [
     corTexto: '#ffffff',
     icone: '/icon-vf.jpg',
     placeholder: 'Ex.: A transmission from a lighthouse that was torn down in 1961',
-    slots: [{ hora: 18, tipo: 'Terror (inglês)', sub: 'Vai ao ar 19h de Nova York' }],
+    slots: [{ hora: 18, tipo: 'Terror (inglês)', sub: 'Vai ao ar às 18h' }],
     rotinas: [{ tipo: 'terror', rotulo: 'Publicar agora', icone: '📻', classe: 'curiosidade' }],
   },
 ];
