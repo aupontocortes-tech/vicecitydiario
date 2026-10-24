@@ -43,7 +43,9 @@
     details[open] summary::before { content: "▾ "; }
     ol { margin: 10px 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
     li { font-size: .95rem; }
-    li .pt { display: block; color: var(--texto-suave); font-size: .88rem; }
+    li .en { display: block; color: var(--texto-suave); font-size: .82rem; font-style: italic; margin-top: 2px; }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 0; background: var(--cor-canal); color: var(--cor-canal-texto); font: inherit; font-weight: 800; cursor: pointer; }
+    .ouvir[aria-pressed="true"] { background: rgba(255,255,255,.12); color: var(--texto); }
     li .voz { font-size: .72rem; font-weight: 800; color: var(--amarelo); text-transform: uppercase; margin-right: 6px; }
     .vazio, .erro { color: var(--texto-suave); text-align: center; padding: 28px 10px; border: 1px dashed var(--borda); border-radius: var(--raio); }
     button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
@@ -71,7 +73,8 @@
 
     function cartao(r, i) {
       const proximo = i === 0;
-      const cenas = (r.cenas || []).map((c) => `<li>${c.voz ? `<span class="voz">${esc(VOZ_PT[c.voz] || c.voz)}</span>` : ''}${esc(c.texto)}${c.pt ? `<span class="pt">${esc(c.pt)}</span>` : ''}</li>`).join('');
+      // Com tradução: o português vem em destaque e o inglês (o que vai ao ar) embaixo, menor.
+      const cenas = (r.cenas || []).map((c) => `<li>${c.voz ? `<span class="voz">${esc(VOZ_PT[c.voz] || c.voz)}</span>` : ''}${esc(c.pt || c.texto)}${c.pt ? `<span class="en">No vídeo: ${esc(c.texto)}</span>` : ''}</li>`).join('');
       return `<article class="card ${proximo ? 'proximo' : ''}">
         <span class="tag">${proximo ? 'Próximo a publicar' : `${i + 1}º da fila`}</span>
         <div class="tit">${esc(r.titulo)}</div>
@@ -79,6 +82,7 @@
         ${r.resumoPt ? `<p class="resumo">${esc(r.resumoPt)}</p>` : ''}
         <div class="meta">${(r.cenas || []).length} cenas · ${r.palavras || 0} palavras${r.narrador ? ' · ' + esc(VOZ_PT[r.narrador] || r.narrador) : ''}</div>
         ${cenas ? `<details ${proximo ? 'open' : ''}><summary>Ver roteiro completo</summary><ol>${cenas}</ol></details>` : ''}
+        ${cenas && 'speechSynthesis' in window ? `<button type="button" class="ouvir" data-ouvir="${i}" aria-pressed="false">🔊 Ouvir o roteiro em português</button>` : ''}
       </article>`;
     }
 
@@ -98,12 +102,43 @@
         if (canalAtual() !== ui.id) return;
         if (!r.ok) throw new Error(d.erro || 'erro');
         if (d.semFila) { lista.innerHTML = `<div class="vazio">${esc(d.mensagem)}</div>`; return; }
+        pararLeitura(); ROTEIROS = d.roteiros;
         lista.innerHTML = d.roteiros.length ? d.roteiros.map(cartao).join('')
           : '<div class="vazio">A fila está vazia. A tarefa semanal escreve novos roteiros no domingo.</div>';
       } catch (e) {
         lista.innerHTML = `<div class="erro">Não consegui carregar os roteiros agora. Tente de novo em instantes.</div>`;
       }
     }
+
+    // ---------- Ouvir o roteiro (voz do próprio celular/navegador, grátis) ----------
+    let ROTEIROS = [];
+    let tocando = null;
+    function pararLeitura() {
+      try { speechSynthesis.cancel(); } catch {}
+      document.querySelectorAll('[data-ouvir]').forEach((b) => { b.setAttribute('aria-pressed', 'false'); b.textContent = '🔊 Ouvir o roteiro em português'; });
+      tocando = null;
+    }
+    function vozPortugues() {
+      const vs = speechSynthesis.getVoices();
+      return vs.find((v) => /pt[-_]BR/i.test(v.lang)) || vs.find((v) => /^pt/i.test(v.lang)) || null;
+    }
+    document.getElementById('lista').addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-ouvir]'); if (!b) return;
+      const i = Number(b.dataset.ouvir);
+      if (tocando === i) { pararLeitura(); return; }
+      pararLeitura();
+      const r = ROTEIROS[i]; if (!r) return;
+      const partes = [r.tituloPt || r.titulo, ...(r.cenas || []).map((c) => c.pt || c.texto)];
+      const voz = vozPortugues();
+      partes.forEach((t, k) => {
+        const u = new SpeechSynthesisUtterance(t);
+        u.lang = 'pt-BR'; if (voz) u.voice = voz; u.rate = 0.95;
+        if (k === partes.length - 1) u.onend = () => { if (tocando === i) pararLeitura(); };
+        speechSynthesis.speak(u);
+      });
+      tocando = i; b.setAttribute('aria-pressed', 'true'); b.textContent = '⏹ Parar';
+    });
+    if ('speechSynthesis' in window) speechSynthesis.getVoices();
 
     document.getElementById('seletor-canal').addEventListener('click', (ev) => {
       const b = ev.target.closest('[data-canal]'); if (!b) return;
