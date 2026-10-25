@@ -44,6 +44,8 @@ def run(cmd): subprocess.run(cmd, check=True)
 
 def source_file(src):
     os.makedirs(CACHE, exist_ok=True)
+    local = src if os.path.isabs(src) else os.path.join(HERE, src)
+    if os.path.isfile(local): return local  # ex.: "clipes/perseguicao_01.mp4"
     if src.startswith('clip:'):
         name = src[5:]; url = 'https://www.rockstargames.com/VI/_next/static/media/' + name
     elif src.startswith('url:'):

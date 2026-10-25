@@ -9,6 +9,8 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## FONTES PROIBIDAS
 
 ## O QUE PROCURAR
+- A PARTIR DE 19/11 (lançamento): toda execução confere primeiro se a Rockstar soltou material novo (rockstargames.com/VI, Newswire, rockstargames.com/VI/media/videos e /screenshots). Material oficial novo = prioridade máxima de vídeo. O Thiago NÃO vai comprar o jogo: nunca sugira gravar gameplay próprio.
+- Se existir a pasta clipes/ no repositório (clipes que o Thiago baixou de canais "no copyright" ou de streamers que liberam cortes), pode usar esses arquivos como "src" local, com crédito do canal de origem na descrição (o arquivo clipes/CREDITOS.md diz de onde veio cada um). Nunca baixe vídeo do YouTube você mesmo.
 - Até o lançamento (19/11), dê prioridade a estes formatos, que são os que mais dão views no canal:
   - MOMENTOS DO TRAILER: "os 3 momentos mais insanos", "a cena que ninguém percebeu" (com cenas dos trailers em movimento).
   - VERDADE OU MENTIRA: boato que está rodando + resposta clara (confirmado x rumor).
