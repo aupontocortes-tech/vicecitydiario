@@ -11,10 +11,13 @@ spec.json:
  "credit": "Imagens: trailers oficiais Rockstar Games • Vice City Diário"
 }
 src: T1 (Trailer 1, 90s), T2 (Trailer 2), EXT (An Extended Look), ou "clip:Arquivo.HASH.mp4"
-(clipes de personagem em rockstargames.com/VI/_next/static/media/). start em segundos no vídeo de origem.
+(clipes de personagem em rockstargames.com/VI/_next/static/media/), ou "url:https://..." (vídeo .mp4 ou
+imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada com zoom lento).
+start em segundos no vídeo de origem (ignorado em imagem).
+tag (opcional): selo PEQUENO no canto superior esquerdo, ex. "CENA DE GTA 5". Use SEMPRE que a cena for de outro jogo.
 focus: 0 = esquerda, 0.5 = centro, 1 = direita (onde fica o recorte vertical).
 Saída: saida_dir/final.mp4"""
-import sys, os, json, subprocess, math, urllib.request
+import sys, os, json, subprocess, math, urllib.request, urllib.parse
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
@@ -43,6 +46,11 @@ def source_file(src):
     os.makedirs(CACHE, exist_ok=True)
     if src.startswith('clip:'):
         name = src[5:]; url = 'https://www.rockstargames.com/VI/_next/static/media/' + name
+    elif src.startswith('url:'):
+        url = src[4:].strip(); host = urllib.parse.urlparse(url).hostname or ''
+        if not (host == 'rockstargames.com' or host.endswith('.rockstargames.com') or host.endswith('rockstargames-com.akamaized.net')):
+            raise SystemExit('url: só aceita material oficial da Rockstar (rockstargames.com): ' + url)
+        name = 'url_' + os.path.basename(urllib.parse.urlparse(url).path)
     else:
         url = SRC[src]; name = os.path.basename(url)
     p = os.path.join(CACHE, name)
@@ -91,7 +99,9 @@ def main():
         vf = (f"crop={cw}:{ih}:{x}:0,scale={W}:{H},"
               f"zoompan=z='1+({z}-1)*on/({dur}*{FPS})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},setsar=1")
         o = os.path.join(out, f'part{i:02d}.mp4')
-        run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', str(sc['start']), '-i', p, '-t', f'{dur:.3f}', '-an', '-vf', vf,
+        is_img = p.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))
+        inp = ['-loop', '1', '-i', p] if is_img else ['-ss', str(sc.get('start', 0)), '-i', p]
+        run(['ffmpeg', '-y', '-loglevel', 'error', *inp, '-t', f'{dur:.3f}', '-an', '-vf', vf,
              '-r', str(FPS), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p', o])
         parts.append(o)
     lst = os.path.join(out, 'parts.txt'); open(lst, 'w').write(''.join(f"file '{os.path.abspath(p)}'\n" for p in parts))
@@ -124,6 +134,10 @@ def main():
         last = raw
         t = i / FPS; s = max(k for k in range(len(SEGS)) if t >= bounds[k]); lt = t - bounds[s]; sc = SC[s]
         im = Image.frombytes('RGB', (W, H), raw).convert('RGBA'); im.alpha_composite(GRAD); d = ImageDraw.Draw(im)
+        if sc.get('tag'):
+            f = M9[34]; tb = d.textbbox((0, 0), sc['tag'], font=f)
+            d.rounded_rectangle((36, 60, 36 + tb[2] - tb[0] + 36, 116), 12, fill=(0, 0, 0, 200))
+            d.text((54, 88), sc['tag'], font=f, fill=WHITE, anchor='lm')
         if sc.get('badge'):
             col = (255, 150, 30) if 'RUMOR' in sc['badge'].upper() or 'NÃO' in sc['badge'].upper() else GREEN
             badge(d, W / 2, 170, sc['badge'], col)
