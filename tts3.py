@@ -1,3 +1,12 @@
+import sys
+# Corrige sozinho: sherpa-onnx 2.x não gera a voz pt-BR (piper). Volta para 1.13.8 e reinicia.
+import importlib.metadata as _md, subprocess as _sp, os as _os
+try: _v = _md.version('sherpa-onnx')
+except Exception: _v = '0'
+if _v.split('.')[0].isdigit() and int(_v.split('.')[0]) >= 2 and not _os.environ.get('SHERPA_FIX'):
+    print('sherpa-onnx', _v, '-> instalando 1.13.8 (a 2.x não fala pt-BR)')
+    _sp.run([sys.executable, '-m', 'pip', 'install', '-q', '--break-system-packages', 'sherpa-onnx==1.13.8'], check=True)
+    _os.environ['SHERPA_FIX'] = '1'; _os.execv(sys.executable, [sys.executable] + sys.argv)
 import sherpa_onnx, numpy as np, soundfile as sf, json, re
 d='vits-piper-pt_BR-faber-medium/'
 cfg=sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=d+'pt_BR-faber-medium.onnx',tokens=d+'tokens.txt',data_dir=d+'espeak-ng-data'),num_threads=4))

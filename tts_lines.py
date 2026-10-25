@@ -4,6 +4,14 @@ spec.json: {"scenes":[{"text":"frase 1", ...}, ...]}
 Gera saida_dir/narr.wav e saida_dir/timing.json (palavras e início/fim de cada cena).
 Precisa da pasta vits-piper-pt_BR-faber-medium/ ao lado."""
 import sys, json, os
+# Corrige sozinho: sherpa-onnx 2.x não gera a voz pt-BR (piper). Volta para 1.13.8 e reinicia.
+import importlib.metadata as _md, subprocess as _sp, os as _os
+try: _v = _md.version('sherpa-onnx')
+except Exception: _v = '0'
+if _v.split('.')[0].isdigit() and int(_v.split('.')[0]) >= 2 and not _os.environ.get('SHERPA_FIX'):
+    print('sherpa-onnx', _v, '-> instalando 1.13.8 (a 2.x não fala pt-BR)')
+    _sp.run([sys.executable, '-m', 'pip', 'install', '-q', '--break-system-packages', 'sherpa-onnx==1.13.8'], check=True)
+    _os.environ['SHERPA_FIX'] = '1'; _os.execv(sys.executable, [sys.executable] + sys.argv)
 import numpy as np, soundfile as sf, sherpa_onnx
 
 PRON = {'Game Informer': 'Guêim Infórmer', 'Rockstar': 'Róckstar', 'GTA 6': 'GTA seis', 'GTA 5': 'GTA cinco',
