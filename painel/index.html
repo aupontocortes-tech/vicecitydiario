@@ -1506,6 +1506,7 @@
       <h3 class="player-titulo" id="player-titulo"></h3>
       <div class="player-meta" id="player-meta"></div>
       <div class="player-acoes">
+        <button type="button" class="btn-yt" id="player-pt" hidden>🇧🇷 Ver em português</button>
         <a class="btn-yt" id="player-yt" href="#" target="_blank" rel="noopener noreferrer">
           Abrir no YouTube
         </a>
@@ -1857,6 +1858,18 @@
     const LIMITE_VIDEOS = 5;
     let videosExpandidos = false;
 
+    // Veil Frequency: id do vídeo em inglês -> id da versão dublada (não listada)
+    let mapaPt = {};
+    async function carregarMapaPt(canal) {
+      mapaPt = {};
+      if (canal !== 'vf') return;
+      try {
+        const d = await buscarJson(`/api/roteiros?canal=vf&publicados=1`);
+        (d.roteiros || []).forEach((r) => { if (r.videoId && r.videoIdPt) mapaPt[r.videoId] = r.videoIdPt; });
+        if (canalAtual() === canal && window.__videosPainel) renderVideos(window.__videosPainel);
+      } catch {}
+    }
+
     function renderVideos(videos) {
       const el = document.getElementById('videos');
       const btnMais = document.getElementById('btn-ver-mais');
@@ -1882,7 +1895,7 @@
               <span>${formatarDataHora(v.publicado)}</span>
               <span class="views">${formatarNumero(v.views)} views</span>
             </div>
-            <span class="abrir-yt">Assistir no app →</span>
+            <span class="abrir-yt">${mapaPt[v.id] ? '🇧🇷 Tem em português · ' : ''}Assistir no app →</span>
           </div>
         </button>
       `)
@@ -1932,6 +1945,15 @@
         <span class="views">${formatarNumero(video.views)} views</span>
       `;
       linkYt.href = `https://www.youtube.com/shorts/${encodeURIComponent(video.id)}`;
+
+      // botão que troca para a versão em português (e volta para o inglês)
+      const btnPt = document.getElementById('player-pt');
+      const idPt = mapaPt[video.id] || (video.idEn ? video.id : '');
+      btnPt.hidden = !idPt;
+      btnPt.textContent = video.idEn ? '🇺🇸 Ver em inglês' : '🇧🇷 Ver em português';
+      btnPt.onclick = () => abrirPlayer(video.idEn
+        ? { ...video, id: video.idEn, idEn: '' }
+        : { ...video, id: mapaPt[video.id], idEn: video.id });
 
       modal.hidden = false;
       document.body.classList.add('player-aberto');
@@ -2035,6 +2057,7 @@
       ]);
 
       if (seq !== cargaSeq || canalPedido !== canalAtual()) return;
+      carregarMapaPt(canalPedido);
 
       if (configResult.status === 'fulfilled') {
         pausasAtivas = new Set(configResult.value.pausas || []);
