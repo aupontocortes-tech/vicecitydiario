@@ -27,14 +27,14 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 
 ## ESTILO DOS VÍDEOS
 - Instale a voz com: pip install --break-system-packages "sherpa-onnx==1.13.8" (a versão 2.0 não gera a narração em pt-BR).
-- CENAS DE GTA 5: podem ilustrar o vídeo, mas SEMPRE com o selo pequeno no canto ("tag": "CENA DE GTA 5" no spec.json do render_trailer.py). Nunca deixe parecer que é GTA 6. Use só material OFICIAL da Rockstar do GTA 5 (imagens ou vídeos de rockstargames.com / Newswire), com "src": "url:LINK". Nada de vídeo do YouTube ou de outros canais.
+- CENAS DE GTA 5: só use se tiver VÍDEO oficial em movimento do GTA 5 (com selo "CENA DE GTA 5"). Se só achar imagem parada, NÃO faça vídeo de GTA 5 x GTA 6: escolha outro formato. Vídeo com uma imagem parada só fica sem graça.
 
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
-- [ ] TESTE GTA 5 x GTA 6 (1/3): A POLÍCIA. Alterne cenas oficiais de GTA 5 (com selo "CENA DE GTA 5") e trechos dos trailers de GTA 6, comparando o que já foi mostrado/confirmado. Se não achar material oficial do GTA 5, faça só com GTA 6 e avise no relatório. (25/10/2026)
+- [x] (CANCELADO) TESTE GTA 5 x GTA 6 (1/3): A POLÍCIA. Alterne cenas oficiais de GTA 5 (com selo "CENA DE GTA 5") e trechos dos trailers de GTA 6, comparando o que já foi mostrado/confirmado. Se não achar material oficial do GTA 5, faça só com GTA 6 e avise no relatório. (25/10/2026)
 - [x] TESTE GTA 5 x GTA 6 (2/3): OS CARROS E AS PERSEGUIÇÕES. Mesmo formato: cenas oficiais de GTA 5 com selo "CENA DE GTA 5" x trechos dos trailers de GTA 6. (25/10/2026)
-- [ ] TESTE GTA 5 x GTA 6 (3/3): LOS SANTOS x VICE CITY (a cidade, as praias, o movimento nas ruas). Mesmo formato, com selo "CENA DE GTA 5" nas cenas do 5. (25/10/2026)
+- [x] (CANCELADO) TESTE GTA 5 x GTA 6 (3/3): LOS SANTOS x VICE CITY (a cidade, as praias, o movimento nas ruas). Mesmo formato, com selo "CENA DE GTA 5" nas cenas do 5. (25/10/2026)
 - [x] GTA 6 pode ser indicado au goty , jogo do ano (16/10/2026)
 - [x] ANÁLISE DO TRAILER DE LANÇAMENTO (15/10/2026), com destaque para o casal Jason e Lucia. Fatos: lançamento em 19/11 (PS5 e Xbox Series X|S), música "Flower in a Hurricane" (Justice com Tame Impala, SZA e King Gizzard), Lucia com tornozeleira, golpe que dá errado em Leonida. Destaque: o momento íntimo (15/10/2026)
 - [x] Rumores que a versão do PC vai vai lançar junto com a versão online acho que no começo do ano em março se puder pesquisar para mim a fonte e a não se a se o rumo é foi lançado mesmo (14/10/2026)
