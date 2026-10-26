@@ -1,5 +1,5 @@
 /**
- * GET /api/roteiros?canal=ms|vf
+ * GET /api/roteiros?canal=ms|vf[&publicados=1]
  * Lista os roteiros que ainda vão ser publicados (pasta da fila no GitHub), na ordem de publicação.
  * Só leitura. Usa GITHUB_TOKEN se existir (mais cota); o repositório é público.
  */
@@ -30,6 +30,8 @@ function limpar(r, arquivo, ordem) {
     narrador: String(r.narrador || ''),
     cenas,
     palavras: cenas.reduce((n, c) => n + c.texto.split(/\s+/).filter(Boolean).length, 0),
+    videoId: String(r.video_id || ''),
+    videoIdPt: String(r.video_id_pt || ''),
   };
 }
 
@@ -48,7 +50,10 @@ export default async function handler(req, res) {
       roteiros: [],
     }, true);
   }
-  const pasta = canal.pastaFila || PASTA_PADRAO;
+  // ?publicados=1 -> os últimos já publicados (com link do vídeo e da versão em português)
+  const publicados = String(req.query?.publicados || '') === '1';
+  const pastaFila = canal.pastaFila || PASTA_PADRAO;
+  const pasta = publicados ? pastaFila.replace(/fila$/, 'publicados') : pastaFila;
   const token = process.env.GITHUB_TOKEN;
   try {
     const url = `https://api.github.com/repos/${OWNER}/${canal.repo}/contents/${pasta}?ref=main`;
@@ -57,10 +62,10 @@ export default async function handler(req, res) {
     if (r.status === 401 && token) r = await fetch(url, { headers: semToken }); // token sem acesso: o repositório é público
     if (r.status === 404) return responder(res, 200, { canal: canal.id, roteiros: [] }, true);
     if (!r.ok) throw new Error(`GitHub ${r.status}`);
-    const lista = (await r.json())
+    let lista = (await r.json())
       .filter((i) => i.type === 'file' && i.name.endsWith('.json'))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .slice(0, 14);
+      .sort((a, b) => a.name.localeCompare(b.name));
+    lista = publicados ? lista.reverse().slice(0, 10) : lista.slice(0, 14);
     const roteiros = await Promise.all(lista.map(async (i, k) => {
       try {
         const raw = await fetch(i.download_url, { headers: { 'User-Agent': 'ViceCityDiarioPainel/1.0' } });
@@ -69,7 +74,7 @@ export default async function handler(req, res) {
         return { arquivo: i.name, ordem: k, titulo: i.name, erro: true, cenas: [] };
       }
     }));
-    return responder(res, 200, { canal: canal.id, roteiros, atualizadoEm: new Date().toISOString() }, true);
+    return responder(res, 200, { canal: canal.id, publicados, roteiros, atualizadoEm: new Date().toISOString() }, true);
   } catch (err) {
     console.error('[api/roteiros]', err);
     return responder(res, 502, { erro: 'Não consegui ler os roteiros no GitHub agora. Tente de novo em instantes.' });
