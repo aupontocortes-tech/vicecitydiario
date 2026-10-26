@@ -33,7 +33,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
-- [ ] Vídeo no estilo polêmica + curiosidade proibida (tipo "GTA vai ter cenas de sexo?").
+- [ ] (1/2 feito: Hot Coffee, 26/10/2026; falta o tema 2) Vídeo no estilo polêmica + curiosidade proibida (tipo "GTA vai ter cenas de sexo?").
 Gancho em forma de pergunta chocante nos 2 primeiros segundos.
 Temas, um por vídeo:
 1. Hot Coffee: a cena de sexo escondida no GTA San Andreas que virou escândalo nos EUA em 2005
