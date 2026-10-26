@@ -27,7 +27,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 
 ## ESTILO DOS VÍDEOS
 - Instale a voz com: pip install --break-system-packages "sherpa-onnx==1.13.8" (a versão 2.0 não gera a narração em pt-BR).
-- CENAS DE GTA 5: só use se tiver VÍDEO oficial em movimento do GTA 5 (com selo "CENA DE GTA 5"). Se só achar imagem parada, NÃO faça vídeo de GTA 5 x GTA 6: escolha outro formato. Vídeo com uma imagem parada só fica sem graça.
+- CENAS DE GTA 5: só use se tiver VÍDEO em movimento do GTA 5 com uso permitido (oficial da Rockstar ou clipe da pasta clipes/ com crédito), sempre com o selo "CENA DE GTA 5". Se só achar imagem parada, NÃO faça vídeo de GTA 5 x GTA 6: escolha outro formato.
 
 ## OPINIÕES DO THIAGO
 
