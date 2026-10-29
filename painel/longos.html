@@ -50,6 +50,9 @@
     .assistir { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
     .assistir a { flex: 1 1 140px; min-height: 44px; padding: 8px 12px; text-align: center; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; background: rgba(255,255,255,.08); color: var(--texto); }
     .assistir a.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .texto-pt p { margin: 8px 0; font-size: .95rem; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
     h2 { font-size: 1.15rem; margin: 28px 0 10px; color: var(--cor-canal); }
     .vazio, .erro { color: var(--texto-suave); text-align: center; padding: 28px 10px; border: 1px dashed var(--borda); border-radius: var(--raio); }
     button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
@@ -60,6 +63,9 @@
     .senha { display: flex; gap: 8px; margin: 0 0 16px; }
     .senha input { flex: 1; min-height: 44px; border-radius: 12px; border: 1px solid var(--borda); background: var(--bg-card); color: var(--texto); padding: 0 12px; font: inherit; }
     .aviso { margin-top: 10px; font-size: .9rem; color: var(--amarelo); }
+    .texto-pt p { margin: 8px 0; font-size: .95rem; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
     h2 { font-size: 1.15rem; margin: 26px 0 10px; color: var(--cor-canal); }
 
   </style>
@@ -92,6 +98,7 @@
         ${r.tituloPt ? `<div class="tit-pt">${esc(r.tituloPt)}</div>` : ''}
         ${r.resumoPt ? `<p class="resumo">${esc(r.resumoPt)}</p>` : ''}
         <div class="meta">~${r.minutos || '?'} min · ${r.partes || 0} imagens</div>
+        ${r.textoPt && r.textoPt.length ? `<details><summary>Ler a história em português</summary><div class="texto-pt">${r.textoPt.map((t) => `<p>${esc(t)}</p>`).join('')}</div></details>` : ''}
         <button type="button" class="produzir" data-arq="${esc(r.arquivo)}">▶ Produzir e publicar agora</button>
         <div class="aviso" hidden></div>
       </article>`;
@@ -99,7 +106,10 @@
     function cartaoPub(r) {
       return `<article class="card"><div class="tit">${esc(r.titulo)}</div>
         ${r.tituloPt ? `<div class="tit-pt">${esc(r.tituloPt)}</div>` : ''}
-        ${r.videoId ? `<a class="assistir" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoId)}" target="_blank" rel="noopener">▶ Assistir no YouTube</a>` : ''}</article>`;
+        <div class="links">
+          ${r.videoIdPt ? `<a class="assistir pt" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoIdPt)}" target="_blank" rel="noopener">🇧🇷 Ver em português</a>` : ''}
+          ${r.videoId ? `<a class="assistir" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoId)}" target="_blank" rel="noopener">▶ No canal</a>` : ''}
+        </div></article>`;
     }
     async function carregar() {
       const id = canalAtual(); const ui = CANAIS_LISTA.find((c) => c.id === id) || CANAIS_LISTA[0];

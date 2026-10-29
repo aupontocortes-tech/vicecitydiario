@@ -46,6 +46,8 @@ async function listar(canal, sub, token) {
         partes: (d.partes || []).length,
         minutos: Math.round(palavras / 140),
         videoId: String(d.video_id || ''),
+        videoIdPt: String(d.video_id_pt || ''),
+        textoPt: (d.partes || []).flatMap((p) => (p.falas || []).map((f) => String(f.pt || ''))).filter(Boolean),
       };
     } catch { return { arquivo: `${canal.pastaLongos}/${sub}/${i.name}`, titulo: i.name, erro: true }; }
   }));
