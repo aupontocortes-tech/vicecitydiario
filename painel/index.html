@@ -1368,6 +1368,7 @@
     <nav class="atalhos" aria-label="Navegação do painel">
       <a href="/sugestoes.html" id="link-sugestoes">Sugestões de vídeo</a>
       <a href="/roteiros.html" id="link-roteiros">Ver roteiros</a>
+      <a href="/longos.html" id="link-longos">Vídeos longos</a>
       <a href="#instalar-app" id="atalho-instalar">Baixar no celular</a>
     </nav>
 
@@ -1582,6 +1583,8 @@
       });
       const linkR = document.getElementById('link-roteiros');
       if (linkR) linkR.href = `/roteiros.html?canal=${ui.id}`;
+      const linkL = document.getElementById('link-longos');
+      if (linkL) linkL.href = `/longos.html?canal=${ui.id}`;
       const link = document.getElementById('link-sugestoes');
       if (link) link.href = `/sugestoes.html?canal=${ui.id}`;
       renderBotoesAcao();

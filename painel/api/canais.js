@@ -131,6 +131,8 @@ const CANAIS = {
     repo: 'mentesecreta', // mora na pasta veil/ do repositório do Mente Secreta
     configPath: 'veil/CONFIG_CANAL.md',
     pastaFila: 'veil/historias/fila',
+    pastaLongos: 'veil/longos',        // vídeos longos (botão "Vídeos longos" do app)
+    workflowLongo: 'veil_longo.yml',
     workflow: 'veil.yml',
     channelId: process.env.VF_CHANNEL_ID || 'UCoe34hx015k4fnSI9IwwElg',
     horarios: ['18h'],
