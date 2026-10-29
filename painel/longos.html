@@ -50,6 +50,7 @@
     .assistir { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
     .assistir a { flex: 1 1 140px; min-height: 44px; padding: 8px 12px; text-align: center; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; background: rgba(255,255,255,.08); color: var(--texto); }
     .assistir a.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--cor-canal); background: transparent; color: var(--texto); font: inherit; font-weight: 800; cursor: pointer; }
     .texto-pt p { margin: 8px 0; font-size: .95rem; }
     .links { display: flex; gap: 8px; flex-wrap: wrap; }
     .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
@@ -63,6 +64,7 @@
     .senha { display: flex; gap: 8px; margin: 0 0 16px; }
     .senha input { flex: 1; min-height: 44px; border-radius: 12px; border: 1px solid var(--borda); background: var(--bg-card); color: var(--texto); padding: 0 12px; font: inherit; }
     .aviso { margin-top: 10px; font-size: .9rem; color: var(--amarelo); }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--cor-canal); background: transparent; color: var(--texto); font: inherit; font-weight: 800; cursor: pointer; }
     .texto-pt p { margin: 8px 0; font-size: .95rem; }
     .links { display: flex; gap: 8px; flex-wrap: wrap; }
     .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
@@ -99,6 +101,7 @@
         ${r.resumoPt ? `<p class="resumo">${esc(r.resumoPt)}</p>` : ''}
         <div class="meta">~${r.minutos || '?'} min · ${r.partes || 0} imagens</div>
         ${r.textoPt && r.textoPt.length ? `<details><summary>Ler a história em português</summary><div class="texto-pt">${r.textoPt.map((t) => `<p>${esc(t)}</p>`).join('')}</div></details>` : ''}
+        ${r.textoPt && r.textoPt.length && 'speechSynthesis' in window ? `<button type="button" class="ouvir" data-ouvir="${esc(r.arquivo)}">🔊 Ouvir a história em português</button>` : ''}
         <button type="button" class="produzir" data-arq="${esc(r.arquivo)}">▶ Produzir e publicar agora</button>
         <div class="aviso" hidden></div>
       </article>`;
@@ -122,10 +125,34 @@
         const r = await fetch(`/api/longos?canal=${encodeURIComponent(ui.id)}`); const d = await r.json();
         if (!r.ok) throw new Error(d.erro);
         if (d.semLongos) { fila.innerHTML = '<div class="vazio">Este canal ainda não tem vídeos longos.</div>'; return; }
+        FILA = d.fila; parar();
         fila.innerHTML = d.fila.length ? d.fila.map(cartao).join('') : '<div class="vazio">Nenhum vídeo longo esperando. Mande um roteiro pro Claude.</div>';
         if (d.publicados.length) { document.getElementById('pub').innerHTML = d.publicados.map(cartaoPub).join(''); document.getElementById('sec-pub').hidden = false; }
       } catch { fila.innerHTML = '<div class="erro">Não consegui carregar agora. Tente de novo.</div>'; }
     }
+    // ---- Ouvir a história (voz do próprio celular, grátis) ----
+    let FILA = [], tocando = null;
+    function parar() {
+      try { speechSynthesis.cancel(); } catch {}
+      document.querySelectorAll('[data-ouvir]').forEach((x) => { x.textContent = '🔊 Ouvir a história em português'; });
+      tocando = null;
+    }
+    function vozPt() { const v = speechSynthesis.getVoices(); return v.find((x) => /pt[-_]BR/i.test(x.lang)) || v.find((x) => /^pt/i.test(x.lang)) || null; }
+    document.getElementById('fila').addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-ouvir]'); if (!b) return;
+      if (tocando === b.dataset.ouvir) { parar(); return; }
+      parar();
+      const r = FILA.find((x) => x.arquivo === b.dataset.ouvir); if (!r) return;
+      const partes = [r.tituloPt || r.titulo, ...r.textoPt]; const voz = vozPt();
+      partes.forEach((t, k) => {
+        const u = new SpeechSynthesisUtterance(t); u.lang = 'pt-BR'; if (voz) u.voice = voz; u.rate = 0.95;
+        if (k === partes.length - 1) u.onend = () => { if (tocando === r.arquivo) parar(); };
+        speechSynthesis.speak(u);
+      });
+      tocando = r.arquivo; b.textContent = '⏹ Parar';
+    });
+    if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
     document.getElementById('fila').addEventListener('click', async (ev) => {
       const b = ev.target.closest('[data-arq]'); if (!b) return;
       const aviso = b.nextElementSibling; const senha = document.getElementById('senha').value.trim();
