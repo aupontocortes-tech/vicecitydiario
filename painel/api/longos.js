@@ -47,6 +47,7 @@ async function listar(canal, sub, token) {
         minutos: Math.round(palavras / 140),
         videoId: String(d.video_id || ''),
         videoIdPt: String(d.video_id_pt || ''),
+        estado: String(d.estado || ''),
         textoPt: (d.partes || []).flatMap((p) => (p.falas || []).map((f) => String(f.pt || ''))).filter(Boolean),
       };
     } catch { return { arquivo: `${canal.pastaLongos}/${sub}/${i.name}`, titulo: i.name, erro: true }; }
@@ -84,5 +85,5 @@ export default async function handler(req, res) {
     return responder(res, 502, { erro: 'O GitHub não aceitou o pedido. Confira o GITHUB_TOKEN.' });
   }
   ultimo[arquivo] = Date.now();
-  return responder(res, 200, { ok: true, mensagem: 'Vídeo longo em produção! Fica pronto em 30 a 60 minutos.' });
+  return responder(res, 200, { ok: true, mensagem: 'Pedido enviado! Se já estava pronto, fica público em 2 a 3 minutos. Se não, em 30 a 60 minutos.' });
 }

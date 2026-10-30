@@ -99,10 +99,11 @@
         <div class="tit">${esc(r.titulo)}</div>
         ${r.tituloPt ? `<div class="tit-pt">${esc(r.tituloPt)}</div>` : ''}
         ${r.resumoPt ? `<p class="resumo">${esc(r.resumoPt)}</p>` : ''}
-        <div class="meta">~${r.minutos || '?'} min · ${r.partes || 0} imagens</div>
+        <div class="meta">~${r.minutos || '?'} min · ${r.partes || 0} imagens${r.estado === 'pronto' ? ' · ✅ pronto, esperando você' : ''}</div>
         ${r.textoPt && r.textoPt.length ? `<details><summary>Ler a história em português</summary><div class="texto-pt">${r.textoPt.map((t) => `<p>${esc(t)}</p>`).join('')}</div></details>` : ''}
         ${r.textoPt && r.textoPt.length && 'speechSynthesis' in window ? `<button type="button" class="ouvir" data-ouvir="${esc(r.arquivo)}">🔊 Ouvir a história em português</button>` : ''}
-        <button type="button" class="produzir" data-arq="${esc(r.arquivo)}">▶ Produzir e publicar agora</button>
+        ${r.estado === 'pronto' && r.videoIdPt ? `<a class="assistir pt" href="https://www.youtube.com/watch?v=${encodeURIComponent(r.videoIdPt)}" target="_blank" rel="noopener">🇧🇷 Ver prévia em português</a>` : ''}
+        <button type="button" class="produzir" data-arq="${esc(r.arquivo)}">${r.estado === 'pronto' ? '▶ Publicar agora (já está pronto)' : '▶ Produzir e publicar agora'}</button>
         <div class="aviso" hidden></div>
       </article>`;
     }
