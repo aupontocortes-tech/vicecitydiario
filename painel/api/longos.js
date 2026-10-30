@@ -44,7 +44,7 @@ async function listar(canal, sub, token) {
         tituloPt: String(d.titulo_pt || ''),
         resumoPt: String(d.resumo_pt || ''),
         partes: (d.partes || []).length,
-        minutos: Math.round(palavras / 140),
+        minutos: Number(d.minutos) || Math.round(palavras / 140),
         videoId: String(d.video_id || ''),
         videoIdPt: String(d.video_id_pt || ''),
         estado: String(d.estado || ''),

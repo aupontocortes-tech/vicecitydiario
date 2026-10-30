@@ -96,6 +96,8 @@ const CANAIS = {
     repo: 'nuncavisto',
     channelId: 'UCIKnhxWJaxbmCudg2Qp9YhA',
     horarios: ['18h'],
+    pastaLongos: 'longos',             // vídeos longos já prontos (botão "Vídeos longos" só publica)
+    workflowLongo: 'longo.yml',
     arquivoInicial: ARQUIVO_NV,
     rotinas: [
       {
