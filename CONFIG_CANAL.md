@@ -50,6 +50,5 @@ Temas, um por vídeo:
 - [x] GTA vai ter conteúdo mais 18 com senas de sexo ? Verifica nas fontes mas não pos algo que vai violar alguma diretrizes (06/10/2026)
 
 ## PAUSAS
-- 08h
 - 12h
 - 14h
