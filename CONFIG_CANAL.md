@@ -47,6 +47,8 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
+- [ ] SWAP MID-CHASE: a Rockstar confirmou em entrevistas que dá pra trocar entre Jason e Lucia no meio de uma perseguição (ideia vinda de Red Dead Redemption 2). Confirme na fonte oficial/entrevista antes de gravar; use trechos dos trailers com os dois juntos. (01/11/2026)
+- [ ] POLÍCIA NOVA (notícia oficial nova, por isso pode mesmo com o assunto polícia esgotado): a Rockstar confirmou uma mudança no funcionamento da polícia de GTA 6 em relação aos jogos anteriores. Diga exatamente o que mudou, segundo a fonte. (01/11/2026)
 - [x] (2/2 feito: Hot Coffee 26/10/2026; países que baniram GTA 27/10/2026) Vídeo no estilo polêmica + curiosidade proibida (tipo "GTA vai ter cenas de sexo?").
 Gancho em forma de pergunta chocante nos 2 primeiros segundos.
 Temas, um por vídeo:
