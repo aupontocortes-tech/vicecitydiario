@@ -18,18 +18,27 @@ PRON = {'Game Informer': 'Guêim Infórmer', 'Rockstar': 'Róckstar', 'GTA 6': '
         'GTA VI': 'GTA seis', 'Lucia': 'Lúcia', 'Jason': 'Djêison', 'Keys': 'Quíis', 'Vice City': 'Vaice Ciri',
         'Leonida': 'Leônida', 'Trailer': 'Trêiler', 'trailer': 'trêiler', 'Shorts': 'Xórts'}
 
+PRON_EN = {'GTA 6': 'G T A six', 'GTA VI': 'G T A six', 'GTA 5': 'G T A five', 'Leonida': 'Leh-oh-nee-dah', 'Lucia': 'Loo-see-ah'}
+
 spec = json.load(open(sys.argv[1], encoding='utf-8')); out = sys.argv[2]; os.makedirs(out, exist_ok=True)
-d = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'vits-piper-pt_BR-faber-medium') + '/'
-if not os.path.isdir(d): d = 'vits-piper-pt_BR-faber-medium/'
+EN = spec.get('lang', 'pt') == 'en'   # canal em inglês: "lang": "en" no spec.json
+NOME = 'vits-piper-en_US-ryan-high' if EN else 'vits-piper-pt_BR-faber-medium'
+d = os.path.join(os.path.dirname(os.path.abspath(__file__)), NOME) + '/'
+if not os.path.isdir(d): d = NOME + '/'
+if not os.path.isdir(d):   # baixa a voz sozinho se faltar
+    import subprocess as _s
+    _s.run(f'curl -sSL https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/{NOME}.tar.bz2 | tar xj', shell=True, check=True)
+onnx = [f for f in os.listdir(d) if f.endswith('.onnx')][0]
 tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(
-    vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=d + 'pt_BR-faber-medium.onnx', tokens=d + 'tokens.txt', data_dir=d + 'espeak-ng-data'),
+    vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=d + onnx, tokens=d + 'tokens.txt', data_dir=d + 'espeak-ng-data'),
     num_threads=4)))
-pron = dict(PRON); pron.update(spec.get('pron', {}))
+pron = dict(PRON_EN if EN else PRON); pron.update(spec.get('pron', {}))
+VEL = 1.0 if EN else 1.12
 sr = 22050; audio = [np.zeros(int(sr * 0.15), np.float32)]; t = 0.15; words = []; segs = []
 for i, sc in enumerate(spec['scenes']):
     c = sc['text']; sp = c
     for k, v in pron.items(): sp = sp.replace(k, v)
-    a = tts.generate(sp, sid=0, speed=1.12); sr = a.sample_rate; x = np.array(a.samples, np.float32)
+    a = tts.generate(sp, sid=0, speed=VEL); sr = a.sample_rate; x = np.array(a.samples, np.float32)
     nz = np.where(np.abs(x) > 0.01)[0]; x = x[max(0, nz[0] - 200):nz[-1] + 400]; dur = len(x) / sr
     ws = c.split(); tot = sum(len(w) + 1 for w in ws); cur = t
     for w in ws:

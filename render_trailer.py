@@ -87,6 +87,7 @@ def badge(d, x, y, s, col):
 
 def main():
     spec = json.load(open(sys.argv[1], encoding='utf-8')); out = sys.argv[2]
+    global CTA; CTA = spec.get('cta_text') or ('FOLLOW FOR MORE' if spec.get('lang') == 'en' else 'SEGUE O CANAL')
     T = json.load(open(os.path.join(out, 'timing.json'), encoding='utf-8'))
     DUR = T['dur']; SEGS = T['segs']; WORDS = T['words']; SC = spec['scenes']
     assert len(SC) == len(SEGS), 'número de cenas diferente da narração'
@@ -141,7 +142,7 @@ def main():
             d.rounded_rectangle((36, 60, 36 + tb[2] - tb[0] + 36, 116), 12, fill=(0, 0, 0, 200))
             d.text((54, 88), sc['tag'], font=f, fill=WHITE, anchor='lm')
         if sc.get('badge'):
-            col = (255, 150, 30) if 'RUMOR' in sc['badge'].upper() or 'NÃO' in sc['badge'].upper() else GREEN
+            col = (255, 150, 30) if 'RUMOR' in sc['badge'].upper() or 'NÃO' in sc['badge'].upper() or 'NOT' in sc['badge'].upper() else GREEN
             badge(d, W / 2, 170, sc['badge'], col)
         if sc.get('title'):
             lines = sc['title'].split('|')
@@ -153,7 +154,7 @@ def main():
             k = pop(lt, 0.3); bw = 680 * k
             if bw > 10:
                 d.rounded_rectangle((W / 2 - bw / 2, 380 - 85 * k, W / 2 + bw / 2, 380 + 85 * k), int(42 * k), fill=(230, 30, 40))
-                if k > 0.9: d.text((W / 2, 384), 'SEGUE O CANAL', font=M9[58], fill=WHITE, anchor='mm')
+                if k > 0.9: d.text((W / 2, 384), CTA, font=M9[58], fill=WHITE, anchor='mm')
         for (cs, ce, c) in CH:
             if cs <= t < ce:
                 words = [x['w'].strip('.,:?!').upper() for x in c]; f = ANTON[110]; sp = 26
@@ -164,7 +165,7 @@ def main():
                     d.text((x, 1500), w, font=f, fill=YEL if xw['s'] <= t < xw['e'] + 0.05 else WHITE, stroke_width=10, stroke_fill=(0, 0, 0), anchor='lm')
                     x += wd + sp
                 break
-        d.text((W / 2, 1800), spec.get('credit', 'Imagens: trailers oficiais Rockstar Games • Vice City Diário'), font=M8,
+        d.text((W / 2, 1800), spec.get('credit', 'Images: official Rockstar Games trailers' if spec.get('lang') == 'en' else 'Imagens: trailers oficiais Rockstar Games • Vice City Diário'), font=M8,
                fill=(255, 255, 255, 210), anchor='mm', stroke_width=3, stroke_fill=(0, 0, 0))
         d.rectangle((0, H - 14, W * t / DUR, H), fill=PINK)
         enc.stdin.write(im.convert('RGB').tobytes())

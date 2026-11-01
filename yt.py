@@ -15,7 +15,8 @@ if sys.argv[1]=='me':
     r=yt.channels().list(part='snippet',mine=True).execute(); print([(i['id'],i['snippet']['title']) for i in r.get('items',[])])
 elif sys.argv[1]=='up':
     m=json.load(open(sys.argv[3]))
-    body={'snippet':{'title':m['title'],'description':m['description'],'tags':m.get('tags',[]),'categoryId':'20','defaultLanguage':'pt-BR','defaultAudioLanguage':'pt-BR'},
+    body={'snippet':{'title':m['title'],'description':m['description'],'tags':m.get('tags',[]),'categoryId':'20','defaultLanguage':('en' if m.get('lang')=='en' else 'pt-BR'),'defaultAudioLanguage':('en' if m.get('lang')=='en' else 'pt-BR')},
           'status':{'privacyStatus':m.get('privacy','public'),'selfDeclaredMadeForKids':False,'containsSyntheticMedia':False}}
     r=yt.videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(sys.argv[2],chunksize=-1,resumable=True)).execute()
     print(r['id'], r['status'])
+    print('VIDEO_ID='+r['id'])
