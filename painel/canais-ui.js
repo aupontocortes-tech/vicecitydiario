@@ -10,11 +10,11 @@
 window.CANAIS_LISTA = [
   {
     id: 'vcd',
-    nome: 'Vice City Diário',
+    nome: 'Leonida Daily',
     curto: 'Vice City',
     cor: '#ff3c96',
     corTexto: '#ffffff',
-    icone: '/icon.jpg',
+    icone: '/icon-vcd.jpg',
     placeholder: 'Ex.: Quem é Boobie Mike em GTA 6?',
     slots: [
       { hora: 8, tipo: 'Screenshots', sub: 'Imagens do jogo' },
