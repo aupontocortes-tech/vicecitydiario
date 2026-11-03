@@ -45,7 +45,7 @@ window.CANAIS_LISTA = [
     corTexto: '#ffffff',
     icone: '/icon-ms.jpg?v=2',
     placeholder: 'Ex.: Por que a gente confia em quem fala com segurança?',
-    slots: [{ hora: 12, tipo: 'Psicologia', sub: 'Agendado pro meio-dia' }],
+    slots: [{ hora: 19, tipo: 'Mentalidade', sub: 'Publica na hora, às 19h' }],
     rotinas: [{ tipo: 'psicologia', rotulo: 'Publicar agora', icone: '🧠', classe: 'curiosidade' }],
   },
   {

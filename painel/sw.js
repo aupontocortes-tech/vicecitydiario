@@ -2,7 +2,7 @@
  * Service Worker mínimo — necessário para o Chrome oferecer
  * "Instalar aplicativo" / Adicionar à tela inicial (PWA).
  */
-const CACHE = 'vcd-painel-v3';
+const CACHE = 'vcd-painel-v4';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
