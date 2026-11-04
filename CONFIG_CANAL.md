@@ -5,7 +5,7 @@ Arquivo editado pelo painel. Não coloque senhas aqui.
 ## IDIOMA DO CANAL: INGLÊS (desde 01/11/2026 — VALE MAIS que qualquer regra de idioma, voz ou script do prompt e deste arquivo)
 O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do MESMO Short:
 1) VERSÃO EM INGLÊS (pública) — a que conta para o canal.
-   - Roteiro em inglês americano natural e simples, 30-40s, no máximo 2,8 palavras por segundo. Gancho forte no 1º segundo, fatos concretos, final com pergunta para comentar.
+   - Roteiro em inglês americano natural e simples, 30-40s, no máximo 2,6 palavras por segundo (fala clara, sem atropelar; explique sem pular etapa). Gancho forte no 1º segundo, fatos concretos, final com pergunta para comentar.
    - Use SEMPRE tts_lines.py + render_trailer.py (servem para trechos de trailer E para screenshots: "src": "url:<link .jpg/.mp4 da Rockstar>"). NÃO use tts3.py nem render3.py (são só em português).
    - spec.json com "lang": "en" (a voz em inglês baixa sozinha). Títulos na tela, selos e legendas em inglês: selos "OFFICIAL", "RUMOR", "FANS SPOTTED", "GTA 5 FOOTAGE". O botão final já sai "FOLLOW FOR MORE". Nomes difíceis: use "pron" (ex.: "Leonida": "Leh-oh-nee-dah").
    - publicar/AAAA-MM-DD_HHMM.mp4 + .json: {"title": "... #Shorts" (inglês), "description": inglês + fonte + "Fan channel, not affiliated with Rockstar Games." + hashtags em inglês (#GTA6 #GTAVI #Rockstar), "tags": [inglês], "lang": "en", "privacy": "public"}.

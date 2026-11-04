@@ -33,7 +33,7 @@ tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.Offl
     vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=d + onnx, tokens=d + 'tokens.txt', data_dir=d + 'espeak-ng-data'),
     num_threads=4)))
 pron = dict(PRON_EN if EN else PRON); pron.update(spec.get('pron', {}))
-VEL = 1.0 if EN else 1.12
+VEL = 0.95 if EN else 1.05
 sr = 22050; audio = [np.zeros(int(sr * 0.15), np.float32)]; t = 0.15; words = []; segs = []
 for i, sc in enumerate(spec['scenes']):
     c = sc['text']; sp = c
