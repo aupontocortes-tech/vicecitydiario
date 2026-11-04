@@ -21,6 +21,7 @@ jobs:
       - name: Enviar cada vídeo da pasta publicar/
         env:
           YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           shopt -s nullglob
           enviados=0
@@ -29,6 +30,7 @@ jobs:
             if [ -f "$video" ]; then
               echo "Enviando $video"
               python3 yt.py up "$video" "$meta"
+              bash tiktok_release.sh "$video" "$meta" "gta_$(basename "${meta%.json}")"   # cópia pro TikTok (app Meus Canais)
               git rm -q "$video" "$meta"
               enviados=$((enviados+1))
             fi
