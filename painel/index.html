@@ -1369,6 +1369,7 @@
       <a href="/sugestoes.html" id="link-sugestoes">Sugestões de vídeo</a>
       <a href="/roteiros.html" id="link-roteiros">Ver roteiros</a>
       <a href="/longos.html" id="link-longos" hidden>Vídeos longos</a>
+      <a href="/tiktok.html" id="link-tiktok">TikTok</a>
       <a href="#instalar-app" id="atalho-instalar">Baixar no celular</a>
     </nav>
 
@@ -1583,6 +1584,8 @@
       });
       const linkR = document.getElementById('link-roteiros');
       if (linkR) linkR.href = `/roteiros.html?canal=${ui.id}`;
+      const linkT = document.getElementById('link-tiktok');
+      if (linkT) { linkT.href = `/tiktok.html?canal=${ui.id}`; linkT.hidden = ui.id === 'vf'; }
       const linkL = document.getElementById('link-longos');
       if (linkL) {   // só aparece no canal que tem vídeo longo (para não poluir o app)
         linkL.href = `/longos.html?canal=${ui.id}`; linkL.hidden = true;

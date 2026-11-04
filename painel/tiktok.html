@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#120a1f" />
+  <meta name="description" content="Vídeos prontos para postar no TikTok" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/app-icon-192.png" type="image/png" />
+  <title>TikTok — Meus Canais</title>
+  <style>
+    :root {
+      --bg: #120a1f; --bg-card: #24183a; --rosa: #ff3c96; --ciano: #28e6dc; --amarelo: #ffde28;
+      --texto: #f3eef8; --texto-suave: #b9aec9; --borda: rgba(255,255,255,0.08); --raio: 16px;
+      --cor-canal: #ff3c96; --cor-canal-texto: #fff;
+      --fonte: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--texto); font-family: var(--fonte); font-size: 17px; line-height: 1.55; }
+    body { background: radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in srgb, var(--cor-canal) 18%, transparent), transparent 55%), var(--bg); }
+    a { color: var(--ciano); text-decoration: none; }
+    .wrap { width: min(100%, 620px); margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+    .seletor-canal { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+    .seletor-canal::-webkit-scrollbar { display: none; }
+    .btn-canal { flex: 1 0 96px; min-height: 44px; padding: 8px 10px; border-radius: 999px; border: 1px solid var(--borda); background: transparent; color: var(--texto-suave); font: inherit; font-size: .92rem; font-weight: 700; white-space: nowrap; cursor: pointer; }
+    .btn-canal[aria-pressed="true"] { background: var(--cor-canal); color: var(--cor-canal-texto); border-color: transparent; }
+    h1 { font-size: 1.45rem; color: var(--cor-canal); }
+    .sub { color: var(--texto-suave); font-size: .92rem; margin: 2px 0 18px; }
+    .voltar { display: inline-block; margin-bottom: 14px; font-weight: 600; }
+    .lista { display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--bg-card); border: 1px solid var(--borda); border-radius: var(--raio); padding: 14px 16px; }
+    .card.proximo { border-color: var(--cor-canal); box-shadow: 0 0 22px color-mix(in srgb, var(--cor-canal) 18%, transparent); }
+    .tag { display: inline-block; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--texto-suave); margin-bottom: 6px; }
+    .card.proximo .tag { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .tit { font-size: 1.08rem; font-weight: 800; line-height: 1.3; }
+    .tit-pt { color: var(--amarelo); font-weight: 700; margin-top: 2px; }
+    .resumo { color: var(--texto-suave); margin-top: 8px; font-size: .95rem; }
+    .meta { color: var(--texto-suave); font-size: .8rem; margin-top: 6px; }
+    details { margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 700; color: var(--ciano); list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▸ "; }
+    details[open] summary::before { content: "▾ "; }
+    ol { margin: 10px 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
+    li { font-size: .95rem; }
+    li .en { display: block; color: var(--texto-suave); font-size: .82rem; font-style: italic; margin-top: 2px; }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 0; background: var(--cor-canal); color: var(--cor-canal-texto); font: inherit; font-weight: 800; cursor: pointer; }
+    .ouvir[aria-pressed="true"] { background: rgba(255,255,255,.12); color: var(--texto); }
+    li .voz { font-size: .72rem; font-weight: 800; color: var(--amarelo); text-transform: uppercase; margin-right: 6px; }
+    .assistir { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .assistir a { flex: 1 1 140px; min-height: 44px; padding: 8px 12px; text-align: center; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 800; background: rgba(255,255,255,.08); color: var(--texto); }
+    .assistir a.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--cor-canal); background: transparent; color: var(--texto); font: inherit; font-weight: 800; cursor: pointer; }
+    .texto-pt p { margin: 8px 0; font-size: .95rem; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    h2 { font-size: 1.15rem; margin: 28px 0 10px; color: var(--cor-canal); }
+    .vazio, .erro { color: var(--texto-suave); text-align: center; padding: 28px 10px; border: 1px dashed var(--borda); border-radius: var(--raio); }
+    button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
+  
+    .produzir { margin-top: 12px; width: 100%; min-height: 48px; border-radius: 12px; border: 0; background: var(--cor-canal); color: var(--cor-canal-texto); font: inherit; font-weight: 800; cursor: pointer; }
+    .produzir[disabled] { opacity: .5; cursor: default; }
+    .assistir { display: inline-flex; margin-top: 10px; min-height: 44px; align-items: center; padding: 0 16px; border-radius: 12px; background: rgba(255,255,255,.08); color: var(--texto); font-weight: 800; }
+    .senha { display: flex; gap: 8px; margin: 0 0 16px; }
+    .senha input { flex: 1; min-height: 44px; border-radius: 12px; border: 1px solid var(--borda); background: var(--bg-card); color: var(--texto); padding: 0 12px; font: inherit; }
+    .aviso { margin-top: 10px; font-size: .9rem; color: var(--amarelo); }
+    .ouvir { margin-top: 12px; width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--cor-canal); background: transparent; color: var(--texto); font: inherit; font-weight: 800; cursor: pointer; }
+    .texto-pt p { margin: 8px 0; font-size: .95rem; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .assistir.pt { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    h2 { font-size: 1.15rem; margin: 26px 0 10px; color: var(--cor-canal); }
+
+  
+    .leg { width: 100%; margin-top: 10px; min-height: 92px; border-radius: 12px; border: 1px solid var(--borda); background: rgba(0,0,0,.25); color: var(--texto); padding: 10px; font: inherit; font-size: .9rem; resize: vertical; }
+    .acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .acoes a, .acoes button { min-height: 48px; border-radius: 12px; border: 0; font: inherit; font-weight: 800; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
+    .baixar { background: var(--cor-canal); color: var(--cor-canal-texto); }
+    .copiar { background: rgba(255,255,255,.1); color: var(--texto); }
+    .postei { grid-column: 1 / -1; background: transparent; color: var(--texto-suave); border: 1px solid var(--borda) !important; }
+    .card.feito { opacity: .55; }
+    .card.feito .postei { color: var(--ciano); border-color: var(--ciano) !important; }
+    .passos { background: var(--bg-card); border: 1px solid var(--borda); border-radius: var(--raio); padding: 12px 16px; margin-bottom: 16px; font-size: .92rem; color: var(--texto-suave); }
+    .passos b { color: var(--texto); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="seletor-canal" id="seletor-canal" role="group" aria-label="Canal"></div>
+    <a class="voltar" id="link-painel" href="/">← Voltar ao painel</a>
+    <h1 id="titulo">TikTok</h1>
+    <p class="sub">Os últimos vídeos do canal, prontos pra postar no TikTok.</p>
+    <div class="passos"><b>Como postar (1 minuto):</b> 1) toque em <b>Baixar vídeo</b> · 2) toque em <b>Copiar legenda</b> · 3) no TikTok, toque em <b>+</b>, escolha o vídeo da galeria e cole a legenda · 4) volte aqui e marque <b>Já postei</b>.</div>
+    <div class="lista" id="lista"><div class="vazio">Carregando…</div></div>
+  </main>
+  <script src="/canais-ui.js?v=4"></script>
+  <script>
+    const CHAVE_CANAL = 'painel_canal', CHAVE_FEITOS = 'tiktok_postados';
+    function canalAtual() {
+      const q = new URLSearchParams(location.search).get('canal');
+      if (CANAIS_LISTA.some((c) => c.id === q)) return q;
+      try { const c = localStorage.getItem(CHAVE_CANAL); if (CANAIS_LISTA.some((x) => x.id === c)) return c; } catch {}
+      return 'ms';
+    }
+    function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+    function feitos() { try { return JSON.parse(localStorage.getItem(CHAVE_FEITOS) || '[]'); } catch { return []; } }
+    function salvaFeitos(l) { try { localStorage.setItem(CHAVE_FEITOS, JSON.stringify(l.slice(-200))); } catch {} }
+    let VIDEOS = [];
+    function quando(iso) { const d = new Date(iso); return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+    function cartao(v, i) {
+      const feito = feitos().includes(v.nome);
+      const lang = v.idioma === 'en' ? '🇺🇸 inglês' : '🇧🇷 português';
+      return `<article class="card${feito ? ' feito' : ''}" data-i="${i}">
+        <span class="tag">${esc(quando(v.data))} · ${lang} · ${v.tamanhoMB} MB</span>
+        <div class="tit">${esc(v.titulo)}</div>
+        <textarea class="leg" readonly>${esc(v.legenda)}</textarea>
+        <div class="acoes">
+          <a class="baixar" href="${esc(v.url)}" download="${esc(v.nome)}.mp4">⬇ Baixar vídeo</a>
+          <button type="button" class="copiar" data-copiar="${i}">📋 Copiar legenda</button>
+          <button type="button" class="postei" data-postei="${i}">${feito ? '✓ Já postado no TikTok' : 'Marcar como já postei'}</button>
+        </div></article>`;
+    }
+    async function carregar() {
+      const id = canalAtual(); const ui = CANAIS_LISTA.find((c) => c.id === id) || CANAIS_LISTA[0];
+      aplicarTemaCanal(ui); montarSeletorCanais(document.getElementById('seletor-canal'), ui.id);
+      document.getElementById('titulo').textContent = `TikTok · ${ui.nome}`;
+      document.getElementById('link-painel').href = `/?canal=${ui.id}`;
+      const lista = document.getElementById('lista'); lista.innerHTML = '<div class="vazio">Carregando…</div>';
+      try {
+        const r = await fetch(`/api/tiktok?canal=${encodeURIComponent(ui.id)}`); const d = await r.json();
+        if (!r.ok) throw new Error(d.erro);
+        VIDEOS = d.videos || [];
+        lista.innerHTML = VIDEOS.length ? VIDEOS.map(cartao).join('') : '<div class="vazio">Ainda não tem vídeo guardado. A partir do próximo Short deste canal, ele aparece aqui.</div>';
+      } catch { lista.innerHTML = '<div class="erro">Não consegui carregar agora. Tente de novo.</div>'; }
+    }
+    document.getElementById('lista').addEventListener('click', async (ev) => {
+      const c = ev.target.closest('[data-copiar]');
+      if (c) {
+        const v = VIDEOS[+c.dataset.copiar];
+        try { await navigator.clipboard.writeText(v.legenda); c.textContent = '✓ Legenda copiada'; }
+        catch { const t = c.closest('.card').querySelector('.leg'); t.removeAttribute('readonly'); t.select(); document.execCommand('copy'); t.setAttribute('readonly', ''); c.textContent = '✓ Legenda copiada'; }
+        setTimeout(() => { c.textContent = '📋 Copiar legenda'; }, 2500); return;
+      }
+      const p = ev.target.closest('[data-postei]');
+      if (p) {
+        const v = VIDEOS[+p.dataset.postei]; let l = feitos();
+        l = l.includes(v.nome) ? l.filter((x) => x !== v.nome) : l.concat(v.nome); salvaFeitos(l);
+        const card = p.closest('.card'); card.classList.toggle('feito', l.includes(v.nome));
+        p.textContent = l.includes(v.nome) ? '✓ Já postado no TikTok' : 'Marcar como já postei';
+      }
+    });
+    document.getElementById('seletor-canal').addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-canal]'); if (!b) return;
+      try { localStorage.setItem(CHAVE_CANAL, b.dataset.canal); } catch {}
+      history.replaceState(null, '', `?canal=${b.dataset.canal}`); carregar();
+    });
+    carregar();
+  </script>
+</body>
+</html>
