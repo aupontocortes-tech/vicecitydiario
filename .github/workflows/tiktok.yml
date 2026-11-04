@@ -1,0 +1,32 @@
+name: Postar no TikTok
+# De hora em hora: posta no TikTok o vídeo novo de cada canal (Mente Secreta, Nunca Visto, GTA em português).
+on:
+  schedule:
+    - cron: '41 * * * *'
+  workflow_dispatch:
+concurrency: tiktok
+permissions:
+  contents: write
+jobs:
+  postar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tem conta conectada?
+        id: tem
+        run: ls tiktok/contas/*.enc >/dev/null 2>&1 && echo "sim=1" >> $GITHUB_OUTPUT || echo "Nenhuma conta do TikTok conectada ainda."
+      - uses: actions/setup-python@v5
+        if: steps.tem.outputs.sim == '1'
+        with: {python-version: '3.11'}
+      - name: Postar
+        if: steps.tem.outputs.sim == '1'
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install -q requests cryptography
+          python3 tiktok_postar.py
+          git config user.name "publicador-tiktok" && git config user.email "actions@users.noreply.github.com"
+          git add tiktok && (git commit -qm "TikTok: postagens e chaves atualizadas" && git pull -q --rebase && git push -q) || true

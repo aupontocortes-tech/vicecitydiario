@@ -90,6 +90,10 @@
     <h1 id="titulo">TikTok</h1>
     <p class="sub">Os últimos vídeos do canal, prontos pra postar no TikTok.</p>
     <div class="passos"><b>Como postar (1 minuto):</b> 1) toque em <b>Baixar vídeo</b> · 2) toque em <b>Copiar legenda</b> · 3) no TikTok, toque em <b>+</b>, escolha o vídeo da galeria e cole a legenda · 4) volte aqui e marque <b>Já postei</b>.</div>
+    <div class="passos" id="conexao"><b>Postagem automática:</b> <span id="status-con">verificando…</span>
+      <div class="senha" style="margin-top:10px"><input type="password" id="senha" placeholder="Senha do painel" autocomplete="current-password" /></div>
+      <button type="button" class="produzir baixar" id="conectar" style="width:100%;min-height:48px;border-radius:12px;border:0;font:inherit;font-weight:800">🔗 Conectar a conta do TikTok deste canal</button>
+    </div>
     <div class="lista" id="lista"><div class="vazio">Carregando…</div></div>
   </main>
   <script src="/canais-ui.js?v=4"></script>
@@ -119,7 +123,29 @@
           <button type="button" class="postei" data-postei="${i}">${feito ? '✓ Já postado no TikTok' : 'Marcar como já postei'}</button>
         </div></article>`;
     }
+    const NOMES_CON = { ms: 'Mente Secreta', nv: 'Nunca Visto', vcd: 'Leonida Daily' };
+    try { document.getElementById('senha').value = localStorage.getItem('vcd_painel_senha') || ''; } catch {}
+    async function statusConexao() {
+      const id = canalAtual(); const el = document.getElementById('status-con'); const box = document.getElementById('conexao');
+      box.hidden = !(id in NOMES_CON);
+      try {
+        const d = await (await fetch('/api/tiktok-login?status=1')).json();
+        el.textContent = d[id] ? '✅ conta conectada — o robô posta sozinho (de hora em hora).' : '❌ conta ainda não conectada.';
+        document.getElementById('conectar').textContent = d[id] ? '🔄 Reconectar a conta do TikTok' : '🔗 Conectar a conta do TikTok deste canal';
+      } catch { el.textContent = 'não consegui verificar.'; }
+    }
+    document.getElementById('conectar').addEventListener('click', async (ev) => {
+      const b = ev.currentTarget; const senha = document.getElementById('senha').value;
+      try { localStorage.setItem('vcd_painel_senha', senha); } catch {}
+      b.disabled = true; b.textContent = 'Abrindo o TikTok…';
+      try {
+        const r = await fetch('/api/tiktok-login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ senha, canal: canalAtual() }) });
+        const d = await r.json(); if (!r.ok) throw new Error(d.erro);
+        location.href = d.url;
+      } catch (e) { b.disabled = false; b.textContent = '❌ ' + e.message; }
+    });
     async function carregar() {
+      statusConexao();
       const id = canalAtual(); const ui = CANAIS_LISTA.find((c) => c.id === id) || CANAIS_LISTA[0];
       aplicarTemaCanal(ui); montarSeletorCanais(document.getElementById('seletor-canal'), ui.id);
       document.getElementById('titulo').textContent = `TikTok · ${ui.nome}`;
