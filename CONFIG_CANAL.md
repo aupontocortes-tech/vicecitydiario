@@ -47,13 +47,10 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 ## OPINIÕES DO THIAGO
 
 ## SUGESTÕES DE VÍDEO
+- [ ] Sobre as novas imagem do jogo que a rockstar publicou , (07/11/2026)
 - [x] SWAP MID-CHASE: a Rockstar confirmou em entrevistas que dá pra trocar entre Jason e Lucia no meio de uma perseguição (ideia vinda de Red Dead Redemption 2). Confirme na fonte oficial/entrevista antes de gravar; use trechos dos trailers com os dois juntos. (01/11/2026)
 - [x] POLÍCIA NOVA (notícia oficial nova, por isso pode mesmo com o assunto polícia esgotado): a Rockstar confirmou uma mudança no funcionamento da polícia de GTA 6 em relação aos jogos anteriores. Diga exatamente o que mudou, segundo a fonte. (01/11/2026)
 - [x] (2/2 feito: Hot Coffee 26/10/2026; países que baniram GTA 27/10/2026) Vídeo no estilo polêmica + curiosidade proibida (tipo "GTA vai ter cenas de sexo?").
-Gancho em forma de pergunta chocante nos 2 primeiros segundos.
-Temas, um por vídeo:
-1. Hot Coffee: a cena de sexo escondida no GTA San Andreas que virou escândalo nos EUA em 2005
-2. Países que já proibiram GTA e se (26/10/2026)
 - [x] (CANCELADO) TESTE GTA 5 x GTA 6 (1/3): A POLÍCIA. Alterne cenas oficiais de GTA 5 (com selo "CENA DE GTA 5") e trechos dos trailers de GTA 6, comparando o que já foi mostrado/confirmado. Se não achar material oficial do GTA 5, faça só com GTA 6 e avise no relatório. (25/10/2026)
 - [x] TESTE GTA 5 x GTA 6 (2/3): OS CARROS E AS PERSEGUIÇÕES. Mesmo formato: cenas oficiais de GTA 5 com selo "CENA DE GTA 5" x trechos dos trailers de GTA 6. (25/10/2026)
 - [x] (CANCELADO) TESTE GTA 5 x GTA 6 (3/3): LOS SANTOS x VICE CITY (a cidade, as praias, o movimento nas ruas). Mesmo formato, com selo "CENA DE GTA 5" nas cenas do 5. (25/10/2026)
