@@ -6,7 +6,7 @@ import os, json, base64, hashlib, time, datetime, sys
 import requests
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-KEY, SECRET = os.environ['TIKTOK_CLIENT_KEY'], os.environ['TIKTOK_CLIENT_SECRET']
+KEY, SECRET = os.environ['TIKTOK_CLIENT_KEY'].strip(), os.environ['TIKTOK_CLIENT_SECRET'].strip()
 GH = {'Authorization': f"Bearer {os.environ['GH_TOKEN']}", 'Accept': 'application/vnd.github+json'}
 CANAIS = {  # canal -> (repositório, prefixo do vídeo, filtro)
     'ms': ('mentesecreta', 'ms_', lambda n: True),

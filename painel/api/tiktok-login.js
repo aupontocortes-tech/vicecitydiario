@@ -14,7 +14,7 @@ const REDIRECT = 'https://vicecitydiario-5aof.vercel.app/api/tiktok-login';
 const CANAIS = { ms: 'Mente Secreta', nv: 'Nunca Visto', vcd: 'Leonida Daily (GTA)' };
 const SCOPES = 'user.info.basic,video.publish,video.upload';
 
-function chave() { return crypto.createHash('sha256').update('meuscanais-tiktok:' + process.env.TIKTOK_CLIENT_SECRET).digest(); }
+function chave() { return crypto.createHash('sha256').update('meuscanais-tiktok:' + (process.env.TIKTOK_CLIENT_SECRET || '').trim()).digest(); }
 function assina(txt) { return crypto.createHmac('sha256', chave()).update(txt).digest('base64url').slice(0, 32); }
 function cifra(obj) {
   const iv = crypto.randomBytes(12); const c = crypto.createCipheriv('aes-256-gcm', chave(), iv);
@@ -44,7 +44,7 @@ async function salvaNoGithub(canal, conteudo, token) {
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
-  const key = process.env.TIKTOK_CLIENT_KEY, secret = process.env.TIKTOK_CLIENT_SECRET, token = process.env.GITHUB_TOKEN;
+  const key = (process.env.TIKTOK_CLIENT_KEY || '').trim(), secret = (process.env.TIKTOK_CLIENT_SECRET || '').trim(), token = process.env.GITHUB_TOKEN;
   const q = req.query || Object.fromEntries(new URL(req.url, 'http://x').searchParams);
 
   if (req.method === 'POST') {
