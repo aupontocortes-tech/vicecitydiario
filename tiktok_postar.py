@@ -83,6 +83,10 @@ def main():
     for c, (repo, pref, filtro) in CANAIS.items():
         if not os.path.exists(f'tiktok/contas/{c}.enc'): print(c, ': conta não conectada'); continue
         try:
+            if os.environ.get('QUEM'):   # diagnóstico: qual conta do TikTok está ligada a cada canal
+                conta = abre(c); token = renova(conta); open(f'tiktok/contas/{c}.enc', 'w').write(fecha(conta)); mudou = True
+                i = requests.post(f'{API}/post/publish/creator_info/query/', headers={'Authorization': f'Bearer {token}', 'Content-Type': 'application/json; charset=UTF-8'}, timeout=60).json()
+                print(c, ': conta =', (i.get('data') or {}).get('creator_username'), '/', (i.get('data') or {}).get('creator_nickname')); continue
             achado = video_novo(repo, pref, filtro, feitos.get(c, []))
             if not achado: print(c, ': nada novo'); continue
             a, meta = achado

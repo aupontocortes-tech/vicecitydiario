@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '41 * * * *'
   workflow_dispatch:
+    inputs:
+      quem: {description: 'só mostrar qual conta está ligada a cada canal (1 = sim)', required: false, default: ''}
 concurrency: tiktok
 permissions:
   contents: write
@@ -25,6 +27,7 @@ jobs:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           GH_TOKEN: ${{ github.token }}
+          QUEM: ${{ inputs.quem }}
         run: |
           pip install -q requests cryptography
           python3 tiktok_postar.py
