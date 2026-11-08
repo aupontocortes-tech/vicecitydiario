@@ -56,6 +56,10 @@ def posta(token, caminho, legenda):
                           'disable_duet': False, 'disable_stitch': False, 'is_aigc': False},
             'source_info': {'source': 'FILE_UPLOAD', 'video_size': tam, 'chunk_size': chunk, 'total_chunk_count': total}}
     r = requests.post(f'{API}/post/publish/video/init/', headers=H, json=body, timeout=60).json()
+    if (r.get('error') or {}).get('code') == 'unaudited_client_can_only_post_to_private_accounts':
+        # app ainda sem aprovação do TikTok: manda como RASCUNHO pra caixa de entrada do TikTok (o Thiago só toca em Publicar)
+        priv = 'RASCUNHO'
+        r = requests.post(f'{API}/post/publish/inbox/video/init/', headers=H, json={'source_info': body['source_info']}, timeout=60).json()
     if (r.get('error') or {}).get('code') not in (None, 'ok'): raise RuntimeError(f'init falhou: {r}')
     url, pid = r['data']['upload_url'], r['data']['publish_id']
     with open(caminho, 'rb') as f:
@@ -70,7 +74,7 @@ def posta(token, caminho, legenda):
         s = requests.post(f'{API}/post/publish/status/fetch/', headers=H, json={'publish_id': pid}, timeout=60).json()
         st = (s.get('data') or {}).get('status')
         print('  status:', st)
-        if st in ('PUBLISH_COMPLETE', 'FAILED'): break
+        if st in ('PUBLISH_COMPLETE', 'SEND_TO_USER_INBOX', 'FAILED'): break
     return pid, priv, st
 
 def main():
