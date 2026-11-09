@@ -38,9 +38,10 @@ def video_novo(repo, pref, filtro, feitos):
     limite = (datetime.datetime.utcnow() - datetime.timedelta(days=2)).isoformat()   # nada de vídeo velho
     mp4 = sorted([a for a in assets if a['name'].startswith(pref) and a['name'].endswith('.mp4')
                   and filtro(a['name'][:-4]) and a['name'] not in feitos and a['created_at'] >= limite],
-                 key=lambda a: a['created_at'])
+                 key=lambda a: a['created_at'], reverse=True)   # sempre o MAIS NOVO (sem fila de atrasados)
     if not mp4: return None
     a = mp4[0]; base = a['name'][:-4]
+    feitos.extend(x['name'] for x in mp4[1:])   # os mais velhos ficam de lado (evita acumular rascunho no TikTok)
     js = next((x for x in assets if x['name'] == base + '.json'), None)
     meta = requests.get(js['browser_download_url'], timeout=60).json() if js else {}
     return a, meta
@@ -87,7 +88,7 @@ def main():
                 conta = abre(c); token = renova(conta); open(f'tiktok/contas/{c}.enc', 'w').write(fecha(conta)); mudou = True
                 i = requests.post(f'{API}/post/publish/creator_info/query/', headers={'Authorization': f'Bearer {token}', 'Content-Type': 'application/json; charset=UTF-8'}, timeout=60).json()
                 print(c, ': conta =', (i.get('data') or {}).get('creator_username'), '/', (i.get('data') or {}).get('creator_nickname')); continue
-            achado = video_novo(repo, pref, filtro, feitos.get(c, []))
+            achado = video_novo(repo, pref, filtro, feitos.setdefault(c, [])); mudou = True
             if not achado: print(c, ': nada novo'); continue
             a, meta = achado
             conta = abre(c); token = renova(conta)
