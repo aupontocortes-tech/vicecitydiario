@@ -65,3 +65,4 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 ## PAUSAS
 - 08h
 - 12h
+- 14h
