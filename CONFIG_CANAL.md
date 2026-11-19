@@ -29,6 +29,7 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
   2. NOTAS E NÚMEROS: nota no Metacritic/OpenCritic, recordes oficiais de venda ou de jogadores.
   3. PRIMEIRAS HORAS: dicas e "o que fazer primeiro" que a imprensa publicou.
   4. MATERIAL NOVO DA ROCKSTAR (trailer de lançamento, screenshots novos, Newswire).
+- Banco de imagens oficial para esta fase: os 39 screenshots da Launch Gallery (rockstargames.com/VI/launch-gallery, 05/11/2026) e os vídeos de gameplay oficiais que a Rockstar já soltou (rockstargames.com/VI/media/videos). Use cenas em movimento desses vídeos sempre que der; screenshot parado só com movimento de câmera (zoom/pan).
 - Título com a descoberta concreta no começo (ex.: "Players found a hidden ___ in GTA 6"). Nada de promessa que o vídeo não cumpre.
 - Imagens: só material oficial da Rockstar (trailers, incluindo o de lançamento, e screenshots) ou arquivos da pasta clipes/ com crédito. NUNCA gameplay de outros canais ou streamers fora da pasta clipes/ (dá strike e bloqueia monetização por conteúdo reutilizado).
 - Spoiler: não conte o final nem reviravolta grande da história. Se o assunto for spoiler leve, escreva "SPOILER" no 1º segundo.
