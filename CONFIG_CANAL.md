@@ -22,13 +22,14 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
-## MODELO QUE DEU CERTO (30 mil views, 19/11/2026: recorde de 7,88 milhões assistindo o lançamento ao vivo) — COPIE ESTA FÓRMULA
-- 1º segundo: NÚMERO GIGANTE na tela + cena em movimento forte (ex.: "7,88 MILHÕES AO VIVO"). O número é o gancho. O título do 1º quadro já aparece COMPLETO e é o dado mais forte do vídeo (ex.: "90 HOURS", "2 ENDINGS"); nunca abrir com frase pela metade (ex.: "MORE THAN").
-- Assunto: recorde ou evento que todo mundo está comentando AGORA (lançamento, audiência, vendas, nota, "maior da história").
-- Estrutura: número chocante → de onde veio (selo da fonte, ex.: "STREAMS CHARTS") → detalhe que aumenta o choque (Twitch sozinha, em minutos) → comparação com recorde antigo → fato curioso extra ("e os EUA nem tinham o jogo") → pergunta pessoal no final ("você só assistiu?") + "segue o canal".
-- Título grande em 2 linhas no topo (branco + amarelo/rosa/azul), legenda palavra a palavra embaixo, selo verde com a fonte, cenas trocando a cada 2-3 s.
-- Dado que não é final: selo "DADOS PRELIMINARES" (foi o que fizemos, e funcionou).
-- PROIBIDO: cena com marca d'água ou nome de outro criador (ex.: "@usuario Follow" de TikTok). Esse vídeo teve uma cena assim — isso pode dar strike. Só cena limpa da Rockstar.
+## MODELO QUE DEU CERTO (30 mil views e ~230 curtidas, 19/11/2026: "GTA 6 tem mais de um final" — reviews da Kotaku/Gfinity + 80-90 horas de jogo) — COPIE ESTA FÓRMULA
+- Assunto: o que o JOGO TEM DE VERDADE e que o jogador quer saber antes de jogar (finais, duração, escolhas, o que fazer depois dos créditos), tirado de análises de sites grandes (Kotaku, Gfinity, IGN) e de falas da Rockstar.
+- Estrutura: revelação forte → fonte na tela (selo verde "KOTAKU REVIEW") → números concretos (90 horas, 2 finais) → "suas escolhas importam" → o que dá pra fazer depois dos créditos → fecho com humor ("GOODBYE SLEEP") → FOLLOW FOR MORE.
+- 1º segundo: o título do 1º quadro já aparece COMPLETO e é o dado mais forte do vídeo (ex.: "90 HOURS", "2 ENDINGS"); nunca abrir com frase pela metade (ex.: "MORE THAN"). Esse vídeo abriu fraco e mesmo assim bateu 30 mil — com abertura forte rende mais.
+- Curtidas baixas (menos de 1%): termine com uma pergunta direta para o público responder nos comentários (ex.: "Which ending will you pick? Comment below") ANTES do follow.
+- Título grande em 2 linhas no topo (branco + amarelo/rosa), legenda palavra a palavra embaixo, selo verde com a fonte, só cenas em movimento trocando a cada 2-3 s.
+- PROIBIDO: cena com marca d'água ou nome de outro criador (ex.: "@usuario Follow" de TikTok). Só cena limpa da Rockstar.
+- Spoiler: diga QUE existe mais de um final, nunca QUAL é o final.
 
 ## SEMANA DE LANÇAMENTO (19/11 a 03/12/2026) — VALE MAIS que "O QUE PROCURAR"
 - O jogo saiu. O público agora quer o jogo de verdade e o que os jogadores estão descobrindo. Todo Short desta fase é sobre o jogo lançado (nada de hype de trailer antigo ou contagem regressiva).
