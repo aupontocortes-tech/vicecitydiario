@@ -11,9 +11,9 @@ PAUSA (faça isto ANTES de pesquisar, gravar ou publicar):
 - Depois do git clone, abra o arquivo CONFIG_CANAL.md na raiz.
 - Leia a seção "## PAUSAS". Uma linha "- 08h", "- 12h" ou "- 14h" significa que aquele horário está pausado.
 - Veja a hora atual em America/Sao_Paulo e descubra qual horário é esta execução:
-  - 07:00–10:59 → 08h (screenshots)
-  - 11:00–13:29 → 12h (trechos de trailer)
-  - 13:30–16:59 → 14h (screenshots)
+  - 07:00–10:59 → 08h (cenas em vídeo)
+  - 11:00–13:29 → 12h (cenas em vídeo)
+  - 13:30–16:59 → 14h (cenas em vídeo)
 - Se a linha desse horário existir em PAUSAS, PARE. Não pesquise, não renderize e não publique. Responda só: "Pausado pelo painel (08h)." (trocando pelo horário certo).
 - Se a linha não existir, siga o fluxo normal.
 
