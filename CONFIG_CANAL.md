@@ -63,7 +63,7 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 - Não baixar o "An Extended Look" inteiro (14 GB). Use primeiro o Trailer 1, o Trailer 2 e os clipes curtos de personagem. Se precisar do Extended Look, recorte só os trechos necessários direto do link com ffmpeg (-ss e -t), sem baixar o arquivo todo.
 
 ## ESTILO DOS VÍDEOS
-- Instale a voz com: pip install --break-system-packages "sherpa-onnx==1.13.8" (a versão 2.0 não gera a narração em pt-BR).
+- VOZ (19/11/2026): tts_lines.py usa voz neural natural (inglês: Andrew; português: Antonio) via edge-tts, instala sozinho. A voz antiga (piper) era robótica e foi removida. Se a voz falhar, NÃO publique e avise. Escreva o roteiro como fala natural: frases curtas, vírgulas onde se respira.
 - CENAS DE GTA 5: só use se tiver VÍDEO em movimento do GTA 5 com uso permitido (oficial da Rockstar ou clipe da pasta clipes/ com crédito), sempre com o selo "CENA DE GTA 5". Se só achar imagem parada, NÃO faça vídeo de GTA 5 x GTA 6: escolha outro formato.
 
 ## OPINIÕES DO THIAGO

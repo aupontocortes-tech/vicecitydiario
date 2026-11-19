@@ -1,52 +1,53 @@
-"""Narração pt-BR a partir de spec.json.
+"""Narração a partir de spec.json (voz neural natural da Microsoft, grátis).
 Uso: python3 tts_lines.py spec.json saida_dir
-spec.json: {"scenes":[{"text":"frase 1", ...}, ...]}
-Gera saida_dir/narr.wav e saida_dir/timing.json (palavras e início/fim de cada cena).
-Precisa da pasta vits-piper-pt_BR-faber-medium/ ao lado."""
-import sys, json, os
-# Corrige sozinho: sherpa-onnx 2.x não gera a voz pt-BR (piper). Volta para 1.13.8 e reinicia.
-import importlib.metadata as _md, subprocess as _sp, os as _os
-try: _v = _md.version('sherpa-onnx')
-except Exception: _v = '0'
-if _v.split('.')[0].isdigit() and int(_v.split('.')[0]) >= 2 and not _os.environ.get('SHERPA_FIX'):
-    print('sherpa-onnx', _v, '-> instalando 1.13.8 (a 2.x não fala pt-BR)')
-    _sp.run([sys.executable, '-m', 'pip', 'install', '-q', '--break-system-packages', 'sherpa-onnx==1.13.8'], check=True)
-    _os.environ['SHERPA_FIX'] = '1'; _os.execv(sys.executable, [sys.executable] + sys.argv)
-import numpy as np, soundfile as sf, sherpa_onnx
+Gera saida_dir/narr.wav e saida_dir/timing.json. Se a voz neural falhar, PARA (nunca usar voz robótica)."""
+import sys, json, os, asyncio, ssl, subprocess, tempfile, time
+import numpy as np, soundfile as sf
 
 PRON = {'Game Informer': 'Guêim Infórmer', 'Rockstar': 'Róckstar', 'GTA 6': 'GTA seis', 'GTA 5': 'GTA cinco',
-        'GTA VI': 'GTA seis', 'Lucia': 'Lúcia', 'Jason': 'Djêison', 'Keys': 'Quíis', 'Vice City': 'Vaice Ciri',
-        'Leonida': 'Leônida', 'Trailer': 'Trêiler', 'trailer': 'trêiler', 'Shorts': 'Xórts'}
-
-PRON_EN = {'GTA 6': 'G T A six', 'GTA VI': 'G T A six', 'GTA 5': 'G T A five', 'Leonida': 'Leh-oh-nee-dah', 'Lucia': 'Loo-see-ah'}
+        'GTA VI': 'GTA seis', 'Lucia': 'Lúcia', 'Jason': 'Djêison', 'Vice City': 'Vaice Ciri', 'Leonida': 'Leônida', 'Shorts': 'Xórts'}
+PRON_EN = {'GTA 6': 'GTA six', 'GTA VI': 'GTA six', 'GTA 5': 'GTA five', 'Leonida': 'Leh-oh-nee-dah', 'Lucia': 'Loo-see-ah'}
 
 spec = json.load(open(sys.argv[1], encoding='utf-8')); out = sys.argv[2]; os.makedirs(out, exist_ok=True)
-EN = spec.get('lang', 'pt') == 'en'   # canal em inglês: "lang": "en" no spec.json
-NOME = 'vits-piper-en_US-ryan-high' if EN else 'vits-piper-pt_BR-faber-medium'
-d = os.path.join(os.path.dirname(os.path.abspath(__file__)), NOME) + '/'
-if not os.path.isdir(d): d = NOME + '/'
-if not os.path.isdir(d):   # baixa a voz sozinho se faltar
-    import subprocess as _s
-    _s.run(f'curl -sSL https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/{NOME}.tar.bz2 | tar xj', shell=True, check=True)
-onnx = [f for f in os.listdir(d) if f.endswith('.onnx')][0]
-tts = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(
-    vits=sherpa_onnx.OfflineTtsVitsModelConfig(model=d + onnx, tokens=d + 'tokens.txt', data_dir=d + 'espeak-ng-data'),
-    num_threads=4)))
+EN = spec.get('lang', 'pt') == 'en'
+VOZ, RATE, PITCH = ('en-US-AndrewMultilingualNeural', '+6%', '+0Hz') if EN else ('pt-BR-AntonioNeural', '+4%', '+0Hz')
+VOZ = os.environ.get('VC_VOZ', VOZ)
+ca = '/root/.ccr/ca-bundle.crt'
+if os.path.exists(ca):
+    _o = ssl.create_default_context
+    def _c(*a, **k):
+        c = _o(*a, **k); c.load_verify_locations(ca); return c
+    ssl.create_default_context = _c
+try: import edge_tts
+except ImportError:
+    subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', '--break-system-packages', 'edge-tts'], check=True); import edge_tts
 pron = dict(PRON_EN if EN else PRON); pron.update(spec.get('pron', {}))
-VEL = 0.95 if EN else 1.05
-sr = 22050; audio = [np.zeros(int(sr * 0.15), np.float32)]; t = 0.15; words = []; segs = []
+SR = 24000; audio = [np.zeros(int(SR * 0.12), np.float32)]; t = 0.12; words = []; segs = []
+tmp = tempfile.mkdtemp()
 for i, sc in enumerate(spec['scenes']):
     c = sc['text']; sp = c
     for k, v in pron.items(): sp = sp.replace(k, v)
-    a = tts.generate(sp, sid=0, speed=VEL); sr = a.sample_rate; x = np.array(a.samples, np.float32)
-    nz = np.where(np.abs(x) > 0.01)[0]; x = x[max(0, nz[0] - 200):nz[-1] + 400]; dur = len(x) / sr
+    mp3 = os.path.join(tmp, f'{i}.mp3'); wav = mp3[:-4] + '.wav'
+    for tent in range(6):
+        try:
+            asyncio.run(edge_tts.Communicate(sp, VOZ, rate=RATE, pitch=PITCH).save(mp3))
+            if os.path.getsize(mp3) > 1000: break
+        except Exception as e: print('  voz: tentando de novo', e); time.sleep(3 + tent * 2)
+    else:
+        print('ERRO: voz neural falhou. NÃO publique este vídeo (sem voz robótica).'); sys.exit(1)
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', mp3, '-ac', '1', '-ar', str(SR), wav], check=True)
+    x, _ = sf.read(wav, dtype='float32'); nz = np.where(np.abs(x) > 0.01)[0]
+    x = x[max(0, nz[0] - 200):nz[-1] + 600]; dur = len(x) / SR
     ws = c.split(); tot = sum(len(w) + 1 for w in ws); cur = t
     for w in ws:
         wd = dur * (len(w) + 1) / tot; words.append({'w': w, 's': round(cur, 3), 'e': round(cur + wd, 3), 'seg': i}); cur += wd
     segs.append([t, t + dur]); audio.append(x); t += dur
-    gap = 0.28; audio.append(np.zeros(int(sr * gap), np.float32)); t += gap
-audio.append(np.zeros(int(sr * 0.5), np.float32)); t += 0.5
+    fim = c.rstrip()[-1:] if c.strip() else '.'
+    gap = 0.42 if fim in '?!' else 0.26 if fim in '.…' else 0.16
+    audio.append(np.zeros(int(SR * gap), np.float32)); t += gap
+    time.sleep(0.4)
+audio.append(np.zeros(int(SR * 0.5), np.float32)); t += 0.5
 y = np.concatenate(audio); y = y / np.max(np.abs(y)) * 0.89
-sf.write(os.path.join(out, 'narr.wav'), y, sr)
-json.dump({'words': words, 'segs': segs, 'dur': len(y) / sr}, open(os.path.join(out, 'timing.json'), 'w'), ensure_ascii=False)
-print('narração', round(len(y) / sr, 2), 's,', len(segs), 'cenas')
+sf.write(os.path.join(out, 'narr.wav'), y, SR)
+json.dump({'words': words, 'segs': segs, 'dur': len(y) / SR}, open(os.path.join(out, 'timing.json'), 'w'), ensure_ascii=False)
+print('narração (voz neural)', VOZ, round(len(y) / SR, 2), 's,', len(segs), 'cenas')
