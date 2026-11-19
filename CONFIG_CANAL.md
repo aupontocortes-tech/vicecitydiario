@@ -22,6 +22,14 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## MODELO QUE DEU CERTO (30 mil views, 19/11/2026: recorde de 7,88 milhões assistindo o lançamento ao vivo) — COPIE ESTA FÓRMULA
+- 1º segundo: NÚMERO GIGANTE na tela + cena em movimento forte (ex.: "7,88 MILHÕES AO VIVO"). O número é o gancho.
+- Assunto: recorde ou evento que todo mundo está comentando AGORA (lançamento, audiência, vendas, nota, "maior da história").
+- Estrutura: número chocante → de onde veio (selo da fonte, ex.: "STREAMS CHARTS") → detalhe que aumenta o choque (Twitch sozinha, em minutos) → comparação com recorde antigo → fato curioso extra ("e os EUA nem tinham o jogo") → pergunta pessoal no final ("você só assistiu?") + "segue o canal".
+- Título grande em 2 linhas no topo (branco + amarelo/rosa/azul), legenda palavra a palavra embaixo, selo verde com a fonte, cenas trocando a cada 2-3 s.
+- Dado que não é final: selo "DADOS PRELIMINARES" (foi o que fizemos, e funcionou).
+- PROIBIDO: cena com marca d'água ou nome de outro criador (ex.: "@usuario Follow" de TikTok). Esse vídeo teve uma cena assim — isso pode dar strike. Só cena limpa da Rockstar.
+
 ## SEMANA DE LANÇAMENTO (19/11 a 03/12/2026) — VALE MAIS que "O QUE PROCURAR"
 - O jogo saiu. O público agora quer o jogo de verdade e o que os jogadores estão descobrindo. Todo Short desta fase é sobre o jogo lançado (nada de hype de trailer antigo ou contagem regressiva).
 - Formatos, nesta ordem de prioridade:
