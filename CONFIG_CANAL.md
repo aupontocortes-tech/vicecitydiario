@@ -22,6 +22,18 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## SEMANA DE LANÇAMENTO (19/11 a 03/12/2026) — VALE MAIS que "O QUE PROCURAR"
+- O jogo saiu. O público agora quer o jogo de verdade e o que os jogadores estão descobrindo. Todo Short desta fase é sobre o jogo lançado (nada de hype de trailer antigo ou contagem regressiva).
+- Formatos, nesta ordem de prioridade:
+  1. O QUE OS JOGADORES DESCOBRIRAM: segredos, easter eggs, detalhes absurdos, recordes. Só o que site confiável publicou (IGN, GameSpot, Eurogamer, Polygon, Kotaku, The Verge, Rockstar Intel, VGC), com a fonte na descrição.
+  2. NOTAS E NÚMEROS: nota no Metacritic/OpenCritic, recordes oficiais de venda ou de jogadores.
+  3. PRIMEIRAS HORAS: dicas e "o que fazer primeiro" que a imprensa publicou.
+  4. MATERIAL NOVO DA ROCKSTAR (trailer de lançamento, screenshots novos, Newswire).
+- Título com a descoberta concreta no começo (ex.: "Players found a hidden ___ in GTA 6"). Nada de promessa que o vídeo não cumpre.
+- Imagens: só material oficial da Rockstar (trailers, incluindo o de lançamento, e screenshots) ou arquivos da pasta clipes/ com crédito. NUNCA gameplay de outros canais ou streamers fora da pasta clipes/ (dá strike e bloqueia monetização por conteúdo reutilizado).
+- Spoiler: não conte o final nem reviravolta grande da história. Se o assunto for spoiler leve, escreva "SPOILER" no 1º segundo.
+- Descoberta que só aparece em post de rede social, sem site confiável confirmando: selo "FANS SPOTTED" e a palavra "reportedly" na narração.
+
 ## O QUE PROCURAR
 - A PARTIR DE 19/11 (lançamento): toda execução confere primeiro se a Rockstar soltou material novo (rockstargames.com/VI, Newswire, rockstargames.com/VI/media/videos e /screenshots). Material oficial novo = prioridade máxima de vídeo. O Thiago NÃO vai comprar o jogo: nunca sugira gravar gameplay próprio.
 - Se existir a pasta clipes/ no repositório (clipes que o Thiago baixou de canais "no copyright" ou de streamers que liberam cortes), pode usar esses arquivos como "src" local, com crédito do canal de origem na descrição (o arquivo clipes/CREDITOS.md diz de onde veio cada um). Nunca baixe vídeo do YouTube você mesmo.
