@@ -22,6 +22,16 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## CENAS NOVAS, SEM REPETIR (20/11/2026)
+- Problema: os vídeos estavam repetindo as mesmas cenas. Fontes oficiais que DEVEM entrar no rodízio:
+  1. Launch Trailer (15/10/2026) — página rockstargames.com/VI/launch-trailer. Ache o link .mp4 oficial (media-rockstargames-com.akamaized.net/VI/downloads/videos/...) e use "src": "url:<link>". Depois de achar, grave o link no SRC do render_trailer.py como 'LAUNCH' e faça commit.
+  2. Trailer do pré-download (10/11/2026, "Pre-Load Now") — mesma coisa, como 'PRELOAD'.
+  3. An Extended Look (EXT) tem 26 MINUTOS: use a parte toda (corridas, caiaque, mergulho, missões, cidade), não só os primeiros minutos.
+  4. Clipes de personagem em rockstargames.com/VI/_next/static/media/ e qualquer vídeo novo que aparecer no Newswire.
+- O render_trailer.py agora PARA se uma cena usar um trecho (±4 s) já usado nos últimos 14 dias e diz qual trocar. Escolha outro momento. Depois de publicar, faça commit do usados.json (é a memória do que já foi usado).
+- Num mesmo vídeo, no máximo 3 cenas do mesmo trailer.
+- Gameplay de outros canais/streamers/"no copyright": NÃO. Quem posta não é dono dos direitos (a Rockstar é) e a política da Rockstar só cobre o jogador postando o próprio gameplay, sem fins comerciais. Dá strike e bloqueio por conteúdo reutilizado.
+
 ## CAPA (20/11/2026) — TODO Short sai com capa chamativa
 - O render_trailer.py gera saida/capa.jpg sozinho (escolhe a cena limpa mais colorida e forte) e o yt.py aplica na hora de publicar. Só preencha no spec.json:
   "capa": ["LINHA 1", "LINHA 2"]  → o dado mais forte do vídeo, no máximo 3 palavras por linha (ex.: ["GTA 6 HAS", "2 ENDINGS"], ["7.8 MILLION", "WATCHING"]). A última linha sai amarela.

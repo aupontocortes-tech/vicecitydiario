@@ -10,7 +10,7 @@ spec.json:
  ],
  "credit": "Imagens: trailers oficiais Rockstar Games • Vice City Diário"
 }
-src: T1 (Trailer 1, 90s), T2 (Trailer 2), EXT (An Extended Look), ou "clip:Arquivo.HASH.mp4"
+src: T1 (Trailer 1, 90s), T2 (Trailer 2), EXT (An Extended Look, 26 min), LAUNCH (Launch Trailer 15/10/2026), PRELOAD (trailer do pré-download 10/11/2026), ou "clip:Arquivo.HASH.mp4"
 (clipes de personagem em rockstargames.com/VI/_next/static/media/), ou "url:https://..." (vídeo .mp4 ou
 imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada com zoom lento).
 start em segundos no vídeo de origem (ignorado em imagem).
@@ -29,6 +29,7 @@ SRC = {
     'T1': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Trailer_1/GTAVI_Trailer_1.mp4',
     'T2': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Trailer_2/GTAVI_Trailer_2.mp4',
     'EXT': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4',
+    # LAUNCH e PRELOAD: o robô acha o link .mp4 oficial (rockstargames.com/VI/launch-trailer e /VI/media/videos) e põe aqui ou usa "url:<link>"
 }
 CACHE = os.environ.get('VCD_CACHE', '/tmp/vcd_cache')
 COLORS = {'yellow': (255, 222, 40), 'white': (255, 255, 255), 'pink': (255, 60, 150), 'teal': (40, 230, 220), 'orange': (255, 150, 30)}
@@ -43,6 +44,33 @@ M9 = {s: ImageFont.truetype(fpath('Mont900.ttf'), s) for s in (34, 58)}
 M8 = ImageFont.truetype(fpath('Mont800.ttf'), 28)
 
 def run(cmd): subprocess.run(cmd, check=True)
+
+USADOS = os.path.join(HERE, 'usados.json')   # trechos já usados (fonte, segundo, data) para não repetir cena
+
+def checa_repetidos(spec):
+    """Para o render se alguma cena usar um trecho (±4 s) já usado nos últimos 14 dias."""
+    import datetime
+    if os.environ.get('VCD_PERMITE_REPETIDO') == '1': return
+    try: us = json.load(open(USADOS))
+    except Exception: us = []
+    hoje = datetime.date.today(); rep = []
+    for i, sc in enumerate(spec['scenes']):
+        if 'start' not in sc: continue
+        for u in us:
+            if u['src'] == sc['src'] and abs(u['start'] - float(sc['start'])) < 4 and (hoje - datetime.date.fromisoformat(u['data'])).days <= 14:
+                rep.append(f"cena {i}: {sc['src']} {sc['start']}s (já usado em {u['data']})"); break
+    if rep:
+        raise SystemExit('CENA REPETIDA — troque o trecho (use outro momento do Extended Look de 26 min ou os trailers novos):\n' + '\n'.join(rep))
+
+def grava_usados(spec):
+    import datetime
+    try: us = json.load(open(USADOS))
+    except Exception: us = []
+    hoje = datetime.date.today()
+    us = [u for u in us if (hoje - datetime.date.fromisoformat(u['data'])).days <= 30]
+    for sc in spec['scenes']:
+        if 'start' in sc: us.append({'src': sc['src'], 'start': float(sc['start']), 'data': hoje.isoformat()})
+    json.dump(us, open(USADOS, 'w'), indent=0)
 
 def source_file(src):
     os.makedirs(CACHE, exist_ok=True)
@@ -93,6 +121,7 @@ def main():
     T = json.load(open(os.path.join(out, 'timing.json'), encoding='utf-8'))
     DUR = T['dur']; SEGS = T['segs']; WORDS = T['words']; SC = spec['scenes']
     assert len(SC) == len(SEGS), 'número de cenas diferente da narração'
+    checa_repetidos(spec)
     # 1) cortes de vídeo por cena
     bounds = [0.0] + [SEGS[i][0] - 0.14 for i in range(1, len(SEGS))] + [DUR]
     parts = []
@@ -173,6 +202,7 @@ def main():
         enc.stdin.write(im.convert('RGB').tobytes())
     enc.stdin.close(); enc.wait(); dec.terminate()
     print('ok', final, round(os.path.getsize(final) / 1e6, 1), 'MB')
+    grava_usados(spec)
     try: fazer_capa(spec, out, parts)
     except Exception as e: print('AVISO: capa não gerada:', e)
 
