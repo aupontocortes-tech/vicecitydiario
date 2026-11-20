@@ -16,6 +16,12 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
    - Se a versão em português falhar, publique só a em inglês e diga no relatório.
 - Faça os 2 no MESMO commit/push. Relatório para o Thiago continua em português (com o título em inglês + tradução).
 
+## LINKS OFICIAIS CONFIRMADOS (20/11/2026) — use em "src"
+- 'LAUNCH' (Launch Trailer) e 'OUTNOW' (trailer "Grand Theft Auto VI: Out Now", saiu no lançamento): já estão no render_trailer.py. O Out Now é o mais novo: dê prioridade a ele.
+- Clipes de personagem (Jason, Lucia, Cal Hampton, Boobie Ike, Dre'Quan Priest, Real Dimez, Raul Bautista, Brian Heder + animação da capa): pacote oficial https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip (121 MB, 9 vídeos). Baixe, extraia e use cada arquivo com "url:" ou local.
+- Screenshots oficiais (138): https://media-rockstargames-com.akamaized.net/VI/downloads/screenshots/GTAVI_Screenshots.zip ; Ultimate Edition (51): .../GTAVI_Ultimate_Edition_Benefits.zip ; Vintage Vice City (12): .../GTAVI_Vintage_Vice_City_Pack.zip. Imagem parada: no máximo 1 por vídeo.
+- 'PRELOAD' (trailer do pré-download): ainda sem .mp4 direto confirmado; use só se achar o link na página da Rockstar.
+
 ## FONTES
 
 ## FONTES SÓ PARA CONFIRMAR

@@ -10,7 +10,7 @@ spec.json:
  ],
  "credit": "Imagens: trailers oficiais Rockstar Games • Vice City Diário"
 }
-src: T1 (Trailer 1, 90s), T2 (Trailer 2), EXT (An Extended Look, 26 min), LAUNCH (Launch Trailer 15/10/2026), PRELOAD (trailer do pré-download 10/11/2026), ou "clip:Arquivo.HASH.mp4"
+src: T1 (Trailer 1, 90s), T2 (Trailer 2), EXT (An Extended Look, 26 min), LAUNCH (Launch Trailer 15/10/2026, 780 MB), OUTNOW (trailer "Out Now" do dia do lançamento, 255 MB), PRELOAD (trailer do pré-download 10/11/2026), ou "clip:Arquivo.HASH.mp4"
 (clipes de personagem em rockstargames.com/VI/_next/static/media/), ou "url:https://..." (vídeo .mp4 ou
 imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada com zoom lento).
 start em segundos no vídeo de origem (ignorado em imagem).
@@ -31,7 +31,9 @@ SRC = {
     'T1': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Trailer_1/GTAVI_Trailer_1.mp4',
     'T2': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Trailer_2/GTAVI_Trailer_2.mp4',
     'EXT': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_An_Extended_Look/GTAVI_An_Extended_Look.mp4',
-    # LAUNCH e PRELOAD: o robô acha o link .mp4 oficial (rockstargames.com/VI/launch-trailer e /VI/media/videos) e põe aqui ou usa "url:<link>"
+    'LAUNCH': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Launch_Trailer/GTAVI_Launch_Trailer.mp4',
+    'OUTNOW': 'https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Out_Now/GTAVI_Out_Now.mp4',
+    # PRELOAD: o robô acha o link .mp4 oficial (rockstargames.com/VI/launch-trailer e /VI/media/videos) e põe aqui ou usa "url:<link>"
 }
 CACHE = os.environ.get('VCD_CACHE', '/tmp/vcd_cache')
 COLORS = {'yellow': (255, 222, 40), 'white': (255, 255, 255), 'pink': (255, 60, 150), 'teal': (40, 230, 220), 'orange': (255, 150, 30)}
