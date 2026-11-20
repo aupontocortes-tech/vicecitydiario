@@ -6,11 +6,11 @@ import numpy as np, soundfile as sf
 
 PRON = {'Game Informer': 'Guêim Infórmer', 'Rockstar': 'Róckstar', 'GTA 6': 'GTA seis', 'GTA 5': 'GTA cinco',
         'GTA VI': 'GTA seis', 'Lucia': 'Lúcia', 'Jason': 'Djêison', 'Vice City': 'Vaice Ciri', 'Leonida': 'Leônida', 'Shorts': 'Xórts'}
-PRON_EN = {'GTA 6': 'GTA six', 'GTA VI': 'GTA six', 'GTA 5': 'GTA five', 'Leonida': 'Leh-oh-nee-dah', 'Lucia': 'Loo-see-ah'}
+PRON_EN = {'GTA 6': 'GTA six', 'GTA VI': 'GTA six', 'GTA 5': 'GTA five', 'Leonida': 'Leh-oh-nee-dah', 'Lucia': 'Loo-see-ah', 'jet ski': 'jet skee', 'Jet Ski': 'jet skee', 'Metacritic': 'Meh-tuh-critic', 'Jason': 'Jay-sun'}
 
 spec = json.load(open(sys.argv[1], encoding='utf-8')); out = sys.argv[2]; os.makedirs(out, exist_ok=True)
 EN = spec.get('lang', 'pt') == 'en'
-VOZ, RATE, PITCH = ('en-US-AndrewMultilingualNeural', '+6%', '+0Hz') if EN else ('pt-BR-AntonioNeural', '+4%', '+0Hz')
+VOZ, RATE, PITCH = ('en-US-AndrewMultilingualNeural', '+0%', '+0Hz') if EN else ('pt-BR-AntonioNeural', '+4%', '+0Hz')
 VOZ = os.environ.get('VC_VOZ', VOZ)
 ca = '/root/.ccr/ca-bundle.crt'
 if os.path.exists(ca):
