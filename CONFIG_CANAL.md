@@ -40,7 +40,8 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 - Problema: as cenas estavam genéricas e não mostravam o que a narração dizia.
 - Escolha o assunto PELA IMAGEM: antes de escrever, veja se existe trecho oficial que MOSTRA aquilo (folha de contato dos trailers, do Extended Look e dos clipes de personagem). Sem imagem que mostre, troque de assunto.
 - Cada frase tem que ter uma cena que mostre o que ela diz: falou de dinheiro, aparece dinheiro, assalto ou loja; falou de polícia, aparece polícia; falou de Jason, aparece o Jason; falou de mar ou jet ski, aparece água e jet ski. Proibido cena "qualquer" do trailer só para preencher.
-- Quando não existir imagem exata para uma frase, reescreva a frase para falar do que a imagem mostra, ou use selo pequeno "ILUSTRATIVO" (no máximo 1 cena por vídeo).
+- ASSUNTO IMPORTANTE SEM CENA (número, preço, data, nota, anúncio): use o CARD DE NOTÍCIA do render_trailer.py: "card": {"big": "US$ 2,36 BI", "small": "em um dia", "fonte": "FONTE: IGN"}. Fundo do trailer desfocado + dado gigante (número sobe contando). Máximo 2 cards por vídeo; o resto do vídeo com cenas que combinam com a fala (ex.: falou de vendas → fila de loja, dinheiro, assalto).
+- Quando não existir imagem exata para uma frase e não for caso de card, reescreva a frase para falar do que a imagem mostra, ou use selo pequeno "ILUSTRATIVO" (no máximo 1 cena por vídeo).
 - QC obrigatório antes de publicar: para CADA cena, tire 1 quadro do final.mp4, descreva em 5 palavras o que aparece e compare com a frase. Se não bater, troque o trecho e renderize de novo. Escreva no relatório a lista "frase → o que aparece".
 
 ## CENAS NOVAS, SEM REPETIR (20/11/2026)

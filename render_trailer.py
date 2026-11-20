@@ -18,6 +18,8 @@ tag (opcional): selo PEQUENO no canto superior esquerdo, ex. "CENA DE GTA 5". Us
 focus: 0 = esquerda, 0.5 = centro, 1 = direita (onde fica o recorte vertical).
 mov (opcional): zoom_in, zoom_out, pan, pan_rev, punch, drift — se omitir, varia sozinho e nunca repete o da cena anterior.
 vel (opcional): 0.8 = câmera lenta (cena de ação/impacto).
+card (opcional): {"big": "US$ 2,36 BI", "small": "em um dia", "fonte": "FONTE: IGN", "cor": "yellow"} = card de notícia
+  (fundo do trailer desfocado + dado gigante; número sobe contando). Use quando o assunto não tem cena que mostre. Máximo 2 por vídeo.
 capa (opcional): ["LINHA 1", "LINHA 2"] = texto gigante da capa (use o dado mais forte: "90 HOURS", "2 ENDINGS").
 capa_selo (opcional): selo vermelho embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
 Saída: saida_dir/final.mp4 e saida_dir/capa.jpg (capa chamativa; o yt.py aplica sozinho)."""
@@ -153,6 +155,8 @@ def main():
             pos = "x='iw/2-(iw/zoom/2)+14*sin(on/9)':y='ih/2-(ih/zoom/2)+10*sin(on/13)'" if mov == 'drift' else cen
             vf = (f"crop={cw}:{ih}:{x}:0,scale={W}:{H},"
                   f"zoompan=z='{zexp}':{pos}:d=1:s={W}x{H}:fps={FPS},setsar=1")
+        if sc.get('card'):   # card de notícia: fundo do trailer desfocado e escuro
+            vf = f"crop={cw}:{ih}:{x}:0,scale={W}:{H},boxblur=28:2,eq=brightness=-0.22:saturation=0.8,zoompan=z='1+0.05*on/{N}':{cen}:d=1:s={W}x{H}:fps={FPS},setsar=1"
         vel = float(sc.get('vel', 1.0))   # 0.8 = câmera lenta em cena de ação (opcional)
         if vel != 1.0: vf = f"setpts=PTS/{vel}," + vf
         o = os.path.join(out, f'part{i:02d}.mp4')
@@ -204,6 +208,25 @@ def main():
                 f = ANTON[150] if len(ln) <= 11 else (ANTON[130] if len(ln) <= 15 else ANTON[110])
                 c = COLORS.get(sc.get('title_color', 'yellow'), YEL) if j == len(lines) - 1 else WHITE
                 paste_text(im, ln, f, (W / 2, 320 + j * (f.size + 10)), pop(lt, 0.05 + 0.2 * j), c)
+        if sc.get('card'):
+            cd = sc['card']; big = str(cd.get('big', '')); k = pop(lt, 0.0, 0.35)
+            m = __import__('re').match(r'^([^0-9]*)([0-9][0-9.,]*)(.*)$', big)
+            if m and cd.get('contar', True):   # número sobe contando
+                num = m.group(2); sep = ',' if ',' in num and '.' not in num else '.'
+                try:
+                    alvo = float(num.replace('.', '').replace(',', '.')) if sep == ',' else float(num.replace(',', ''))
+                    ndec = len(num.split(sep)[-1]) if sep in num and len(num.split(sep)[-1]) < 3 else 0
+                    v = alvo * min(1, ease(lt / 0.9)); txt = f"{v:,.{ndec}f}"
+                    txt = txt.replace(',', 'X').replace('.', ',').replace('X', '.') if sep == ',' else txt
+                    big = m.group(1) + txt + m.group(3)
+                except Exception: pass
+            tam = 260
+            while tam > 110 and d.textlength(big, font=ImageFont.truetype(fpath('Anton.ttf'), tam)) > W - 90: tam -= 10
+            fb = ImageFont.truetype(fpath('Anton.ttf'), tam)
+            paste_text(im, big, fb, (W / 2, 860), max(k, 0.01), COLORS.get(cd.get('cor', 'yellow'), YEL), stroke=14)
+            if cd.get('small'):
+                paste_text(im, cd['small'].upper(), ANTON[90] if len(cd['small']) < 18 else ANTON[90], (W / 2, 860 + tam / 2 + 90), pop(lt, 0.25), WHITE, stroke=10)
+            if cd.get('fonte'): badge(d, W / 2, 1180, cd['fonte'], GREEN)
         if sc.get('cta') and lt > 0.3:
             k = pop(lt, 0.3); bw = 680 * k
             if bw > 10:
