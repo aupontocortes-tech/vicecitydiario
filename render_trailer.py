@@ -16,7 +16,9 @@ imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada 
 start em segundos no vídeo de origem (ignorado em imagem).
 tag (opcional): selo PEQUENO no canto superior esquerdo, ex. "CENA DE GTA 5". Use SEMPRE que a cena for de outro jogo.
 focus: 0 = esquerda, 0.5 = centro, 1 = direita (onde fica o recorte vertical).
-Saída: saida_dir/final.mp4"""
+capa (opcional): ["LINHA 1", "LINHA 2"] = texto gigante da capa (use o dado mais forte: "90 HOURS", "2 ENDINGS").
+capa_selo (opcional): selo vermelho embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
+Saída: saida_dir/final.mp4 e saida_dir/capa.jpg (capa chamativa; o yt.py aplica sozinho)."""
 import sys, os, json, subprocess, math, urllib.request, urllib.parse
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -171,6 +173,52 @@ def main():
         enc.stdin.write(im.convert('RGB').tobytes())
     enc.stdin.close(); enc.wait(); dec.terminate()
     print('ok', final, round(os.path.getsize(final) / 1e6, 1), 'MB')
+    try: fazer_capa(spec, out, parts)
+    except Exception as e: print('AVISO: capa não gerada:', e)
+
+def fazer_capa(spec, out, parts):
+    """Capa chamativa 1080x1920: cena limpa (sem legenda) mais forte + dado principal em letras gigantes."""
+    import tempfile
+    tmp = tempfile.mkdtemp(); melhor = None
+    idx = [spec['capa_cena']] if isinstance(spec.get('capa_cena'), int) else range(len(parts))
+    for i in idx:
+        for frac in (0.35, 0.7):
+            dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', parts[i]], capture_output=True, text=True).stdout.strip() or 1)
+            f = os.path.join(tmp, f'{i}_{frac}.png')
+            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', f'{dur * frac:.2f}', '-i', parts[i], '-frames:v', '1', f])
+            if not os.path.exists(f): continue
+            a = np.asarray(Image.open(f).convert('RGB').resize((270, 480)), np.float32)
+            sat = (a.max(2) - a.min(2)).mean(); con = a.mean(2).std(); lum = a.mean()
+            nota = sat + con - abs(lum - 120) * 0.4          # colorido, contrastado e nem escuro nem estourado
+            if melhor is None or nota > melhor[0]: melhor = (nota, f)
+    if not melhor: return
+    im = Image.open(melhor[1]).convert('RGB').resize((W, H))
+    from PIL import ImageEnhance
+    im = ImageEnhance.Contrast(ImageEnhance.Color(im).enhance(1.25)).enhance(1.12).convert('RGBA')
+    g = np.zeros((H, W, 4), np.uint8)
+    for y in range(H):
+        a = 0
+        if y < 900: a = int(215 * (1 - y / 900) ** 1.2)
+        if y > 1500: a = max(a, int(140 * ((y - 1500) / 420)))
+        g[y, :, 3] = a
+    im.alpha_composite(Image.fromarray(g, 'RGBA')); d = ImageDraw.Draw(im)
+    linhas = spec.get('capa') or (SC0 := spec['scenes'][0]).get('title', '').split('|')
+    linhas = [l.strip().upper() for l in linhas if l.strip()][:3]
+    y = 260
+    for j, ln in enumerate(linhas):
+        tam = 230
+        while tam > 90:
+            f = ImageFont.truetype(fpath('Anton.ttf'), tam)
+            if d.textlength(ln, font=f) <= W - 80: break
+            tam -= 8
+        cor = YEL if j == len(linhas) - 1 else WHITE
+        d.text((W / 2, y + tam / 2), ln, font=f, fill=cor, anchor='mm', stroke_width=max(10, tam // 11), stroke_fill=(0, 0, 0))
+        y += tam + 18
+    if spec.get('capa_selo'):
+        f = M9[58]; tw = d.textlength(spec['capa_selo'], font=f)
+        d.rounded_rectangle((W / 2 - tw / 2 - 34, y + 20, W / 2 + tw / 2 + 34, y + 120), 22, fill=(230, 30, 40))
+        d.text((W / 2, y + 70), spec['capa_selo'], font=f, fill=WHITE, anchor='mm')
+    p = os.path.join(out, 'capa.jpg'); im.convert('RGB').save(p, quality=90); print('capa', p)
 
 if __name__ == '__main__':
     main()

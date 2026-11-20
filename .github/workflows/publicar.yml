@@ -31,7 +31,7 @@ jobs:
               echo "Enviando $video"
               python3 yt.py up "$video" "$meta"
               bash tiktok_release.sh "$video" "$meta" "gta_$(basename "${meta%.json}")"   # cópia pro TikTok (app Meus Canais)
-              git rm -q "$video" "$meta"
+              git rm -q "$video" "$meta"; [ -f "${meta%.json}.jpg" ] && git rm -q "${meta%.json}.jpg"
               enviados=$((enviados+1))
             fi
           done
