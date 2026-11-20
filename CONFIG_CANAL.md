@@ -22,6 +22,13 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## CAPA (20/11/2026) — TODO Short sai com capa chamativa
+- O render_trailer.py gera saida/capa.jpg sozinho (escolhe a cena limpa mais colorida e forte) e o yt.py aplica na hora de publicar. Só preencha no spec.json:
+  "capa": ["LINHA 1", "LINHA 2"]  → o dado mais forte do vídeo, no máximo 3 palavras por linha (ex.: ["GTA 6 HAS", "2 ENDINGS"], ["7.8 MILLION", "WATCHING"]). A última linha sai amarela.
+  "capa_selo": "KOTAKU REVIEW" (opcional, fonte em selo vermelho), "capa_cena": 3 (opcional, se outra cena tiver imagem melhor).
+- A capa promete o mesmo que o título e o vídeo entregam. Nada de capa enganosa.
+- Confira capa.jpg no QC (texto legível, personagem ou carro bem visível). Se o yt.py disser "capa não aplicada", avise no relatório.
+
 ## MODELO QUE DEU CERTO (30 mil views e ~230 curtidas, 19/11/2026: "GTA 6 tem mais de um final" — reviews da Kotaku/Gfinity + 80-90 horas de jogo) — COPIE ESTA FÓRMULA
 - Assunto: o que o JOGO TEM DE VERDADE e que o jogador quer saber antes de jogar (finais, duração, escolhas, o que fazer depois dos créditos), tirado de análises de sites grandes (Kotaku, Gfinity, IGN) e de falas da Rockstar.
 - Estrutura: revelação forte → fonte na tela (selo verde "KOTAKU REVIEW") → números concretos (90 horas, 2 finais) → "suas escolhas importam" → o que dá pra fazer depois dos créditos → fecho com humor ("GOODBYE SLEEP") → FOLLOW FOR MORE.
