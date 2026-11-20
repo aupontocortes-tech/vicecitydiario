@@ -16,6 +16,8 @@ imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada 
 start em segundos no vídeo de origem (ignorado em imagem).
 tag (opcional): selo PEQUENO no canto superior esquerdo, ex. "CENA DE GTA 5". Use SEMPRE que a cena for de outro jogo.
 focus: 0 = esquerda, 0.5 = centro, 1 = direita (onde fica o recorte vertical).
+mov (opcional): zoom_in, zoom_out, pan, pan_rev, punch, drift — se omitir, varia sozinho e nunca repete o da cena anterior.
+vel (opcional): 0.8 = câmera lenta (cena de ação/impacto).
 capa (opcional): ["LINHA 1", "LINHA 2"] = texto gigante da capa (use o dado mais forte: "90 HOURS", "2 ENDINGS").
 capa_selo (opcional): selo vermelho embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
 Saída: saida_dir/final.mp4 e saida_dir/capa.jpg (capa chamativa; o yt.py aplica sozinho)."""
@@ -124,14 +126,33 @@ def main():
     checa_repetidos(spec)
     # 1) cortes de vídeo por cena
     bounds = [0.0] + [SEGS[i][0] - 0.14 for i in range(1, len(SEGS))] + [DUR]
-    parts = []
+    parts = []; prev_mov = None
     for i, sc in enumerate(SC):
         p = source_file(sc['src']); iw, ih = probe_wh(p)
         dur = bounds[i + 1] - bounds[i]; cw = min(iw, int(ih * 9 / 16)); cw -= cw % 2
-        x = int((iw - cw) * float(sc.get('focus', 0.5)))
-        z = 1.06  # leve zoom-in durante a cena
-        vf = (f"crop={cw}:{ih}:{x}:0,scale={W}:{H},"
-              f"zoompan=z='1+({z}-1)*on/({dur}*{FPS})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},setsar=1")
+        fo = float(sc.get('focus', 0.5)); x = int((iw - cw) * fo)
+        N = max(1, int(dur * FPS))
+        # movimento de câmera variado (edição "humana"): cada cena tem um, sem repetir o da anterior
+        MOVS = ['zoom_in', 'pan', 'punch', 'zoom_out', 'drift', 'pan_rev']
+        mov = sc.get('mov') or MOVS[(i * 7 + int(float(sc.get('start', 0)) * 3)) % len(MOVS)]
+        if i > 0 and mov == prev_mov: mov = MOVS[(MOVS.index(mov) + 2) % len(MOVS)]
+        prev_mov = mov
+        cen = "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+        if mov in ('pan', 'pan_rev') and iw - cw > 40:
+            a0, a1 = max(0.0, fo - 0.22), min(1.0, fo + 0.22)
+            if mov == 'pan_rev': a0, a1 = a1, a0
+            X0, X1 = int((iw - cw) * a0), int((iw - cw) * a1)
+            vf = (f"crop={cw}:{ih}:'{X0}+({X1}-{X0})*min(t/{dur:.3f},1)':0,scale={W}:{H},"
+                  f"zoompan=z='1.04':{cen}:d=1:s={W}x{H}:fps={FPS},setsar=1")
+        else:
+            zexp = {'zoom_in': f"1+0.10*on/{N}", 'zoom_out': f"1.12-0.10*on/{N}",
+                    'punch': f"1+0.16*max(0,1-on/{0.25 * FPS:.1f})+0.03*on/{N}",
+                    'drift': "1.08", 'pan': f"1+0.06*on/{N}", 'pan_rev': f"1+0.06*on/{N}"}[mov]
+            pos = "x='iw/2-(iw/zoom/2)+14*sin(on/9)':y='ih/2-(ih/zoom/2)+10*sin(on/13)'" if mov == 'drift' else cen
+            vf = (f"crop={cw}:{ih}:{x}:0,scale={W}:{H},"
+                  f"zoompan=z='{zexp}':{pos}:d=1:s={W}x{H}:fps={FPS},setsar=1")
+        vel = float(sc.get('vel', 1.0))   # 0.8 = câmera lenta em cena de ação (opcional)
+        if vel != 1.0: vf = f"setpts=PTS/{vel}," + vf
         o = os.path.join(out, f'part{i:02d}.mp4')
         is_img = p.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))
         inp = ['-loop', '1', '-i', p] if is_img else ['-ss', str(sc.get('start', 0)), '-i', p]

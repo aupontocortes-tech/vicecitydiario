@@ -32,6 +32,12 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 - Num mesmo vídeo, no máximo 3 cenas do mesmo trailer.
 - Gameplay de outros canais/streamers/"no copyright": NÃO. Quem posta não é dono dos direitos (a Rockstar é) e a política da Rockstar só cobre o jogador postando o próprio gameplay, sem fins comerciais. Dá strike e bloqueio por conteúdo reutilizado.
 
+## EDIÇÃO HUMANA, NÃO ROBÓTICA (20/11/2026)
+- O render_trailer.py agora varia o movimento de câmera sozinho em cada cena (zoom in, zoom out, pan para os lados, "punch" rápido, câmera na mão) e nunca repete o da cena anterior. Não precisa configurar.
+- Use isso a favor: escolha cenas que tenham coisa acontecendo dos dois lados do quadro (o pan revela), e em cena de impacto (batida, tiro, salto) ponha "mov": "punch" ou "vel": 0.8 (câmera lenta).
+- Varie o "focus" (0.2 / 0.5 / 0.8) entre cenas do mesmo trailer: é outro enquadramento, parece outro ângulo.
+- Ritmo: troque de cena a cada 2-3 s; frase de impacto pode ter cena mais curta (1,5 s).
+
 ## CAPA (20/11/2026) — TODO Short sai com capa chamativa
 - O render_trailer.py gera saida/capa.jpg sozinho (escolhe a cena limpa mais colorida e forte) e o yt.py aplica na hora de publicar. Só preencha no spec.json:
   "capa": ["LINHA 1", "LINHA 2"]  → o dado mais forte do vídeo, no máximo 3 palavras por linha (ex.: ["GTA 6 HAS", "2 ENDINGS"], ["7.8 MILLION", "WATCHING"]). A última linha sai amarela.
