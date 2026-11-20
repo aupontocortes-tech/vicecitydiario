@@ -31,9 +31,17 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 ## LIMITE DE POSTAGEM E FORÇA DO ASSUNTO (20/11/2026)
 - Dados de 20/11: 5 vídeos no mesmo dia. Os 3 primeiros (dinheiro, Jason gordo, morte e perda de dinheiro) fizeram de 961 a 1.959 views; os 2 últimos (cachorro de jet ski, gato no carro) fizeram 15 e 2. Vídeo demais no mesmo dia divide o público, e detalhe pequeno não segura.
 - MÁXIMO 3 vídeos públicos por dia, com pelo menos 4 horas entre um e outro (veja o horário do último em publicar/ pelo git log). Se já bateu o limite, deixe o vídeo pronto na fila para o dia seguinte.
+- EXCEÇÃO — NOTÍCIA GRANDE PASSA NA FRENTE: novidade OFICIAL da Rockstar ou que todo mundo está comentando nas últimas 24 h (trailer/vídeo novo, DLC, GTA Online, recorde de vendas oficial, nota/análise grande, atualização, polêmica grande) pode sair mesmo acima do limite (no máximo 1 extra por dia, 2 h depois do último). Nesse caso o vídeo da fila espera.
 - Assunto tem que mexer com o jogador: dinheiro, morte, recorde, tamanho do mapa, segredo grande, regra que muda o jeito de jogar. Detalhe fofo ou pequeno (bicho, objeto) só se for absurdo E aparecer na imagem.
 - Se a imagem oficial não MOSTRA o que o título promete (ex.: "gato no carro" sem gato na tela), escolha outro assunto.
 - 1º quadro: o título completo e forte já na tela (nunca só metade, tipo "DON'T STEAL").
+
+## IMAGEM TEM QUE BATER COM A FALA (20/11/2026 — REGRA DURA)
+- Problema: as cenas estavam genéricas e não mostravam o que a narração dizia.
+- Escolha o assunto PELA IMAGEM: antes de escrever, veja se existe trecho oficial que MOSTRA aquilo (folha de contato dos trailers, do Extended Look e dos clipes de personagem). Sem imagem que mostre, troque de assunto.
+- Cada frase tem que ter uma cena que mostre o que ela diz: falou de dinheiro, aparece dinheiro, assalto ou loja; falou de polícia, aparece polícia; falou de Jason, aparece o Jason; falou de mar ou jet ski, aparece água e jet ski. Proibido cena "qualquer" do trailer só para preencher.
+- Quando não existir imagem exata para uma frase, reescreva a frase para falar do que a imagem mostra, ou use selo pequeno "ILUSTRATIVO" (no máximo 1 cena por vídeo).
+- QC obrigatório antes de publicar: para CADA cena, tire 1 quadro do final.mp4, descreva em 5 palavras o que aparece e compare com a frase. Se não bater, troque o trecho e renderize de novo. Escreva no relatório a lista "frase → o que aparece".
 
 ## CENAS NOVAS, SEM REPETIR (20/11/2026)
 - Problema: os vídeos estavam repetindo as mesmas cenas. Fontes oficiais que DEVEM entrar no rodízio:
