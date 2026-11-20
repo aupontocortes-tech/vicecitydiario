@@ -28,6 +28,13 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## LIMITE DE POSTAGEM E FORÇA DO ASSUNTO (20/11/2026)
+- Dados de 20/11: 5 vídeos no mesmo dia. Os 3 primeiros (dinheiro, Jason gordo, morte e perda de dinheiro) fizeram de 961 a 1.959 views; os 2 últimos (cachorro de jet ski, gato no carro) fizeram 15 e 2. Vídeo demais no mesmo dia divide o público, e detalhe pequeno não segura.
+- MÁXIMO 3 vídeos públicos por dia, com pelo menos 4 horas entre um e outro (veja o horário do último em publicar/ pelo git log). Se já bateu o limite, deixe o vídeo pronto na fila para o dia seguinte.
+- Assunto tem que mexer com o jogador: dinheiro, morte, recorde, tamanho do mapa, segredo grande, regra que muda o jeito de jogar. Detalhe fofo ou pequeno (bicho, objeto) só se for absurdo E aparecer na imagem.
+- Se a imagem oficial não MOSTRA o que o título promete (ex.: "gato no carro" sem gato na tela), escolha outro assunto.
+- 1º quadro: o título completo e forte já na tela (nunca só metade, tipo "DON'T STEAL").
+
 ## CENAS NOVAS, SEM REPETIR (20/11/2026)
 - Problema: os vídeos estavam repetindo as mesmas cenas. Fontes oficiais que DEVEM entrar no rodízio:
   1. Launch Trailer (15/10/2026) — página rockstargames.com/VI/launch-trailer. Ache o link .mp4 oficial (media-rockstargames-com.akamaized.net/VI/downloads/videos/...) e use "src": "url:<link>". Depois de achar, grave o link no SRC do render_trailer.py como 'LAUNCH' e faça commit.
