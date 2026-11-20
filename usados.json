@@ -58,5 +58,55 @@
 "src": "LAUNCH",
 "start": 12.5,
 "data": "2026-11-20"
+},
+{
+"src": "T2",
+"start": 41.7,
+"data": "2026-11-20"
+},
+{
+"src": "T1",
+"start": 69.0,
+"data": "2026-11-20"
+},
+{
+"src": "T2",
+"start": 42.0,
+"data": "2026-11-20"
+},
+{
+"src": "OUTNOW",
+"start": 18.0,
+"data": "2026-11-20"
+},
+{
+"src": "T2",
+"start": 14.0,
+"data": "2026-11-20"
+},
+{
+"src": "T1",
+"start": 61.0,
+"data": "2026-11-20"
+},
+{
+"src": "T1",
+"start": 69.8,
+"data": "2026-11-20"
+},
+{
+"src": "OUTNOW",
+"start": 19.3,
+"data": "2026-11-20"
+},
+{
+"src": "OUTNOW",
+"start": 10.8,
+"data": "2026-11-20"
+},
+{
+"src": "/tmp/clipzip/GTAVI_Official_Cover_Art_Landscape.mp4",
+"start": 8.0,
+"data": "2026-11-20"
 }
 ]
