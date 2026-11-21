@@ -34,6 +34,18 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## FONTES PROIBIDAS
 
+## FOCO EM JOGABILIDADE (21/11/2026 — pedido do Thiago)
+- Prioridade do canal agora: COMO O JOGO SE JOGA. Mecânicas que aparecem nas cenas oficiais da Rockstar (trailers, Launch, Pre-Load, An Extended Look de 26 min, clipes): direção e perseguição, polícia e procurado, assaltos, tiroteio e mira, roubo de carro, barco/jet ski/avião, caiaque e mergulho, compras e lojas, celular e redes sociais do jogo, roupas e corpo do personagem, troca entre Jason e Lucia, mundo vivo (NPCs, bichos, clima), mapa e lugares para entrar.
+- Fórmula: "No GTA 6 você pode..." / "O que muda em X" → 3 a 4 cenas oficiais que MOSTRAM a mecânica acontecendo (emende trechos de trailers diferentes da mesma ação) → fato concreto de fonte confiável (análise/Rockstar) → pergunta no final.
+- Cada vídeo = UMA mecânica, explicada com imagem. Se não houver cena oficial mostrando a mecânica, escolha outra.
+
+## EDIÇÃO PROFISSIONAL DE SHORTS (21/11/2026) — use em TODO vídeo
+- Transição com ação em TODA troca de cena (zoom "soco", flash, chicote) + som de whoosh: o render faz sozinho. Para escolher: "trans": "zoom" | "flash" | "whip".
+- PALAVRA FORTE em cima: em 2 a 4 cenas por vídeo ponha "forte": "PALAVRA" (número, "PROIBIDO", "GRÁTIS", "PRESO", "2 FINAIS"...). Ela pula grande na parte de cima no momento em que o narrador fala, com som de pop. Números falados entram sozinhos.
+- SINAIS na tela quando algo é confirmado/negado/perigoso: "icone": "check" (pode/confirmado), "x" (não pode/mito), "alerta" (perigo/cuidado), "dinheiro", "estrela", "pergunta", "seta" + "icone_em": "palavra da frase" (aparece nessa palavra). 1 a 3 por vídeo, só quando combina.
+- Não exagere: no máximo 1 palavra forte OU 1 sinal por cena, e nunca em cima do rosto/ação principal.
+- QC: olhe os quadros no momento de cada palavra forte e sinal: legível, não cobre o título nem o assunto, aparece junto com a fala.
+
 ## LIMITE DE POSTAGEM E FORÇA DO ASSUNTO (20/11/2026)
 - Dados de 20/11: 5 vídeos no mesmo dia. Os 3 primeiros (dinheiro, Jason gordo, morte e perda de dinheiro) fizeram de 961 a 1.959 views; os 2 últimos (cachorro de jet ski, gato no carro) fizeram 15 e 2. Vídeo demais no mesmo dia divide o público, e detalhe pequeno não segura.
 - MÁXIMO 3 vídeos públicos por dia, com pelo menos 4 horas entre um e outro (veja o horário do último em publicar/ pelo git log). Se já bateu o limite, deixe o vídeo pronto na fila para o dia seguinte.
