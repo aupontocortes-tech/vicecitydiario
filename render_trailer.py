@@ -16,12 +16,15 @@ imagem .jpg/.png OFICIAL, só de domínios da Rockstar; imagem vira cena parada 
 start em segundos no vídeo de origem (ignorado em imagem).
 tag (opcional): selo PEQUENO no canto superior esquerdo, ex. "CENA DE GTA 5". Use SEMPRE que a cena for de outro jogo.
 focus: 0 = esquerda, 0.5 = centro, 1 = direita (onde fica o recorte vertical).
+forte (opcional): "90 HORAS" ou ["2 FINAIS"] = palavra forte que pula grande em cima quando o narrador fala (números entram sozinhos).
+icone (opcional): check, x, alerta, dinheiro, estrela, pergunta, seta + "icone_em": "palavra" (quando aparece).
+trans (opcional): zoom, flash, whip = efeito na troca de cena (padrão: alterna sozinho, com som de whoosh).
 mov (opcional): zoom_in, zoom_out, pan, pan_rev, punch, drift — se omitir, varia sozinho e nunca repete o da cena anterior.
 vel (opcional): 0.8 = câmera lenta (cena de ação/impacto).
 capa (opcional): ["LINHA 1", "LINHA 2"] = texto gigante da capa (use o dado mais forte: "90 HOURS", "2 ENDINGS").
 capa_selo (opcional): selo vermelho embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
 Saída: saida_dir/final.mp4 e saida_dir/capa.jpg (capa chamativa; o yt.py aplica sozinho)."""
-import sys, os, json, subprocess, math, urllib.request, urllib.parse
+import re, sys, os, json, subprocess, math, urllib.request, urllib.parse
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
@@ -119,6 +122,88 @@ def badge(d, x, y, s, col):
     d.rounded_rectangle((x - w / 2, y - 32, x + w / 2, y + 32), 14, fill=col)
     d.text((x, y + 2), s, font=f, fill=(10, 10, 10), anchor='mm')
 
+# ===== EDIÇÃO PROFISSIONAL (21/11/2026): transições, palavra forte, sinais e efeitos sonoros =====
+TRANS = ['zoom', 'flash', 'whip']
+def acha_palavra(WORDS, seg, alvo):
+    """Momento em que o narrador fala 'alvo' dentro da cena seg (None se não achar)."""
+    a = alvo.upper().strip('.,:?!$%').split()[0] if alvo.strip() else ''
+    for w in WORDS:
+        if w.get('seg') == seg and a and a in w['w'].upper().strip('.,:?!'):
+            return w['s']
+    return None
+
+def eventos(SC, WORDS, bounds):
+    """Lista de (t, tipo, valor): palavra forte e sinais, sincronizados com a fala."""
+    ev = []
+    for i, sc in enumerate(SC):
+        fortes = sc.get('forte') or []
+        if isinstance(fortes, str): fortes = [fortes]
+        if not fortes and not sc.get('title'):   # automático: número dito na cena vira palavra forte
+            for w in WORDS:
+                if w.get('seg') == i and re.search(r'\d', w['w']):
+                    fortes = [w['w'].strip('.,:?!')]; break
+        for fw in fortes[:2]:
+            t = acha_palavra(WORDS, i, fw); ev.append((t if t is not None else bounds[i] + 0.25, 'forte', fw.upper()))
+        if sc.get('icone'):
+            t = acha_palavra(WORDS, i, sc['icone_em']) if sc.get('icone_em') else None
+            ev.append((t if t is not None else bounds[i] + 0.35, 'icone', sc['icone']))
+    return ev
+
+def desenha_icone(im, nome, cx, cy, k):
+    if k <= 0.01: return
+    r = int(95 * k); lay = Image.new('RGBA', (2 * r + 30, 2 * r + 30), (0, 0, 0, 0)); g = ImageDraw.Draw(lay); c = r + 15
+    cores = {'check': (40, 200, 90), 'x': (230, 40, 50), 'alerta': (255, 200, 0), 'dinheiro': (40, 170, 80), 'estrela': (255, 200, 0), 'pergunta': (40, 130, 240), 'seta': (255, 200, 0)}
+    col = cores.get(nome, (255, 200, 0)); lw = max(4, int(16 * k))
+    if nome == 'alerta':
+        g.polygon([(c, c - r), (c + r, c + r * 0.8), (c - r, c + r * 0.8)], fill=col, outline=(0, 0, 0), width=6)
+        g.text((c, c + r * 0.2), '!', font=ImageFont.truetype(fpath('Anton.ttf'), max(10, int(110 * k))), fill=(0, 0, 0), anchor='mm')
+    elif nome == 'estrela':
+        pts = [(c + r * math.cos(math.radians(-90 + j * 36)) * (1 if j % 2 == 0 else 0.45), c + r * math.sin(math.radians(-90 + j * 36)) * (1 if j % 2 == 0 else 0.45)) for j in range(10)]
+        g.polygon(pts, fill=col, outline=(0, 0, 0), width=6)
+    elif nome == 'seta':
+        g.polygon([(c - r * 0.35, c - r), (c + r * 0.35, c - r), (c + r * 0.35, c), (c + r * 0.8, c), (c, c + r), (c - r * 0.8, c), (c - r * 0.35, c)], fill=col, outline=(0, 0, 0), width=6)
+    else:
+        g.ellipse((c - r, c - r, c + r, c + r), fill=col, outline=(0, 0, 0), width=6)
+        if nome == 'check': g.line([(c - r * 0.5, c), (c - r * 0.12, c + r * 0.4), (c + r * 0.55, c - r * 0.4)], fill=(255, 255, 255), width=lw, joint='curve')
+        elif nome == 'x': g.line([(c - r * 0.45, c - r * 0.45), (c + r * 0.45, c + r * 0.45)], fill=(255, 255, 255), width=lw); g.line([(c + r * 0.45, c - r * 0.45), (c - r * 0.45, c + r * 0.45)], fill=(255, 255, 255), width=lw)
+        else:
+            simb = {'dinheiro': '$', 'pergunta': '?'}.get(nome, '!')
+            g.text((c, c + 4), simb, font=ImageFont.truetype(fpath('Anton.ttf'), max(10, int(120 * k))), fill=(255, 255, 255), anchor='mm', stroke_width=4, stroke_fill=(0, 0, 0))
+    im.alpha_composite(lay, (int(cx - c), int(cy - c)))
+
+def transicao(im, tipo, lt):
+    """Efeito no começo da cena (troca de cena com ação)."""
+    if tipo == 'zoom' and lt < 0.22:
+        z = 1 + 0.12 * (1 - ease(lt / 0.22)); cw, ch = int(W / z), int(H / z)
+        return im.crop(((W - cw) // 2, (H - ch) // 2, (W - cw) // 2 + cw, (H - ch) // 2 + ch)).resize((W, H))
+    if tipo == 'whip' and lt < 0.18:
+        sh = int(W * 0.22 * (1 - ease(lt / 0.18))); a = np.asarray(im, np.float32)
+        b = sum(np.roll(a, -int(sh * j / 4), axis=1) for j in range(5)) / 5
+        return Image.fromarray(b.astype(np.uint8), 'RGBA')
+    if tipo == 'flash' and lt < 0.15:
+        fl = Image.new('RGBA', (W, H), (255, 255, 255, int(170 * (1 - lt / 0.15)))); im = im.copy(); im.alpha_composite(fl)
+    return im
+
+def mixa_sfx(out, cortes, ev, DUR):
+    """Narração + whoosh nas trocas de cena + pop na palavra forte / sinal (volume baixo, sem cobrir a voz)."""
+    import soundfile as sf
+    v, sr = sf.read(os.path.join(out, 'narr.wav'), dtype='float32')
+    if v.ndim > 1: v = v.mean(1)
+    mix = np.copy(v); rng = np.random.default_rng(7)
+    def add(sig, t, g):
+        a = int(t * sr)
+        if a >= len(mix): return
+        b = min(len(mix), a + len(sig)); mix[a:b] += sig[:b - a] * g
+    n = int(0.32 * sr); x = np.linspace(0, 1, n)
+    ruido = rng.standard_normal(n); ruido = np.convolve(ruido, np.ones(18) / 18, 'same')
+    whoosh = ruido * np.sin(np.pi * x) ** 2
+    n2 = int(0.09 * sr); x2 = np.arange(n2) / sr
+    popf = np.sin(2 * np.pi * (900 - 4000 * x2) * x2) * np.exp(-x2 * 45)
+    for t in cortes: add(whoosh / (np.abs(whoosh).max() + 1e-6), max(0, t - 0.12), 0.16)
+    for t, tipo, _ in ev: add(popf, t, 0.22)
+    mix = mix / max(1.0, np.abs(mix).max() / 0.95)
+    p = os.path.join(out, 'narr_fx.wav'); sf.write(p, mix, sr); return p
+
 def main():
     spec = json.load(open(sys.argv[1], encoding='utf-8')); out = sys.argv[2]
     global CTA; CTA = spec.get('cta_text') or ('FOLLOW FOR MORE' if spec.get('lang') == 'en' else 'SEGUE O CANAL')
@@ -178,10 +263,13 @@ def main():
         if y > 1200: a = max(a, int(230 * ((y - 1200) / 720) ** 1.3))
         grad[y, :, 3] = a
     GRAD = Image.fromarray(grad, 'RGBA')
+    EV = eventos(SC, WORDS, bounds)
+    try: AUDIO = mixa_sfx(out, bounds[1:-1], EV, DUR)
+    except Exception as e: print('AVISO: sem efeitos sonoros:', e); AUDIO = os.path.join(out, 'narr.wav')
     final = os.path.join(out, 'final.mp4')
     dec = subprocess.Popen(['ffmpeg', '-loglevel', 'error', '-i', base, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], stdout=subprocess.PIPE)
     enc = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-',
-                            '-i', os.path.join(out, 'narr.wav'), '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '4200k',
+                            '-i', AUDIO, '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '4200k',
                             '-bufsize', '8000k', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-ar', '48000',
                             '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-shortest', '-movflags', '+faststart', final], stdin=subprocess.PIPE)
     n = int(math.ceil(DUR * FPS)); fs = W * H * 3; last = None
@@ -190,7 +278,9 @@ def main():
         if len(raw) < fs: raw = last
         last = raw
         t = i / FPS; s = max(k for k in range(len(SEGS)) if t >= bounds[k]); lt = t - bounds[s]; sc = SC[s]
-        im = Image.frombytes('RGB', (W, H), raw).convert('RGBA'); im.alpha_composite(GRAD); d = ImageDraw.Draw(im)
+        im = Image.frombytes('RGB', (W, H), raw).convert('RGBA')
+        if s > 0: im = transicao(im, sc.get('trans') or TRANS[s % len(TRANS)], lt)
+        im.alpha_composite(GRAD); d = ImageDraw.Draw(im)
         if sc.get('tag'):
             f = M9[34]; tb = d.textbbox((0, 0), sc['tag'], font=f)
             d.rounded_rectangle((36, 60, 36 + tb[2] - tb[0] + 36, 116), 12, fill=(0, 0, 0, 200))
@@ -209,6 +299,16 @@ def main():
             if bw > 10:
                 d.rounded_rectangle((W / 2 - bw / 2, 380 - 85 * k, W / 2 + bw / 2, 380 + 85 * k), int(42 * k), fill=(230, 30, 40))
                 if k > 0.9: d.text((W / 2, 384), CTA, font=M9[58], fill=WHITE, anchor='mm')
+        for (te, tipo, val) in EV:
+            if te <= t < te + 1.4:
+                fade = 1 if t < te + 1.15 else max(0, 1 - (t - te - 1.15) / 0.25)
+                if tipo == 'forte':
+                    yf = 700 if sc.get('title') else 470
+                    f = ImageFont.truetype(fpath('Anton.ttf'), 170 if len(val) <= 9 else 130)
+                    paste_text(im, val, f, (W / 2, yf), pop(t, te, 0.25) * fade, (255, 70, 60) if sc.get('forte_cor') == 'red' else YEL, stroke=14)
+                else:
+                    desenha_icone(im, val, W - 170, 1020, pop(t, te, 0.25) * fade)
+        d = ImageDraw.Draw(im)
         for (cs, ce, c) in CH:
             if cs <= t < ce:
                 words = [x['w'].strip('.,:?!').upper() for x in c]; f = ANTON[110]; sp = 26
