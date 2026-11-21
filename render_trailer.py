@@ -52,7 +52,7 @@ def run(cmd): subprocess.run(cmd, check=True)
 USADOS = os.path.join(HERE, 'usados.json')   # trechos já usados (fonte, segundo, data) para não repetir cena
 
 def checa_repetidos(spec):
-    """Para o render se alguma cena usar um trecho (±4 s) já usado nos últimos 14 dias."""
+    """Para o render se alguma cena usar um trecho (±8 s) já usado nos últimos 30 dias."""
     import datetime
     if os.environ.get('VCD_PERMITE_REPETIDO') == '1': return
     try: us = json.load(open(USADOS))
@@ -61,7 +61,7 @@ def checa_repetidos(spec):
     for i, sc in enumerate(spec['scenes']):
         if 'start' not in sc: continue
         for u in us:
-            if u['src'] == sc['src'] and abs(u['start'] - float(sc['start'])) < 4 and (hoje - datetime.date.fromisoformat(u['data'])).days <= 14:
+            if u['src'] == sc['src'] and abs(u['start'] - float(sc['start'])) < 8 and (hoje - datetime.date.fromisoformat(u['data'])).days <= 30:
                 rep.append(f"cena {i}: {sc['src']} {sc['start']}s (já usado em {u['data']})"); break
     if rep:
         raise SystemExit('CENA REPETIDA — troque o trecho (use outro momento do Extended Look de 26 min ou os trailers novos):\n' + '\n'.join(rep))

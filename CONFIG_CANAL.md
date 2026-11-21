@@ -22,6 +22,12 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 - Screenshots oficiais (138): https://media-rockstargames-com.akamaized.net/VI/downloads/screenshots/GTAVI_Screenshots.zip ; Ultimate Edition (51): .../GTAVI_Ultimate_Edition_Benefits.zip ; Vintage Vice City (12): .../GTAVI_Vintage_Vice_City_Pack.zip. Imagem parada: no máximo 1 por vídeo.
 - 'PRELOAD' (trailer do pré-download): ainda sem .mp4 direto confirmado; use só se achar o link na página da Rockstar.
 
+## CENAS: MENOS REPETIÇÃO (21/11/2026) — o Thiago notou vídeo repetido (gato)
+- A maior parte das cenas estava saindo de T1 e T2 (90 s cada), que o público já viu em todo vídeo. Nova regra: no máximo 1 cena de T1 e 1 de T2 por vídeo.
+- O grosso das cenas (pelo menos metade) tem que vir de fontes menos usadas: An Extended Look (26 min, tem muito momento ainda não usado: varra do minuto 2 ao 25), 'OUTNOW', 'LAUNCH' e os clipes de personagem do pacote oficial GTAVI_Videos.zip (Jason, Lucia, Cal Hampton, Boobie Ike, Dre'Quan Priest, Real Dimez, Raul Bautista, Brian Heder).
+- Antes de escolher cenas, leia usados.json e fuja dos trechos já usados (o render agora bloqueia ±8 s nos últimos 30 dias).
+- A cena precisa ter relação com a fala do momento (gato na fala do gato = cena com animal ou bodega; se não houver, escolha cena neutra de rua/cidade que ainda não tenha sido usada, nunca a mesma cena de sempre).
+
 ## FONTES
 
 ## FONTES SÓ PARA CONFIRMAR
