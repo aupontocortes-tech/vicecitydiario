@@ -48,8 +48,8 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
 
 ## LIMITE DE POSTAGEM E FORÇA DO ASSUNTO (20/11/2026)
 - Dados de 20/11: 5 vídeos no mesmo dia. Os 3 primeiros (dinheiro, Jason gordo, morte e perda de dinheiro) fizeram de 961 a 1.959 views; os 2 últimos (cachorro de jet ski, gato no carro) fizeram 15 e 2. Vídeo demais no mesmo dia divide o público, e detalhe pequeno não segura.
-- MÁXIMO 3 vídeos públicos por dia, com pelo menos 4 horas entre um e outro (veja o horário do último em publicar/ pelo git log). Se já bateu o limite, deixe o vídeo pronto na fila para o dia seguinte.
-- EXCEÇÃO — NOTÍCIA GRANDE PASSA NA FRENTE: novidade OFICIAL da Rockstar ou que todo mundo está comentando nas últimas 24 h (trailer/vídeo novo, DLC, GTA Online, recorde de vendas oficial, nota/análise grande, atualização, polêmica grande) pode sair mesmo acima do limite (no máximo 1 extra por dia, 2 h depois do último). Nesse caso o vídeo da fila espera.
+- SEM LIMITE DE VÍDEOS POR DIA (21/11/2026: o Thiago decide quantos quer, apertando o botão). Toda execução publica o vídeo na hora, mesmo que já tenham saído outros no dia. Só nunca publique dois com menos de 30 minutos de diferença (se o último saiu há menos de 30 min, espere até completar).
+- NOTÍCIA GRANDE PASSA NA FRENTE: novidade OFICIAL da Rockstar ou que todo mundo está comentando nas últimas 24 h vira o próximo vídeo; o vídeo da fila espera.
 - Assunto tem que mexer com o jogador: dinheiro, morte, recorde, tamanho do mapa, segredo grande, regra que muda o jeito de jogar. Detalhe fofo ou pequeno (bicho, objeto) só se for absurdo E aparecer na imagem.
 - Se a imagem oficial não MOSTRA o que o título promete (ex.: "gato no carro" sem gato na tela), escolha outro assunto.
 - 1º quadro: o título completo e forte já na tela (nunca só metade, tipo "DON'T STEAL").
