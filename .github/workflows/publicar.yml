@@ -24,6 +24,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           shopt -s nullglob
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && ! ls publicar/*.json >/dev/null 2>&1; then python3 yt.py ptmap painel/pt_map.json && git add painel/pt_map.json && git -c user.name=publicador-vcd -c user.email=actions@users.noreply.github.com commit -qm "Mapa PT atualizado" && git push; exit 0; fi
           enviados=0
           for meta in publicar/*.json; do
             video="${meta%.json}.mp4"
@@ -36,6 +37,7 @@ jobs:
             fi
           done
           if [ "$enviados" -gt 0 ]; then
+            python3 yt.py ptmap painel/pt_map.json && git add painel/pt_map.json || echo "AVISO: mapa PT não atualizado"
             git config user.name "publicador-vcd"
             git config user.email "actions@users.noreply.github.com"
             git commit -m "Publicados $enviados video(s) no YouTube"

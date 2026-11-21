@@ -1874,6 +1874,14 @@
     let mapaPt = {};
     async function carregarMapaPt(canal) {
       mapaPt = {};
+      if (canal === 'vcd') {   // GTA: versões [PT] não listadas, mapa salvo pelo robô de publicação
+        try {
+          const r = await fetch('https://raw.githubusercontent.com/aupontocortes-tech/vicecitydiario/main/painel/pt_map.json?t=' + Date.now());
+          if (r.ok) mapaPt = await r.json();
+          if (canalAtual() === canal && window.__videosPainel) renderVideos(window.__videosPainel);
+        } catch {}
+        return;
+      }
       if (canal !== 'vf') return;
       try {
         const d = await buscarJson(`/api/roteiros?canal=vf&publicados=1`);
