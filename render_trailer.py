@@ -22,7 +22,7 @@ trans (opcional): zoom, flash, whip = efeito na troca de cena (padrão: alterna 
 mov (opcional): zoom_in, zoom_out, pan, pan_rev, punch, drift — se omitir, varia sozinho e nunca repete o da cena anterior.
 vel (opcional): 0.8 = câmera lenta (cena de ação/impacto).
 capa (opcional): ["LINHA 1", "LINHA 2"] = texto gigante da capa (use o dado mais forte: "90 HOURS", "2 ENDINGS").
-capa_selo (opcional): selo vermelho embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
+capa_selo (opcional): selo rosa neon embaixo do texto, ex. "OFFICIAL". capa_cena (opcional): índice da cena da imagem da capa.
 Saída: saida_dir/final.mp4 e saida_dir/capa.jpg (capa chamativa; o yt.py aplica sozinho)."""
 import re, sys, os, json, subprocess, math, urllib.request, urllib.parse
 import numpy as np
@@ -297,7 +297,7 @@ def main():
         if sc.get('cta') and lt > 0.3:
             k = pop(lt, 0.3); bw = 680 * k
             if bw > 10:
-                d.rounded_rectangle((W / 2 - bw / 2, 380 - 85 * k, W / 2 + bw / 2, 380 + 85 * k), int(42 * k), fill=(230, 30, 40))
+                d.rounded_rectangle((W / 2 - bw / 2, 380 - 85 * k, W / 2 + bw / 2, 380 + 85 * k), int(42 * k), fill=(255, 45, 150))
                 if k > 0.9: d.text((W / 2, 384), CTA, font=M9[58], fill=WHITE, anchor='mm')
         for (te, tipo, val) in EV:
             if te <= t < te + 1.4:
@@ -305,7 +305,7 @@ def main():
                 if tipo == 'forte':
                     yf = 700 if sc.get('title') else 470
                     f = ImageFont.truetype(fpath('Anton.ttf'), 170 if len(val) <= 9 else 130)
-                    paste_text(im, val, f, (W / 2, yf), pop(t, te, 0.25) * fade, (255, 70, 60) if sc.get('forte_cor') == 'red' else YEL, stroke=14)
+                    paste_text(im, val, f, (W / 2, yf), pop(t, te, 0.25) * fade, (255, 45, 150) if sc.get("forte_cor") == "red" else YEL, stroke=14)
                 else:
                     desenha_icone(im, val, W - 170, 1020, pop(t, te, 0.25) * fade)
         d = ImageDraw.Draw(im)
@@ -369,7 +369,7 @@ def fazer_capa(spec, out, parts):
         y += tam + 18
     if spec.get('capa_selo'):
         f = M9[58]; tw = d.textlength(spec['capa_selo'], font=f)
-        d.rounded_rectangle((W / 2 - tw / 2 - 34, y + 20, W / 2 + tw / 2 + 34, y + 120), 22, fill=(230, 30, 40))
+        d.rounded_rectangle((W / 2 - tw / 2 - 34, y + 20, W / 2 + tw / 2 + 34, y + 120), 22, fill=(255, 45, 150))
         d.text((W / 2, y + 70), spec['capa_selo'], font=f, fill=WHITE, anchor='mm')
     p = os.path.join(out, 'capa.jpg'); im.convert('RGB').save(p, quality=90); print('capa', p)
 

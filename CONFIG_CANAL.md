@@ -16,6 +16,19 @@ O canal agora é para o público dos EUA. Cada execução publica 2 vídeos do M
    - Se a versão em português falhar, publique só a em inglês e diga no relatório.
 - Faça os 2 no MESMO commit/push. Relatório para o Thiago continua em português (com o título em inglês + tradução).
 
+## NOVA ESTRATÉGIA: BUSCA DO YOUTUBE (22/11/2026) — VALE MAIS que "O QUE PROCURAR", "SUGESTÕES" e "SEMANA DE LANÇAMENTO"
+Canal "Leonida Daily" continua em INGLÊS e com a MESMA VOZ (Andrew, tts_lines.py). Não mude idioma nem voz. Versão [PT] não listada continua (só para o Thiago e o botão do app).
+- Dados (28 dias): 95,2 mil views, 61,5% de retenção, 64% das views vêm da BUSCA. "GTA 6 Has More Than One Ending" fez 61,7 mil pela busca "gta 6 ending". Público: EUA, Índia, Reino Unido, homens 25-34. Retenção acima de 55% = ~1 mil views; abaixo de 40% = menos de 300.
+- LIMITE: não temos o jogo. Só trailers e imagens oficiais da Rockstar. Sem música dos trailers. Só escolha tema que dá para MOSTRAR com esse material; se a cena prometida não existe, troque o tema.
+- TÍTULO = o que as pessoas pesquisam. Temas: finais e quantos finais, tamanho do mapa, lugares reais (Miami x Vice City), história de Jason e Lucia, cheats, perder dinheiro ao morrer, detalhes escondidos no trailer, GTA 6 x Vice City, animais.
+- VALOR PRÓPRIO: pesquisa, análise, comparação, teoria e narração. Nunca só o trailer passando. Fatos de fonte confiável, citada na descrição junto com "Images: Rockstar Games".
+- NÃO FAZER: notícia de trailer, galeria de screenshots, biografia de personagem, versão em português pública.
+- ROTEIRO 25-40s: gancho no 1º segundo já com a resposta/contradição do título; um fato novo a cada 3-4s sem repetir ideia; trechos de trailer de 2-4s com zoom e corte em tela cheia 9:16, nada de imagem parada; narração natural com pausas e humor leve; FINAL EM LOOP que emenda no começo (última frase completa a primeira). SEM botão/selo "FOLLOW FOR MORE": use "cta_text": "" nos specs e não ponha "cta" em cena.
+- IDENTIDADE FIXA: mesma fonte, cor principal neon rosa/amarelo Vice City, NUNCA vermelho (selos e botões saem rosa neon), mesma voz, mesma abertura de 3s.
+- CAPA: vertical, 1 a 3 palavras grandes em inglês, cor fixa do canal, elemento forte de GTA 6 no centro, sem selo "follow", sem texto cortado.
+- VÍDEO LONGO: 1 por semana, guia completo do tema que foi melhor no Short (ex.: "All GTA 6 Endings Explained"), 3-8 min, gancho em 10s, virada a cada 30-45s, capítulos, playlist.
+- YOUTUBE: nada repetitivo/em série; cada vídeo com ângulo e formato diferentes; nada copiado de outros canais.
+
 ## LINKS OFICIAIS CONFIRMADOS (20/11/2026) — use em "src"
 - 'LAUNCH' (Launch Trailer) e 'OUTNOW' (trailer "Grand Theft Auto VI: Out Now", saiu no lançamento): já estão no render_trailer.py. O Out Now é o mais novo: dê prioridade a ele.
 - Clipes de personagem (Jason, Lucia, Cal Hampton, Boobie Ike, Dre'Quan Priest, Real Dimez, Raul Bautista, Brian Heder + animação da capa): pacote oficial https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Videos.zip (121 MB, 9 vídeos). Baixe, extraia e use cada arquivo com "url:" ou local.
