@@ -558,5 +558,45 @@
 "src": "EXT",
 "start": 209.0,
 "data": "2026-11-23"
+},
+{
+"src": "/tmp/vcd_cache/EXT_899ad.mp4",
+"start": 3.9,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_779ad.mp4",
+"start": 1.0,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_873ad.mp4",
+"start": 1.0,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_1235ad.mp4",
+"start": 0.0,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_541ad.mp4",
+"start": 0.9,
+"data": "2026-11-24"
+},
+{
+"src": "T2",
+"start": 120.6,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_952ad.mp4",
+"start": 1.5,
+"data": "2026-11-24"
+},
+{
+"src": "/tmp/vcd_cache/EXT_1099ad.mp4",
+"start": 0.5,
+"data": "2026-11-24"
 }
 ]
