@@ -52,6 +52,15 @@ Canal "Leonida Daily" continua em INGLÊS e com a MESMA VOZ (Andrew, tts_lines.p
 - Fórmula: "No GTA 6 você pode..." / "O que muda em X" → 3 a 4 cenas oficiais que MOSTRAM a mecânica acontecendo (emende trechos de trailers diferentes da mesma ação) → fato concreto de fonte confiável (análise/Rockstar) → pergunta no final.
 - Cada vídeo = UMA mecânica, explicada com imagem. Se não houver cena oficial mostrando a mecânica, escolha outra.
 
+## TESTE DE 3 TIPOS (27/11/2026 — pedido do Thiago; SUBSTITUI o foco só em jogabilidade)
+Jogabilidade pura parou de dar views. Por 7 dias (27/11 a 04/12) alterne os tipos, sem repetir o tipo do vídeo anterior do feed:
+1. NOTÍCIA GRANDE (anúncio oficial, data, trailer novo, polêmica que todo mundo comenta). Só se houver notícia grande de verdade.
+2. GUIA / DINHEIRO (prioridade, uns 50% dos vídeos): "como ganhar dinheiro rápido", "o que fazer primeiro", "o que mudou desde Vice City", "X coisas que você precisa saber antes de jogar". É o que as pessoas procuram no YouTube. Use só cena oficial em movimento + fato de fonte confiável; sem gameplay próprio, sem inventar.
+3. JOGABILIDADE OFICIAL: no máximo 1 por semana (grupo de controle).
+- Título com número ou pergunta ("3 coisas que a Rockstar escondeu"), nunca só descritivo. Primeiro segundo já com a cena mais forte, sem introdução.
+- Ao publicar, acrescente uma linha em TESTE_TIPOS.md: data | tipo (1/2/3) | título | id do vídeo. Pequena, sem mexer no resto.
+- Em 04/12 compare views de 24h por tipo (Studio ou feed público), corte o pior, dobre o melhor e registre a conclusão aqui.
+
 ## EDIÇÃO PROFISSIONAL DE SHORTS (21/11/2026) — use em TODO vídeo
 - Transição com ação em TODA troca de cena (zoom "soco", flash, chicote) + som de whoosh: o render faz sozinho. Para escolher: "trans": "zoom" | "flash" | "whip".
 - PALAVRA FORTE em cima: em 2 a 4 cenas por vídeo ponha "forte": "PALAVRA" (número, "PROIBIDO", "GRÁTIS", "PRESO", "2 FINAIS"...). Ela pula grande na parte de cima no momento em que o narrador fala, com som de pop. Números falados entram sozinhos.
