@@ -913,5 +913,65 @@
 "src": "/tmp/vcd_cache/EXT_864car.mp4",
 "start": 0.0,
 "data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1404.3,
+"data": "2026-11-27"
+},
+{
+"src": "/tmp/vcd_cache/EXT_1505slow.mp4",
+"start": 0.0,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1408.3,
+"data": "2026-11-27"
+},
+{
+"src": "/tmp/vcd_cache/EXT_1186slow.mp4",
+"start": 0.0,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 255.5,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 437.5,
+"data": "2026-11-27"
+},
+{
+"src": "/tmp/vcd_cache/EXT_1442slow.mp4",
+"start": 0.0,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1534.5,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 263.5,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1505.3,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1186.0,
+"data": "2026-11-27"
+},
+{
+"src": "EXT",
+"start": 1442.0,
+"data": "2026-11-27"
 }
 ]
