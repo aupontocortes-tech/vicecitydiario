@@ -2,3 +2,4 @@
 Tipo 1 = notícia grande, 2 = guia/dinheiro, 3 = jogabilidade oficial
 
 data | tipo | título | id
+2026-11-28 | 2 | Chapter 1 in GTA 6 Wipes Your Money: Save $5,000 First | (pendente)
